@@ -118,7 +118,7 @@ body{
     display: flex;
     align-items: center;
     justify-content: center;
-  height: 100vh;
+  height: 100%;
   background-image: url(./assets/BG.svg);
   background-repeat: no-repeat;
   background-size: cover;
@@ -143,6 +143,7 @@ background-color:transparent !important;
 color: rgb(255, 255, 255);
 padding: 30px !important ;
 border: 1px solid white;
+margin-top: 20px;
 
 }
 .dash_col{
@@ -186,6 +187,7 @@ border: 1px solid white;
     background-color: transparent  !important;
     border: 1px solid white !important;
     padding-top: 25px !important;
+    margin-top: 20px;
 }
 .label{
     color: white !important;
@@ -238,12 +240,12 @@ option{
     font-size: 40px;
     color: white;
 }
-.line_chart{
+/* .line_chart{
     margin-top: 20px !important;
     display: flex;
     align-items: center;
     justify-content: center ;
-}
+} */
 
 .tab_div1{
     background-color: transparent;
@@ -397,7 +399,7 @@ input.form-control , textarea.form-control, #state , #city, #country  {
     min-width: 80%; /* Set your desired width here */
   }
  
-  .row1 , .row2{
+  .row1 {
     display: flex;
     align-content: center;
     justify-content: center;
@@ -691,6 +693,56 @@ div.dark .sidebar li a:hover .icon,
 div.dark .sidebar li a:hover .text{
     color: var(--text-color);
 }
+div.dark .dashboard{
+    background-color: black;
+}
+div.dark .chart_container{
+    background-color: var(--primary-color);
+    color: var(--text-color);
+}
+div.dark .header{
+    background-color: var(--primary-color) !important;
+    color: var(--text-color);
+}
+
+div.dark .container{
+    border-color: black;
+}
+div.dark .input{
+    border-color: black !important;
+}
+div.dark .container1{
+      border-color:black !important ;
+}
+div.dark .table {
+    border-color: black;
+}
+div.dark .tr{
+    background-color:var(--primary-color) !important ;
+    color:var(--text-color) ;
+} 
+div.dark .btn_f, .edit_btn{
+    background-color:var(--primary-color) !important ;
+    color:var(--text-color) ;
+}
+div.dark .update_btn{
+    background-color:var(--primary-color) !important ;
+    color:var(--text-color) ;
+}
+div.dark .update_btn:hover{
+    background-color:#0dcaf0!important ;
+    color:black ;
+}
+div.dark .line_chart{
+    color: var(--text-color);
+}
+    
+
+.btn_f:hover{
+    background-color: #c7473e !important;
+}
+
+
 
 .sidebar .menu-bar{
     height: calc(100% - 55px);
