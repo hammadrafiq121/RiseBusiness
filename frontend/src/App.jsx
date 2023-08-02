@@ -24,7 +24,7 @@ function App() {
       <BrowserRouter>
         {user && <Sidebar />}{" "}
         {user && <Navbar />}{" "}
-        {/ Only render Sidebar if user is authenticated /}
+        {/* Only render Sidebar if user is authenticated */}
         
         <Routes>
           {user ? (
@@ -35,7 +35,7 @@ function App() {
             // If the user is not logged in, render the Login component
             <Route path="/" element={<Login />} />
           )}
-          {/ <Route path="/" element={</ />} /> /}
+          {/* <Route path="/" element={</ />} /> */}
           <Route path="/addCustomers" element={<AddCustomer />} />
 
           <Route path="/customers/addCustomers" element={<EditCustomer />} />
