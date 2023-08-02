@@ -106,15 +106,15 @@ const data1=[
 
 
 
-const dashboard = () => {
+const dashboard = ({ isDarkMode, toggleDarkMode }) => {
   return (
     
 <>
-<div className="div">
+<div className="">
 
 
-  <div className="chart_div">
-<div className=" chart_container ">
+  <div className={`chart_div ${isDarkMode ? "dark" : ""}`}>
+<div className={`chart_container ${isDarkMode ? "dark" : ""}`}>
 
 
 <div className="dash_div" >
@@ -196,11 +196,11 @@ const dashboard = () => {
 
         {/* line chart  */}
 
-        <Col lg={5}  >
+        <Col lg={6}  >
     
 
 
-<ResponsiveContainer width="90%" height="100%" aspect={2} >
+<ResponsiveContainer width="80%" height="100%" aspect={2} >
     <LineChart  data={data} >
         <CartesianGrid />
         <XAxis dataKey="name" interval={"preserveStartEnd"} tickFormatter={(value)=>value+" ECT"}  />
@@ -220,19 +220,38 @@ const dashboard = () => {
 
 {/* bar chart  */}
 
-<Col lg={5} className="bar_chart" >
+<Col lg={5} >
+{/* <ResponsiveContainer width="90%" height="100%" aspect={2} >
+    <LineChart  data={data} >
+        <CartesianGrid />
+        <XAxis dataKey="name" interval={"preserveStartEnd"} tickFormatter={(value)=>value+" ECT"}  />
+        <YAxis className="yaxis" />
+        <Legend />
+        <Tooltip contentStyle={{backgroundClip:'blue'}} />
+
+        <Line  type="monotone" dataKey="student" stroke="red"  activeDot={{r:18}}>
+        </Line>
+        <Line  dataKey="fees" stroke="orange"  activeDot={{r:8}}></Line>
 
 
-<ComposedChart width={600} height={280} data={data}>
-  <XAxis dataKey="name"  interval={"preserveStartEnd"} tickFormatter={(value)=>value+" ECT"} />
-  <YAxis className="yaxis"/>
-  <Tooltip  contentStyle={{backgroundClip:'blue'}} />
-  <Legend />
-  <CartesianGrid stroke="#f5f5f5" />
-  <Area type="monotone" dataKey="name" fill="#8884d8" stroke="#8884d8" />
-  <Bar dataKey="student" barSize={20} fill="#413ea0" />
-  <Line type="monotone" dataKey="fees" stroke="#ff7300" />
-</ComposedChart>
+    </LineChart>
+    
+</ResponsiveContainer> */}
+  <ResponsiveContainer >
+  <ComposedChart width={650} height={250} data={data}>
+    <XAxis dataKey="name"  interval={"preserveStartEnd"} tickFormatter={(value)=>value+" ECT"} />
+    <YAxis className="yaxis"/>
+    <Tooltip  contentStyle={{backgroundClip:'blue'}} />
+    <Legend />
+    <CartesianGrid stroke="#f5f5f5" />
+    <Area type="monotone" dataKey="name" fill="#8884d8" stroke="#8884d8" />
+    <Bar dataKey="student" barSize={20} fill="#413ea0" />
+    <Line type="monotone" dataKey="fees" stroke="#ff7300" />
+  </ComposedChart>
+  </ResponsiveContainer>
+ 
+   
+
 
 
 </Col>
@@ -245,14 +264,14 @@ const dashboard = () => {
 
 
 {/* two chart bar & composed chart */}
-<Row className="row_chart row2"s >
+<Row className="row_chart row2" >
 
 
 {/* pie chart  */}
     <Col lg={5} >
-    
-   
-    <BarChart width={600} height={285} data={data1}>
+      <ResponsiveContainer>
+
+    <BarChart width={400} height={280} data={data1}>
   <CartesianGrid strokeDasharray="3 3" />
   <XAxis dataKey="Name" />
   <YAxis />
@@ -261,13 +280,15 @@ const dashboard = () => {
   <Bar dataKey="salary" fill="#8884d8" />
   <Bar dataKey="id" fill="#82ca9d" />
 </BarChart>
+      </ResponsiveContainer>
 
 
 </Col>
 
 
 {/* composed chart */}
-<Col lg={5} >
+{/* <Col lg={5} >
+  <ResponsiveContainer>
 <PieChart width={500} height={300}>
 <Tooltip cursor={true} /> 
           <Pie
@@ -285,8 +306,9 @@ const dashboard = () => {
             ))}
           </Pie>
         </PieChart>
-     
-</Col>
+        </ResponsiveContainer>
+
+</Col> */}
 </Row>
 
 
