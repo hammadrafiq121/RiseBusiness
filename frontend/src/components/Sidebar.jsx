@@ -5,9 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { reset, logout } from "../app/reducers/authSlice";
 
-function Sidebar() {
+function Sidebar({ isDarkMode, toggleDarkMode }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const [isCustomersDropdownOpen, setIsCustomersDropdownOpen] = useState(false);
 
   const handleToggleSidebar = () => {
@@ -16,6 +15,7 @@ function Sidebar() {
 
   const handleModeSwitch = () => {
     setIsDarkMode(!isDarkMode);
+    
   };
 
   const handleToggleCustomersDropdown = () => {
@@ -153,7 +153,7 @@ function Sidebar() {
                
         
 
-          <li className="mode" onClick={handleModeSwitch}>
+          <li className="mode" onClick={toggleDarkMode}>
             <div className="sun-moon">
               <i
                 className={`bx ${isDarkMode ? "bx-moon" : "bx-sun"} icon`}
