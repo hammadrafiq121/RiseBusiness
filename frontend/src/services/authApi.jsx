@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const backendUrl = "https://seashell-app-6wepd.ondigitalocean.app";
+const backendUrl = "https://rise-business-backend-kcsmg.ondigitalocean.app";
 
 //register
 export const signup = async (userData) => {
