@@ -434,18 +434,6 @@ const AddCustomer = () => {
                       }
                       labelledBy="Select"
                     />
-                    {/* <MultiSelect
-                      name="products"
-                      options={productNames.map((name) => ({
-                        label: name,
-                        value: name,
-                      }))}
-                      value={formData.products}
-                      onChange={(selected) =>
-                        handleProductChange("products", selected)
-                      }
-                      labelledBy="Select"
-                    /> */}
                   </Col>
                 </Form.Group>
               </div>
