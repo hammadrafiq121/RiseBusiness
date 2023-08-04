@@ -189,7 +189,8 @@ const AddCustomer = () => {
                   Company Name
                 </Form.Label>
                 <Col sm={9}>
-                  <Form.Control className="input"
+                  <Form.Control
+                    className="input"
                     type="text"
                     placeholder=""
                     name="companyName"
@@ -204,7 +205,7 @@ const AddCustomer = () => {
                   Phone
                 </Form.Label>
                 <Col sm={9}>
-                  <PhoneInput 
+                  <PhoneInput
                     name="companyPhone"
                     value={formData.companyPhone}
                     onChange={(value) =>
@@ -218,7 +219,8 @@ const AddCustomer = () => {
                   Fax
                 </Form.Label>
                 <Col sm={9}>
-                  <Form.Control  className="input"
+                  <Form.Control
+                    className="input"
                     type="text"
                     placeholder=""
                     name="companyFax"
@@ -233,7 +235,8 @@ const AddCustomer = () => {
                   Address
                 </Form.Label>
                 <Col sm={9}>
-                  <Form.Control className="input"
+                  <Form.Control
+                    className="input"
                     type="text"
                     placeholder=""
                     name="companyAddress"
@@ -251,7 +254,8 @@ const AddCustomer = () => {
                   Country
                 </Form.Label>
                 <Col sm={9}>
-                  <Form.Control className="input"
+                  <Form.Control
+                    className="input"
                     as="select"
                     name="country"
                     value={formData.country}
@@ -271,8 +275,9 @@ const AddCustomer = () => {
                 <Form.Label column sm={3}></Form.Label>
                 <Col sm={3}>
                   <Form.Group as={Col} controlId="state" className="mb-2">
-                    <Form.Label className="label" >State</Form.Label>
-                    <Form.Control className="input"
+                    <Form.Label className="label">State</Form.Label>
+                    <Form.Control
+                      className="input"
                       as="select"
                       name="state"
                       value={formData.state}
@@ -295,8 +300,9 @@ const AddCustomer = () => {
 
                 <Col sm={3}>
                   <Form.Group as={Col} controlId="city" className="mb-2">
-                    <Form.Label className="label" >City</Form.Label>
-                    <Form.Control className="input"
+                    <Form.Label className="label">City</Form.Label>
+                    <Form.Control
+                      className="input"
                       as="select"
                       name="city"
                       value={formData.city}
@@ -317,8 +323,9 @@ const AddCustomer = () => {
 
                 <Col sm={3}>
                   <Form.Group as={Col} controlId="zipCode" className="mb-2">
-                    <Form.Label className="label" >Zip Code</Form.Label>
-                    <Form.Control className="input"
+                    <Form.Label className="label">Zip Code</Form.Label>
+                    <Form.Control
+                      className="input"
                       type="number"
                       style={{ backgroundColor: "#ced4da" }}
                       name="zipCode"
@@ -330,13 +337,14 @@ const AddCustomer = () => {
                 </Col>
               </Form.Group>
 
-              <h5 className="label" >Contact Person</h5>
+              <h5 className="label">Contact Person</h5>
               <Form.Group as={Row} controlId="personName" className="mb-2">
                 <Form.Label className="label" column sm={3}>
                   Name
                 </Form.Label>
                 <Col sm={9}>
-                  <Form.Control className="input"
+                  <Form.Control
+                    className="input"
                     type="text"
                     placeholder=""
                     name="personName"
@@ -365,7 +373,8 @@ const AddCustomer = () => {
                   Email
                 </Form.Label>
                 <Col sm={9}>
-                  <Form.Control className="input"
+                  <Form.Control
+                    className="input"
                     type="email"
                     placeholder=""
                     name="personEmail"
@@ -380,7 +389,8 @@ const AddCustomer = () => {
                   Comments
                 </Form.Label>
                 <Col sm={9}>
-                  <Form.Control className="input"
+                  <Form.Control
+                    className="input"
                     as="textarea"
                     placeholder=""
                     rows={3}
@@ -397,7 +407,8 @@ const AddCustomer = () => {
               <div className="drop-container">
                 <Form.Group as={Row} className="mb-2">
                   <Col sm={12}>
-                    <Form.Select className="input"
+                    <Form.Select
+                      className="input"
                       value={formData.status}
                       name="status"
                       onChange={handleChange}
@@ -414,7 +425,7 @@ const AddCustomer = () => {
                 </Form.Group>
                 <Form.Group as={Row} className="mb-2">
                   <Col sm={12}>
-                    <MultiSelect 
+                    <MultiSelect
                       name="products"
                       options={productNames}
                       value={formData.products}
@@ -439,11 +450,14 @@ const AddCustomer = () => {
                 </Form.Group>
               </div>
               <Form.Group as={Row} className="mb-2">
-                <button  className="mb-2 mr-2 mt-3 btn_f " variant="secondary" type="submit">
-                  Submit
+                <button
+                  className="mb-2 mr-2 mt-3 btn_f "
+                  variant="secondary"
+                  type="submit"
+                >
+                  Create
                 </button>
               </Form.Group>
-               
             </Col>
           </Row>
         </Form>
