@@ -15,7 +15,8 @@ export const getUsers = createAsyncThunk(
   "users/getUsers",
   async (_, thunkAPI) => {
     try {
-      const response = await userApi.getUsers();
+      const token = thunkAPI.getState().auth.user.token;
+      const response = await userApi.getUsers(token);
       return response.data;
     } catch (error) {
       const message =
@@ -29,7 +30,8 @@ export const getUser = createAsyncThunk(
   "users/getUser",
   async (id, thunkAPI) => {
     try {
-      const response = await userApi.getUser(id);
+      const token = thunkAPI.getState().auth.user.token;
+      const response = await userApi.getUser(token, id);
       return response.data;
     } catch (error) {
       const message =
@@ -43,8 +45,25 @@ export const updateUser = createAsyncThunk(
   "users/updateUser",
   async ({ id, user }, thunkAPI) => {
     try {
-      const response = await userApi.updateUser(id, user);
+      const token = thunkAPI.getState().auth.user.token;
+
+      const response = await userApi.updateUser(token, id, user);
       return response.data;
+    } catch (error) {
+      const message = error?.response?.data?.error;
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const deleteUser = createAsyncThunk(
+  "users/deleteUser",
+  async (userId, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+
+      await userApi.deleteUser(token, userId);
+      return userId;
     } catch (error) {
       const message =
         error?.response?.data?.error || error.message || error.toString();
@@ -52,6 +71,7 @@ export const updateUser = createAsyncThunk(
     }
   }
 );
+
 //create a auth slice
 const userSlice = createSlice({
   name: "users",
@@ -65,8 +85,7 @@ const userSlice = createSlice({
         state.isLoading = true;
         state.isSuccess = false;
         state.isError = false;
-        state.message = "";
-        state.users = [];
+        state.message = "Getting Users...";
       })
       .addCase(getUsers.fulfilled, (state, action) => {
         state.isLoading = false;
@@ -80,20 +99,18 @@ const userSlice = createSlice({
         state.isSuccess = false;
         state.isError = true;
         state.message = action.payload;
-        state.users = [];
       })
       .addCase(getUser.pending, (state) => {
         state.isLoading = true;
         state.isSuccess = false;
         state.isError = false;
-        state.message = "";
-        state.users = [];
+        state.message = "Getting user...";
       })
       .addCase(getUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.message = "Users fetched successfully";
+        state.message = "User fetched successfully";
         state.users.push(action.payload);
       })
       .addCase(getUser.rejected, (state, action) => {
@@ -101,7 +118,51 @@ const userSlice = createSlice({
         state.isSuccess = false;
         state.isError = true;
         state.message = action.payload;
-        state.users = [];
+      })
+      .addCase(updateUser.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+        state.isSuccess = false;
+        state.message = "Updating user...";
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.message = "User updated successfully.";
+        const { id, updatedUser } = action.payload;
+        const userIndex = state.users.findIndex((user) => user._id === id);
+        if (userIndex !== -1) {
+          state.users[userIndex] = updatedUser;
+        } else {
+          console.log(`User with ID ${id} not found.`);
+        }
+      })
+      .addCase(updateUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.payload;
+      })
+      .addCase(deleteUser.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+        state.isSuccess = false;
+        state.message = "Deleting user...";
+      })
+      .addCase(deleteUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.message = "User deleted successfully.";
+        const userId = action.payload;
+        state.users = state.users.filter((user) => user._id !== userId);
+      })
+      .addCase(deleteUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.payload;
       });
   },
 });

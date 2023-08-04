@@ -7,12 +7,12 @@ import Container from "react-bootstrap/Container";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { MultiSelect } from "react-multi-select-component";
-
-//ther is no use of this line in the code below
-// import customerApi from "../services/customerApi";
-
 import { useNavigate, useParams } from "react-router-dom";
-import { updateCustomer, getCustomer } from "../app/reducers/customerSlice.js";
+import {
+  updateCustomer,
+  getCustomer,
+  reset,
+} from "../app/reducers/customerSlice.js";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Spinner from "./Spinner";
@@ -25,7 +25,7 @@ const EditCustomer = () => {
     boxShadow: "0 0 3px rgba(0, 0, 0, 0.2)",
   };
   const [isDisabled, setIsDisabled] = useState(true);
-  const [formData, setFormData] = useState({
+  const blackForm = {
     companyName: "",
     companyPhone: "",
     companyFax: "",
@@ -40,26 +40,59 @@ const EditCustomer = () => {
     comments: "",
     status: "",
     products: [],
-  });
+  };
+  const [formData, setFormData] = useState(blackForm);
   const navigate = useNavigate();
   const { id } = useParams();
   const dispatch = useDispatch();
-  const { user, isLoading, isError, message } = useSelector(
-    (state) => state.auth
+  const { user } = useSelector((state) => state.auth);
+  const { isLoading, isSuccess, isError, message } = useSelector(
+    (state) => state.customers
   );
 
   useEffect(() => {
     const fetch = async () => {
-      if (isError) {
-        toast.error(message);
-      }
       if (user) {
+        await dispatch(reset());
         const customer = await dispatch(getCustomer(id));
-        setFormData(customer.payload);
+        if (isSuccess) {
+          setFormData(customer.payload);
+        }
+        if (isError) {
+          setFormData(blackForm);
+        }
       }
     };
     fetch();
-  }, [user, dispatch, id]);
+  }, [id, dispatch, user]);
+
+  useEffect(() => {
+    if (isLoading) {
+      toast.dismiss();
+      toast.loading(message);
+    }
+    if (isSuccess) {
+      toast.dismiss();
+      toast.success(message);
+    }
+    if (isError) {
+      toast.dismiss();
+      toast.error(message);
+    }
+  }, [isError, isLoading, isSuccess, message]);
+
+  // useEffect(() => {
+  //   const fetch = async () => {
+  //     if (isError) {
+  //       toast.error(message);
+  //     }
+  //     if (user) {
+  //       const customer = await dispatch(getCustomer(id));
+  //       setFormData(customer.payload);
+  //     }
+  //   };
+  //   fetch();
+  // }, [user, dispatch, id]);
 
   const productNames = [
     { label: "Hospital Stretchers", value: "hospital-stretchers" },
@@ -104,7 +137,7 @@ const EditCustomer = () => {
                   Company Name
                 </Form.Label>
                 <Col sm={9}>
-                  <Form.Control class
+                  <Form.Control
                     disabled={isDisabled}
                     type="text"
                     placeholder=""
@@ -348,7 +381,11 @@ const EditCustomer = () => {
                     Edit
                   </Button>
                 )}
-                <Button className="mb-2 mr-2 update_btn " variant="secondary" type="submit">
+                <Button
+                  className="mb-2 mr-2 update_btn "
+                  variant="secondary"
+                  type="submit"
+                >
                   Update
                 </Button>
               </Form.Group>

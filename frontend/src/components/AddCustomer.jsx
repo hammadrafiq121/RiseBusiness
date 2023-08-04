@@ -8,8 +8,9 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import csc from "country-state-city";
 import { MultiSelect } from "react-multi-select-component";
-import { connect } from "react-redux";
-import { addCustomer } from "../app/reducers/customerSlice";
+import { connect, useSelector } from "react-redux";
+import { addCustomer, reset } from "../app/reducers/customerSlice";
+import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 
 const AddCustomer = () => {
@@ -21,7 +22,6 @@ const AddCustomer = () => {
   };
 
   const dispatch = useDispatch();
-
   const blankForm = {
     companyName: "",
     companyPhone: "",
@@ -39,11 +39,33 @@ const AddCustomer = () => {
     products: [],
   };
   const [formData, setFormData] = useState(blankForm);
-
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoad, setIsLoad] = useState(false);
+  const { isLoading, isSuccess, isError, message } = useSelector(
+    (state) => state.customers
+  );
+
+  useEffect(() => {
+    dispatch(reset());
+  }, [isSuccess]);
+
+  useEffect(() => {
+    if (isLoading) {
+      toast.dismiss();
+      toast.loading(message);
+    }
+    if (isSuccess) {
+      toast.dismiss();
+      toast.success(message);
+      setFormData(blankForm);
+    }
+    if (isError) {
+      toast.dismiss();
+      toast.error(message);
+    }
+  }, [isError, isLoading, isSuccess, message]);
 
   const productNames = [
     { label: "Hospital Stretchers", value: "hospital-stretchers" },
@@ -52,17 +74,10 @@ const AddCustomer = () => {
     { label: "Patient Monitors", value: "patient-monitors" },
   ];
 
-  // const productNames = [
-  //   "Hospital Stretchers",
-  //   "Defibrillators",
-  //   "Anesthesia Machines",
-  //   "Patient Monitors",
-  // ];
-
   useEffect(() => {
     const getCountries = async () => {
       try {
-        setIsLoading(true);
+        setIsLoad(true);
         const result = await csc.getAllCountries();
         let allCountries = [];
         allCountries = result?.map(({ isoCode, name }) => ({
@@ -76,10 +91,10 @@ const AddCustomer = () => {
           ...prev,
           country: firstCountry,
         }));
-        setIsLoading(false);
+        setIsLoad(false);
       } catch (error) {
         setCountries([]);
-        setIsLoading(false);
+        setIsLoad(false);
       }
     };
     getCountries();
@@ -148,7 +163,6 @@ const AddCustomer = () => {
       [event.target.name]: event.target.value,
     }));
   };
-
   const handleInputChange = (name, value) => {
     setFormData((prevFormData) => ({
       ...prevFormData,
@@ -168,14 +182,25 @@ const AddCustomer = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    try {
-      // await updatedData();
+    // try {
+    // await updatedData();
 
-      await dispatch(addCustomer(formData)); // Dispatch the addCustomer action
-      setFormData(blankForm);
-    } catch (error) {
-      console.log("error", error.message);
-    }
+    await dispatch(addCustomer(formData)); // Dispatch the addCustomer action
+
+    // if (isSuccess) {
+    //   toast.loading(message);
+    //   toast.dismiss();
+    //   toast.success(message);
+    //   setFormData(blankForm);
+    // }
+    // if (isError) {
+    //   toast.loading(message);
+    //   toast.dismiss();
+    //   toast.error(message);
+    // }
+    // } catch (error) {
+    // console.log("error", error.message);
+    // }
   };
 
   return (
@@ -247,7 +272,7 @@ const AddCustomer = () => {
                 </Col>
               </Form.Group>
               <Form.Group as={Row} controlId="country" className="mb-2">
-                {isLoading && (
+                {isLoad && (
                   <p className="loading">Loading countries. Please wait...</p>
                 )}
                 <Form.Label className="label" column sm={3}>
@@ -270,7 +295,6 @@ const AddCustomer = () => {
                   </Form.Control>
                 </Col>
               </Form.Group>
-
               <Form.Group as={Row} controlId="SCZ" className="mb-2">
                 <Form.Label column sm={3}></Form.Label>
                 <Col sm={3}>
@@ -336,7 +360,6 @@ const AddCustomer = () => {
                   </Form.Group>
                 </Col>
               </Form.Group>
-
               <h5 className="label">Contact Person</h5>
               <Form.Group as={Row} controlId="personName" className="mb-2">
                 <Form.Label className="label" column sm={3}>
@@ -434,6 +457,18 @@ const AddCustomer = () => {
                       }
                       labelledBy="Select"
                     />
+                    {/* <MultiSelect
+                      name="products"
+                      options={productNames.map((name) => ({
+                        label: name,
+                        value: name,
+                      }))}
+                      value={formData.products}
+                      onChange={(selected) =>
+                        handleProductChange("products", selected)
+                      }
+                      labelledBy="Select"
+                    /> */}
                   </Col>
                 </Form.Group>
               </div>
@@ -443,7 +478,7 @@ const AddCustomer = () => {
                   variant="secondary"
                   type="submit"
                 >
-                  Create
+                  Submit
                 </button>
               </Form.Group>
             </Col>

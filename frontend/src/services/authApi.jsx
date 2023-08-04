@@ -4,19 +4,32 @@ const backendUrl = "https://rise-business-backend-kcsmg.ondigitalocean.app";
 
 //register
 export const signup = async (userData) => {
-  const response = await axios.post(`${backendUrl}/api/user/signup`, userData);
-  if (response.data) {
-    localStorage.setItem("user", JSON.stringify(response.data));
+  try {
+    const response = await axios.post(
+      `${backendUrl}/api/user/signup`,
+      userData
+    );
+    if (response.data) {
+      localStorage.setItem("user", JSON.stringify(response.data));
+    }
+    return response.data;
+  } catch (error) {
+    console.log("Error while calling signup api ", error);
+    throw error;
   }
-  return response.data;
 };
 
 export const login = async (userData) => {
-  const response = await axios.post(`${backendUrl}/api/user/login`, userData);
-  if (response.data) {
-    localStorage.setItem("user", JSON.stringify(response.data));
+  try {
+    const response = await axios.post(`${backendUrl}/api/user/login`, userData);
+    if (response.data) {
+      localStorage.setItem("user", JSON.stringify(response.data));
+    }
+    return response.data;
+  } catch (error) {
+    console.log("Error while calling login api ", error);
+    throw error;
   }
-  return response.data;
 };
 
 //logout
@@ -26,7 +39,8 @@ export const logout = async () => {
 
     return { message: "User logged out successfully" };
   } catch (error) {
-    throw new Error("Failed to log out user");
+    console.log("Error while calling logout api ", error);
+    throw error;
   }
 };
 

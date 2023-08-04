@@ -27,7 +27,8 @@ const EditUser = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
 
-  const { user, isLoading, isError } = useSelector((state) => state.auth);
+  const { user, isLoading } = useSelector((state) => state.auth);
+  const { isError, message, isSuccess } = useSelector((state) => state.users);
 
   useEffect(() => {
     const fetch = async () => {
@@ -40,7 +41,7 @@ const EditUser = () => {
       }
     };
     fetch();
-  }, [user, dispatch, id]);
+  }, [user, dispatch, id, isError]);
 
   const handleEdit = () => {
     setIsDisabled(!isDisabled);
@@ -122,17 +123,18 @@ const EditUser = () => {
                 </Form.Label>
                 <Col sm={9}>
                   <Form.Select
+                    disabled={isDisabled}
                     value={formData.userRole}
-                    name="status"
+                    name="userRole"
                     onChange={handleChange}
                     required
                   >
                     <option value="" disabled>
                       Select Role
                     </option>
-                    <option value="Admin">Admin</option>
-                    <option value="Manger">Manger</option>
-                    <option value="Agent">Agent</option>
+                    <option value="admin">Admin</option>
+                    <option value="manager">Manager</option>
+                    <option value="agent">Agent</option>
                   </Form.Select>
                 </Col>
               </Form.Group>

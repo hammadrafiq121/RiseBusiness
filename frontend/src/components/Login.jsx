@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button, Container } from "react-bootstrap";
-
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -20,14 +19,27 @@ const Login = () => {
   );
 
   useEffect(() => {
+    dispatch(reset());
+  }, []);
+
+  useEffect(() => {
+    if (isLoading) {
+      toast.dismiss();
+      toast.loading(message);
+    }
     if (isError) {
+      toast.dismiss();
       toast.error(message);
     }
-    if (isSuccess || user) {
-      navigate("/Customers");
+
+    if (isSuccess) {
+      toast.dismiss();
+      toast.success(message);
     }
-    dispatch(reset());
-  }, [user, isSuccess, isError, message, dispatch, navigate]);
+    if (user) {
+      navigate("/customers");
+    }
+  }, [user, isSuccess, isError, message, isLoading]);
 
   const handleChange = (e) => {
     setFormData({
@@ -58,28 +70,34 @@ const Login = () => {
           onChange={handleChange}
         />
       </Form.Group> */}
-<h1>LOGIN</h1>
+          <h1>LOGIN</h1>
           <Form.Group controlId="email">
             <Form.Label></Form.Label>
-            <Form.Control className="input"
+            <Form.Control
+              className="input"
               type="email"
               name="email"
               value={formData.email}
-              onChange={handleChange} placeholder="Email"
+              onChange={handleChange}
+              placeholder="Email"
             />
           </Form.Group>
-
           <Form.Group controlId="password">
             <Form.Label></Form.Label>
-            <Form.Control className="input"
+            <Form.Control
+              className="input"
               type="password"
               name="password"
               value={formData.password}
-              onChange={handleChange} placeholder="Password"
+              onChange={handleChange}
+              placeholder="Password"
             />
           </Form.Group>
-
-          <Button className="mb-2 ml-2 mt-4 btn-1" variant="secondary" type="submit">
+          <Button
+            className="mb-2 ml-2 mt-4 btn-1"
+            variant="secondary"
+            type="submit"
+          >
             Login
           </Button>
         </Form>

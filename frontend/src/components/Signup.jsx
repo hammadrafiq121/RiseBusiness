@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Form, Button, Container } from "react-bootstrap";
-
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -23,14 +22,29 @@ const Signup = () => {
   );
 
   useEffect(() => {
+    dispatch(reset());
+  }, []);
+
+  useEffect(() => {
+    if (isLoading) {
+      toast.dismiss();
+      toast.loading(message);
+    }
     if (isError) {
+      toast.dismiss();
       toast.error(message);
     }
-    if (isSuccess || user) {
-      navigate("/");
+
+    if (isSuccess) {
+      toast.dismiss();
+      toast.success(message);
     }
+    if (user) {
+      navigate("/customers");
+    }
+
     dispatch(reset());
-  }, [user, isSuccess, isError, message, dispatch, navigate]);
+  }, [user, isSuccess, isError, message, isLoading]);
 
   const handleChange = (e) => {
     setFormData({
@@ -47,6 +61,7 @@ const Signup = () => {
   if (isLoading) {
     return <Spinner />;
   }
+
   return (
     <section className="tab">
       <Container className="tab_div1">

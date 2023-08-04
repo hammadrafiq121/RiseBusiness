@@ -5,31 +5,39 @@ import { Link } from "react-router-dom";
 import ViewCustomerModal from "./ViewCustomerModal";
 import DeleteCustomer from "./DeleteCustomer";
 import { PencilSquare } from "react-bootstrap-icons";
-
-// import { getCustomers } from "../services/customerApi";
-import { getCustomers } from "../app/reducers/customerSlice.js";
-import Spinner from "./Spinner";
-
+import { getCustomers, reset } from "../app/reducers/customerSlice.js";
 import { toast } from "react-toastify";
 
 const Customers = () => {
   const dispatch = useDispatch();
 
   const { user } = useSelector((state) => state.auth);
-  const { customers, isLoading, isError, message } = useSelector(
+  const { customers, isLoading, isError, message, isSuccess } = useSelector(
     (state) => state.customers
   );
 
   const [searchKeyword, setSearchKeyword] = useState("");
 
   useEffect(() => {
-    if (isError) {
-      toast.error(message);
-    }
     if (user) {
       dispatch(getCustomers());
     }
   }, [user, dispatch]);
+
+  useEffect(() => {
+    if (isLoading) {
+      toast.dismiss();
+      toast.loading(message);
+    }
+    if (isError) {
+      toast.dismiss();
+      toast.error(message);
+    }
+    if (isSuccess) {
+      toast.dismiss();
+      toast.success(message);
+    }
+  }, [isError, isLoading, isSuccess, message]);
 
   const handleSearchChange = (event) => {
     setSearchKeyword(event.target.value);
@@ -49,13 +57,13 @@ const Customers = () => {
     filteredCustomers &&
     filteredCustomers.map((customer) => (
       <tr key={customer._id} className="atim">
-        <td className="td" >{customer.companyName}</td>
-        <td className="td" >{customer.state}</td>
-        <td className="td" >{customer.city}</td>
-        <td className="td" >{customer.status}</td>
-        <td className="td" >
+        <td className="td">{customer.companyName}</td>
+        <td className="td">{customer.state}</td>
+        <td className="td">{customer.city}</td>
+        <td className="td">{customer.status}</td>
+        <td className="td">
           <ViewCustomerModal customer={customer} />
-          <Button 
+          <Button
             variant="link"
             className="symbol-button tdd"
             as={Link}
@@ -70,22 +78,20 @@ const Customers = () => {
       </tr>
     ));
 
-  if (isLoading) {
-    return <Spinner  />;
-  }
+  // if (isLoading) {
+  //   return <Spinner />;
+  // }
 
   return (
-    <div className="customer_list" >
+    <div className="customer_list">
       <section className="tab">
         <Container className="tab_div1">
           <Form>
             <Row className="table_1">
-
-             
-
               <Col lg={6}>
                 <Form.Group controlId="companyName" className="mb-2">
-                  <Form.Control className="input_fo"
+                  <Form.Control
+                    className="input_fo"
                     type="text"
                     value={searchKeyword}
                     onChange={handleSearchChange}
@@ -110,7 +116,7 @@ const Customers = () => {
                 <Form.Group className="mb-2">
                   <Link to="/customers/upload">
                     <Button
-                      className="mb-2 mr-2 upload " 
+                      className="mb-2 mr-2 upload "
                       variant="secondary"
                       type="submit"
                     >
@@ -124,15 +130,17 @@ const Customers = () => {
 
           {isLoading ? (
             <p>Loading...</p>
+          ) : customers.length === 0 ? (
+            <p>No Customer</p>
           ) : (
-            <Table className="tabletd" >
+            <Table className="tabletd">
               <thead>
-                <tr  >
-                  <th className="tr" >Business Name</th>
-                  <th className="tr" >State</th>
-                  <th className="tr" >City</th>
-                  <th className="tr" >Status</th>
-                  <th className="tr" >Action</th>
+                <tr>
+                  <th className="tr">Business Name</th>
+                  <th className="tr">State</th>
+                  <th className="tr">City</th>
+                  <th className="tr">Status</th>
+                  <th className="tr">Action</th>
                 </tr>
               </thead>
               <tbody className="tbody">{allCustomers}</tbody>
@@ -141,8 +149,6 @@ const Customers = () => {
         </Container>
       </section>
     </div>
-
-    
   );
 };
 

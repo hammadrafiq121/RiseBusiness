@@ -3,11 +3,12 @@ import { useSelector, useDispatch } from "react-redux";
 import { Table, Form, Container, Row, Col, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 // import DeleteCustomer from "./DeleteCustomer";
-import { PencilSquare, EyeFill, Trash } from "react-bootstrap-icons";
+import { PencilSquare } from "react-bootstrap-icons";
 
 import { getUsers } from "../app/reducers/userSlice.js";
 import Spinner from "./Spinner";
 import { toast } from "react-toastify";
+import DeleteUser from "./DeleteUser";
 
 const Users = () => {
   const dispatch = useDispatch();
@@ -61,8 +62,8 @@ const Users = () => {
           >
             <PencilSquare />
           </Button>
-          {/* <DeleteCustomer user={user} /> */}
-          <Trash />
+
+          <DeleteUser user={user} />
         </td>
       </tr>
     ));

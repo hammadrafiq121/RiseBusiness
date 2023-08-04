@@ -61,34 +61,60 @@ const authSlice = createSlice({
     builder
       .addCase(signup.pending, (state) => {
         state.isLoading = true;
+        state.isSuccess = false;
+        state.isError = false;
+        state.message = "Signing up user...";
       })
       .addCase(signup.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
+        state.isError = false;
+        state.message = "User registered successfully";
         state.user = action.payload;
       })
       .addCase(signup.rejected, (state, action) => {
         state.isLoading = false;
+        state.isSuccess = false;
         state.isError = true;
-        state.message = action.payload;
-        state.user = null;
+        state.message = action.payload || "User registeration failed";
       })
       .addCase(login.pending, (state) => {
         state.isLoading = true;
+        state.isSuccess = false;
+        state.isError = false;
+        state.message = "Signing in user...";
       })
       .addCase(login.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
+        state.isError = false;
         state.user = action.payload;
+        state.message = "User logged in successfully";
       })
       .addCase(login.rejected, (state, action) => {
         state.isLoading = false;
+        state.isSuccess = false;
         state.isError = true;
-        state.message = action.payload || "Error Accured";
-        state.user = null;
+        state.message = action.payload || "Error Accured Logging In";
+      })
+      .addCase(logout.pending, (state) => {
+        state.isLoading = true;
+        state.isSuccess = false;
+        state.isError = false;
+        state.message = "Logging out user... ";
       })
       .addCase(logout.fulfilled, (state) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.isError = false;
+        state.message = "Succesfully Logged out ";
         state.user = null;
+      })
+      .addCase(logout.rejected, (state) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.isError = true;
+        state.message = action.payload || "logout failed";
       });
   },
 });

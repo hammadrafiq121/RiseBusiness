@@ -84,6 +84,21 @@ export const deleteCustomer = createAsyncThunk(
   }
 );
 
+export const uploadCustomers = createAsyncThunk(
+  "customers/uploadCustomers",
+  async (customers, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      const response = await customerApi.uploadCustomers(token, customers);
+      return response.data;
+    } catch (error) {
+      const message =
+        error?.response?.data?.error || error.message || error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 const customerSlice = createSlice({
   name: "customers",
   initialState,
@@ -96,7 +111,7 @@ const customerSlice = createSlice({
         state.isLoading = true;
         state.isError = false;
         state.isSuccess = false;
-        state.message = "";
+        state.message = "Getting Customers...";
       })
       .addCase(getCustomers.fulfilled, (state, action) => {
         state.isLoading = false;
@@ -115,13 +130,13 @@ const customerSlice = createSlice({
         state.isLoading = true;
         state.isError = false;
         state.isSuccess = false;
-        state.message = "";
-        state.customers = [];
+        state.message = "Getting Customer...";
       })
       .addCase(getCustomer.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true; // Set the 'isSuccess' flag to indicate a successful request
+        state.message = "Customer fetched successfully.";
         state.customers.push(action.payload);
       })
       .addCase(getCustomer.rejected, (state, action) => {
@@ -134,7 +149,8 @@ const customerSlice = createSlice({
         state.isLoading = true;
         state.isError = false;
         state.isSuccess = false;
-        state.message = "";
+        state.message = "Adding Customer...";
+        state.customers = [];
       })
       .addCase(addCustomer.fulfilled, (state, action) => {
         state.isLoading = false;
@@ -149,11 +165,30 @@ const customerSlice = createSlice({
         state.isSuccess = false;
         state.message = action.payload;
       })
+      .addCase(uploadCustomers.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+        state.isSuccess = false;
+        state.message = "Uploading Customers...";
+      })
+      .addCase(uploadCustomers.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.message = "Customers File added successfully.";
+        state.customers.push(...action.payload);
+      })
+      .addCase(uploadCustomers.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.payload;
+      })
       .addCase(updateCustomer.pending, (state) => {
         state.isLoading = true;
         state.isError = false;
         state.isSuccess = false;
-        state.message = "";
+        state.message = "Updating Customer...";
       })
       .addCase(updateCustomer.fulfilled, (state, action) => {
         state.isLoading = false;
@@ -180,7 +215,7 @@ const customerSlice = createSlice({
         state.isLoading = true;
         state.isError = false;
         state.isSuccess = false;
-        state.message = "";
+        state.message = "Deleting Customer...";
       })
       .addCase(deleteCustomer.fulfilled, (state, action) => {
         state.isLoading = false;

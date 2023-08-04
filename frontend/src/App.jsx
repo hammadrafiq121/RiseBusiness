@@ -1,22 +1,26 @@
 import React, { useState } from "react";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import "./style.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
-import Sidebar from "./components/Sidebar";
-import Navbar from "./components/Navbar";
-import Dashboard from "./components/Dashboard";
-import Login from "./components/Login";
+import { useSelector } from "react-redux";
+import EditCustomer from "./components/EditCustomer";
 import AddCustomer from "./components/AddCustomer";
 import Customers from "./components/Customers";
-import EditCustomer from "./components/EditCustomer";
+import Login from "./components/Login";
+import Signup from "./components/Signup";
+import Navbar from "./components/Navbar";
 import UploadCSV from "./components/UploadCSV";
+import Users from "./components/Users";
+import EditUser from "./components/EditUser";
+import Sidebar from "./components/Sidebar";
+import Dashboard from "./components/Dashboard";
+import Test from "./components/Test";
 
 function App() {
   const { user } = useSelector((state) => state.auth);
   const [isDarkMode, setIsDarkMode] = useState(false); // State for dark mode
- 
+
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode);
   };
@@ -36,23 +40,47 @@ function App() {
             <>
               {/* If the user is logged in */}
               <Route path="/" element={<Dashboard isDarkMode={isDarkMode} />} />
-              <Route path="/addCustomers" element={<AddCustomer />} />
               <Route path="/customers" element={<Customers />} />
-              <Route path="/customers/editCustomer/:id" element={<EditCustomer />} />
-              <Route path="/uploadCSV" element={<UploadCSV />} />
-
+              <Route path="/addCustomers" element={<AddCustomer />} />
+              <Route
+                path="/customers/editCustomer/:id"
+                element={<EditCustomer />}
+              />
+              {user && (
+                <Route
+                  path="/customers/upload"
+                  element={
+                    user.userRole === "admin" ? (
+                      <UploadCSV />
+                    ) : (
+                      <Navigate to="/test" />
+                    )
+                  }
+                />
+              )}
+              <Route
+                path="/customers/editCustomer/:id"
+                element={<EditCustomer />}
+              />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/users" element={<Users />} />
+              <Route path="/users/editUser/:id" element={<EditUser />} />
               {/* Other routes for logged-in users */}
             </>
           ) : (
             <>
               {/* If the user is not logged in */}
-              <Route path="/" element={<Login />} />
+              <Route path="/*" element={<Login />} />
               {/* Redirect to login page if trying to access other routes */}
-              <Route path="/dashboard" element={<Navigate to="/" />} />
+              {/* <Route path="/dashboard" element={<Navigate to="/" />} />
               <Route path="/addCustomers" element={<Navigate to="/" />} />
-              <Route path="/customers" element={<Navigate to="/" />} />
-              <Route path="/customers/editCustomer/:id" element={<Navigate to="/" />} />
-              <Route path="/uploadCSV" element={<Navigate to="/" />} />
+              <Route path="/customers" element={<Navigate to="/" />} /> */}
+              {/* <Route
+                path="/customers/editCustomer/:id"
+                element={<Navigate to="/" />}
+              />
+              <Route path="/uploadCSV" element={<Navigate to="/" />} /> */}
 
               {/* Other restricted routes */}
             </>
