@@ -63,7 +63,7 @@ function Sidebar({ isDarkMode, toggleDarkMode }) {
         <div className="menu">
           <ul className="menu-links">
             <li className="nav-link">
-              <Link to="/dashboard">
+              <Link to="/">
                 <i className="bx bx-home-alt icon"></i>
                 <span className="text nav-text">Dashboard</span>
               </Link>
@@ -103,57 +103,17 @@ function Sidebar({ isDarkMode, toggleDarkMode }) {
                   {/* Add more dropdown items as needed */}
             <li className="nav-link">
               <Link to ="/UploadCSV">
-              <i class='bx bxs-file-doc icon'></i>                <span className="text nav-text">Upload File</span>
+              <i className='bx bxs-file-doc icon'></i>                <span className="text nav-text">Upload File</span>
               </Link>
             </li>
-            {/* <li className="nav-link">
-              <Link to="#">
-                <i className="bx bx-home-alt icon"></i>
-                <span className="text nav-text">Notification</span>
-              </Link>
-            </li>
-            <li className="nav-link">
-              <Link to="#">
-                <i className="bx bx-home-alt icon"></i>
-                <span className="text nav-text">Notification</span>
-              </Link>
-            </li>
-            <li className="nav-link">
-              <Link to="#">
-                <i className="bx bx-home-alt icon"></i>
-                <span className="text nav-text">Notification</span>
-              </Link>
-            </li> */}
-
-            {/* Other menu items... */}
+           
           </ul>
         </div>
 
         <div className="bottom-content">
-        {/* {user ? (
-              <>
-              
-                   <li>
-            <button className="btn-2" onClick={handleLogout}>
-              <i className="bx bx-log-out icon"></i>
-              <span className="text nav-text "  >Logout</span>
-            </button>
-          </li>
-              </>
-            ) : (
-              <>
-              
-               
-              </>
-            )} */}
-
+   
        
-              
-            
-               
-        
-
-          <li className="mode" onClick={toggleDarkMode}>
+              <li className="mode" onClick={toggleDarkMode}>
             <div className="sun-moon">
               <i
                 className={`bx ${isDarkMode ? "bx-moon" : "bx-sun"} icon`}
@@ -174,3 +134,52 @@ function Sidebar({ isDarkMode, toggleDarkMode }) {
 }
 
 export default Sidebar;
+
+
+
+
+
+
+
+
+     {/* {user ? (
+              <>
+              
+                   <li>
+            <button className="btn-2" onClick={handleLogout}>
+              <i className="bx bx-log-out icon"></i>
+              <span className="text nav-text "  >Logout</span>
+            </button>
+          </li>
+              </>
+            ) : (
+              <>
+              
+               
+              </>
+            )} */}
+
+
+
+
+
+ {/* <li className="nav-link">
+              <Link to="#">
+                <i className="bx bx-home-alt icon"></i>
+                <span className="text nav-text">Notification</span>
+              </Link>
+            </li>
+            <li className="nav-link">
+              <Link to="#">
+                <i className="bx bx-home-alt icon"></i>
+                <span className="text nav-text">Notification</span>
+              </Link>
+            </li>
+            <li className="nav-link">
+              <Link to="#">
+                <i className="bx bx-home-alt icon"></i>
+                <span className="text nav-text">Notification</span>
+              </Link>
+            </li> */}
+
+            {/* Other menu items... */}

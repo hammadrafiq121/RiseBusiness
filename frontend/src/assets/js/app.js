@@ -10,7 +10,7 @@
     "use strict";
 
     var MainApp = function() {
-        this.$btnFullScreen = $("#btn-fullscreen")
+        this.$btnFullScreen = ("#btn-fullscreen")
     };
 
     //full screen
