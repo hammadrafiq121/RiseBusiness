@@ -66,8 +66,9 @@ const UploadCSV = () => {
   }
 
   return (
-    <div className="div1">
-      <Container className=" con ">
+    <div className="upload" >
+    <div >
+      <Container className=" upload-container ">
         <Row>
           <Col>
             <Form onSubmit={handleSubmit}>
@@ -105,6 +106,7 @@ const UploadCSV = () => {
           </Col>
         </Row>
       </Container>
+    </div>
     </div>
   );
 };

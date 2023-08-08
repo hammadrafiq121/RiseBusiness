@@ -204,8 +204,8 @@ const AddCustomer = () => {
   };
 
   return (
-    <main className="tab1">
-      <Container className="container1" style={stlye}>
+    <main className="Addcustomer_main">
+      <Container className="Addcustomer-container" style={stlye}>
         <Form onSubmit={handleSubmit}>
           <Row>
             <Col md={8}>

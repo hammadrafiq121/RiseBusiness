@@ -18,6 +18,8 @@ const Customers = () => {
   );
   const { users } = useSelector((state) => state.users);
   const [searchKeyword, setSearchKeyword] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
 
   useEffect(() => {
     if (user) {
@@ -52,6 +54,7 @@ const Customers = () => {
 
   const handleSearchChange = (event) => {
     setSearchKeyword(event.target.value);
+    setCurrentPage(1);
   };
 
   const filteredCustomers = customers.filter((customer) => {
@@ -64,6 +67,7 @@ const Customers = () => {
     );
   });
 
+<<<<<<< HEAD
   const allCustomers =
     filteredCustomers &&
     filteredCustomers.map((customer) => (
@@ -100,21 +104,56 @@ const Customers = () => {
         </td>
       </tr>
     ));
+=======
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredCustomers.slice(indexOfFirstItem, indexOfLastItem);
+>>>>>>> 2f3abf0e79cf8e5a373b7513b3108dac8b52142d
 
-  // if (isLoading) {
-  //   return <Spinner />;
-  // }
+  const totalPages = Math.ceil(filteredCustomers.length / itemsPerPage);
+
+  const renderCustomers = currentItems.map((customer) => (
+    <tr key={customer._id} className="atim">
+      <td className="td">{customer.companyName}</td>
+      <td className="td">{customer.state}</td>
+      <td className="td">{customer.city}</td>
+      <td className="td">{customer.status}</td>
+      <td className="td">
+        <ViewCustomerModal customer={customer} />
+        <Button
+          variant="link"
+          className="symbol-button tdd"
+          as={Link}
+          to={{
+            pathname: `/customers/editCustomer/${customer._id}`,
+          }}
+        >
+          <PencilSquare className="tdd" />
+        </Button>
+        <DeleteCustomer className="tdd" customer={customer} />
+      </td>
+    </tr>
+  ));
+
+  const renderPageNumbers = Array.from({ length: totalPages }, (_, index) => (
+    <li
+      key={index}
+      className={index + 1 === currentPage ? "active" : ""}
+      onClick={() => setCurrentPage(index + 1)}
+    >
+      {index + 1}
+    </li>
+  ));
 
   return (
-    <div className="customer_list">
-      <section className="tab">
-        <Container className="tab_div1">
+    <div className="customer_div">
+      <section className="customer-sec">
+        <Container className="customer-container">
           <Form>
-            <Row className="table_1">
+            <Row className="customer-row">
               <Col lg={6}>
                 <Form.Group controlId="companyName" className="mb-2">
                   <Form.Control
-                    className="input_fo"
                     type="text"
                     value={searchKeyword}
                     onChange={handleSearchChange}
@@ -139,7 +178,7 @@ const Customers = () => {
                 <Form.Group className="mb-2">
                   <Link to="/customers/upload">
                     <Button
-                      className="mb-2 mr-2 upload "
+                      className="mb-2 mr-2 upload"
                       variant="secondary"
                       type="submit"
                     >
@@ -156,9 +195,10 @@ const Customers = () => {
           ) : customers.length === 0 ? (
             <p>No Customer</p>
           ) : (
-            <Table className="tabletd">
+            <Table>
               <thead>
                 <tr>
+<<<<<<< HEAD
                   <th className="tr">Business Name</th>
                   <th className="tr">State</th>
                   <th className="tr">City</th>
@@ -169,11 +209,36 @@ const Customers = () => {
                     ""
                   )}
                   <th className="tr">Action</th>
+=======
+                  <th className="custoner-col-name">Business Name</th>
+                  <th className="custoner-col-name">State</th>
+                  <th className="custoner-col-name">City</th>
+                  <th className="custoner-col-name">Status</th>
+                  <th className="custoner-col-name">Action</th>
+>>>>>>> 2f3abf0e79cf8e5a373b7513b3108dac8b52142d
                 </tr>
               </thead>
-              <tbody className="tbody">{allCustomers}</tbody>
+              <tbody className="tbody">{renderCustomers}</tbody>
             </Table>
           )}
+
+          <div className="pagination-controls">
+            <Button className="previous_btn"
+              variant="secondary"
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(currentPage - 1)}
+            >
+              Previous Page
+            </Button>
+            <ul className="page-numbers-list">{renderPageNumbers}</ul>
+            <Button className="next_btn"
+              variant="secondary"
+              disabled={indexOfLastItem >= filteredCustomers.length}
+              onClick={() => setCurrentPage(currentPage + 1)}
+            >
+              Next Page
+            </Button>
+          </div>
         </Container>
       </section>
     </div>

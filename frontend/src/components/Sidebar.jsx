@@ -61,7 +61,7 @@ const Sidebar = ({ isDarkMode, toggleDarkMode }) => {
         <div className="menu">
           <ul className="menu-links">
             <li className="nav-link">
-              <Link to="/dashboard">
+              <Link to="/">
                 <i className="bx bx-home-alt icon"></i>
                 <span className="text nav-text">Dashboard</span>
               </Link>
@@ -99,35 +99,22 @@ const Sidebar = ({ isDarkMode, toggleDarkMode }) => {
             </li>
             {/* Add more dropdown items as needed */}
             <li className="nav-link">
+<<<<<<< HEAD
               <Link to="/customers/upload">
                 <i class="bx bxs-file-doc icon"></i>{" "}
                 <span className="text nav-text">Upload File</span>
+=======
+              <Link to ="/UploadCSV">
+              <i className='bx bxs-file-doc icon'></i>                <span className="text nav-text">Upload File</span>
+>>>>>>> 2f3abf0e79cf8e5a373b7513b3108dac8b52142d
               </Link>
             </li>
-            {/* <li className="nav-link">
-              <Link to="#">
-                <i className="bx bx-home-alt icon"></i>
-                <span className="text nav-text">Notification</span>
-              </Link>
-            </li>
-            <li className="nav-link">
-              <Link to="#">
-                <i className="bx bx-home-alt icon"></i>
-                <span className="text nav-text">Notification</span>
-              </Link>
-            </li>
-            <li className="nav-link">
-              <Link to="#">
-                <i className="bx bx-home-alt icon"></i>
-                <span className="text nav-text">Notification</span>
-              </Link>
-            </li> */}
-
-            {/* Other menu items... */}
+           
           </ul>
         </div>
 
         <div className="bottom-content">
+<<<<<<< HEAD
           {/* {user ? (
             <>
               <li>
@@ -148,6 +135,11 @@ const Sidebar = ({ isDarkMode, toggleDarkMode }) => {
           </li>
 
           <li className="mode" onClick={toggleDarkMode}>
+=======
+   
+       
+              <li className="mode" onClick={toggleDarkMode}>
+>>>>>>> 2f3abf0e79cf8e5a373b7513b3108dac8b52142d
             <div className="sun-moon">
               <i className={`bx ${isDarkMode ? "bx-moon" : "bx-sun"} icon`}></i>
             </div>
@@ -166,3 +158,52 @@ const Sidebar = ({ isDarkMode, toggleDarkMode }) => {
 };
 
 export default Sidebar;
+
+
+
+
+
+
+
+
+     {/* {user ? (
+              <>
+              
+                   <li>
+            <button className="btn-2" onClick={handleLogout}>
+              <i className="bx bx-log-out icon"></i>
+              <span className="text nav-text "  >Logout</span>
+            </button>
+          </li>
+              </>
+            ) : (
+              <>
+              
+               
+              </>
+            )} */}
+
+
+
+
+
+ {/* <li className="nav-link">
+              <Link to="#">
+                <i className="bx bx-home-alt icon"></i>
+                <span className="text nav-text">Notification</span>
+              </Link>
+            </li>
+            <li className="nav-link">
+              <Link to="#">
+                <i className="bx bx-home-alt icon"></i>
+                <span className="text nav-text">Notification</span>
+              </Link>
+            </li>
+            <li className="nav-link">
+              <Link to="#">
+                <i className="bx bx-home-alt icon"></i>
+                <span className="text nav-text">Notification</span>
+              </Link>
+            </li> */}
+
+            {/* Other menu items... */}

@@ -42,6 +42,7 @@ function App() {
               <Route path="/" element={<Dashboard isDarkMode={isDarkMode} />} />
               <Route path="/customers" element={<Customers />} />
               <Route path="/addCustomers" element={<AddCustomer />} />
+              <Route path="/uploadCSV" element={<UploadCSV />} />
               <Route
                 path="/customers/editCustomer/:id"
                 element={<EditCustomer />}

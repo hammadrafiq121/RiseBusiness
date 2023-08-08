@@ -58,8 +58,8 @@ const Login = () => {
   }
 
   return (
-    <section className="tab-1">
-      <Container className="tab_div1-1">
+    <section className="login-sec">
+      <Container className="login-container">
         <Form onSubmit={handleSubmit}>
           {/* <Form.Group controlId="userName">
         <Form.Label>User Name</Form.Label>

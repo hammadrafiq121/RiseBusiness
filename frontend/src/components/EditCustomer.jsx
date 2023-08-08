@@ -127,8 +127,8 @@ const EditCustomer = () => {
   }
 
   return (
-    <main className="tab1">
-      <Container className="container" style={stlye}>
+    <main className=" editcustomer-div">
+      <Container className="editcustomer-container" style={stlye}>
         <Form onSubmit={handleUpdate}>
           <Row>
             <Col md={8}>
