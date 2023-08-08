@@ -37,7 +37,7 @@ const Login = () => {
       toast.success(message);
     }
     if (user) {
-      navigate("/customers");
+      navigate("/dashboard");
     }
   }, [user, isSuccess, isError, message, isLoading]);
 
