@@ -30,7 +30,7 @@ const Navbar = () => {
               {/* For example: <img src={user.image} alt="User Avatar" /> */}
 
               {/* Logout Dropdown */}
-              <DropdownButton id="dropdown-logout" title={<Person size={30} />}>
+              {/* <DropdownButton id="dropdown-logout" title={<Person size={30} />}>
                 {user ? (
                   <Dropdown.Item>
                     <BoxArrowInRight className="logout_btn" />
@@ -39,7 +39,7 @@ const Navbar = () => {
                 ) : (
                   ""
                 )}
-              </DropdownButton>
+              </DropdownButton> */}
             </div>
           </Col>
         </Row>

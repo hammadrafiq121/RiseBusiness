@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import "../style.css";
 import logo from "../assets/logo 1.png";
-import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
-import { reset, logout } from "../app/reducers/authSlice";
+import Logout from "./Logout";
+// import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+// import {  useNavigate } from "react-router-dom";
+// import { reset, logout } from "../app/reducers/authSlice";
 
-function Sidebar({ isDarkMode, toggleDarkMode }) {
+const Sidebar = ({ isDarkMode, toggleDarkMode }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isCustomersDropdownOpen, setIsCustomersDropdownOpen] = useState(false);
 
@@ -13,34 +15,30 @@ function Sidebar({ isDarkMode, toggleDarkMode }) {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  const handleModeSwitch = () => {
-    setIsDarkMode(!isDarkMode);
-    
-  };
+  // const handleModeSwitch = () => {
+  //   setIsDarkMode(!isDarkMode);
+  // };
 
   const handleToggleCustomersDropdown = () => {
     setIsCustomersDropdownOpen(!isCustomersDropdownOpen);
   };
 
-   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth);
-  const navigate = useNavigate();
+  // const dispatch = useDispatch();
+  // const { user } = useSelector((state) => state.auth);
+  // const navigate = useNavigate();
 
-  const handleLogout = () => {
-    dispatch(logout());
-    dispatch(reset());
-    navigate("/");
-  };
-  
+  // const handleLogout = () => {
+  //   dispatch(logout());
+  //   dispatch(reset());
+  //   navigate("/");
+  // };
 
   return (
-             
-          
-
-
-
-
-    <div className={`sidebar ${isSidebarOpen ? "close" : ""} ${isDarkMode ? "dark" : ""}`}>
+    <div
+      className={`sidebar ${isSidebarOpen ? "close" : ""} ${
+        isDarkMode ? "dark" : ""
+      }`}
+    >
       <header>
         <div className="image-text">
           <span className="image">
@@ -84,26 +82,26 @@ function Sidebar({ isDarkMode, toggleDarkMode }) {
                         : "bx-chevron-down"
                     }`}
                   ></i>
-          
                 </div>
               </div>
             </li>
-                  <li>
-                  <Link to ="/customers">
+            <li>
+              <Link to="/customers">
                 <i className="bx bx-user icon"></i>
                 <span className="text nav-text">Customer List</span>
-              </Link>                  
-              </li>
-                  <li>
-                  <Link to ="/addcustomers">
+              </Link>
+            </li>
+            <li>
+              <Link to="/addcustomers">
                 <i className="bx bx-store icon"></i>
                 <span className="text nav-text">Add Customers</span>
-              </Link>            
-                  </li>
-                  {/* Add more dropdown items as needed */}
+              </Link>
+            </li>
+            {/* Add more dropdown items as needed */}
             <li className="nav-link">
-              <Link to ="/UploadCSV">
-              <i class='bx bxs-file-doc icon'></i>                <span className="text nav-text">Upload File</span>
+              <Link to="/customers/upload">
+                <i class="bx bxs-file-doc icon"></i>{" "}
+                <span className="text nav-text">Upload File</span>
               </Link>
             </li>
             {/* <li className="nav-link">
@@ -130,34 +128,28 @@ function Sidebar({ isDarkMode, toggleDarkMode }) {
         </div>
 
         <div className="bottom-content">
-        {/* {user ? (
-              <>
-              
-                   <li>
-            <button className="btn-2" onClick={handleLogout}>
-              <i className="bx bx-log-out icon"></i>
-              <span className="text nav-text "  >Logout</span>
-            </button>
+          {/* {user ? (
+            <>
+              <li>
+                <button className="btn-2">
+                  <i className="bx bx-log-out icon"></i>
+                  <span className="text nav-text ">Logout</span>
+                </button>
+              </li>
+            </>
+          ) : (
+            <></>
+          )} */}
+          <li className="nav-link">
+            <Link to="">
+              {/* <i class="bx bx-log-out icon"></i> */}
+              <Logout />
+            </Link>
           </li>
-              </>
-            ) : (
-              <>
-              
-               
-              </>
-            )} */}
-
-       
-              
-            
-               
-        
 
           <li className="mode" onClick={toggleDarkMode}>
             <div className="sun-moon">
-              <i
-                className={`bx ${isDarkMode ? "bx-moon" : "bx-sun"} icon`}
-              ></i>
+              <i className={`bx ${isDarkMode ? "bx-moon" : "bx-sun"} icon`}></i>
             </div>
             <span className="mode-text text">
               {isDarkMode ? "Light mode" : "Dark mode"}
@@ -171,6 +163,6 @@ function Sidebar({ isDarkMode, toggleDarkMode }) {
       </div>
     </div>
   );
-}
+};
 
 export default Sidebar;

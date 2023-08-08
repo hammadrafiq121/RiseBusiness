@@ -38,9 +38,13 @@ const Logout = () => {
     navigate("/login");
   };
   return (
-    <button className="btn" onClick={handleLogout}>
-      <BoxArrowInLeft className="mr-2" /> Logout
-    </button>
+    // <button className="btn" onClick={handleLogout}>
+    //   <BoxArrowInLeft className="mr-2" /> Logout
+    // </button>
+    <span onClick={handleLogout}>
+      <i style={{ display: "inline" }} class="bx bx-log-out icon"></i>
+      <span className="text nav-text">Logout</span>
+    </span>
   );
 };
 

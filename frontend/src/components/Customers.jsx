@@ -7,6 +7,7 @@ import DeleteCustomer from "./DeleteCustomer";
 import { PencilSquare } from "react-bootstrap-icons";
 import { getCustomers, reset } from "../app/reducers/customerSlice.js";
 import { toast } from "react-toastify";
+import { getUsers } from "../app/reducers/userSlice.js";
 
 const Customers = () => {
   const dispatch = useDispatch();
@@ -15,7 +16,7 @@ const Customers = () => {
   const { customers, isLoading, isError, message, isSuccess } = useSelector(
     (state) => state.customers
   );
-
+  const { users } = useSelector((state) => state.users);
   const [searchKeyword, setSearchKeyword] = useState("");
 
   useEffect(() => {
@@ -39,6 +40,16 @@ const Customers = () => {
     }
   }, [isError, isLoading, isSuccess, message]);
 
+  useEffect(() => {
+    const fetchUsers = async () => {
+      if (isError) {
+        console.log(message);
+      }
+      await dispatch(getUsers());
+    };
+    fetchUsers();
+  }, [dispatch]);
+
   const handleSearchChange = (event) => {
     setSearchKeyword(event.target.value);
   };
@@ -61,6 +72,18 @@ const Customers = () => {
         <td className="td">{customer.state}</td>
         <td className="td">{customer.city}</td>
         <td className="td">{customer.status}</td>
+        {user.userRole === "admin" && (
+          // <td className="td">{customer.user}</td>
+          <td className="td">
+            {users.map((u) => {
+              if (u._id === customer.user) {
+                return u.fullName; // Return the full name here
+              }
+
+              return null; // Return null if no match found
+            })}
+          </td>
+        )}
         <td className="td">
           <ViewCustomerModal customer={customer} />
           <Button
@@ -140,6 +163,11 @@ const Customers = () => {
                   <th className="tr">State</th>
                   <th className="tr">City</th>
                   <th className="tr">Status</th>
+                  {user?.userRole === "admin" ? (
+                    <th className="tr">Agent</th>
+                  ) : (
+                    ""
+                  )}
                   <th className="tr">Action</th>
                 </tr>
               </thead>
