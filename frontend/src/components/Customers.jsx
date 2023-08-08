@@ -67,48 +67,12 @@ const Customers = () => {
     );
   });
 
-<<<<<<< HEAD
-  const allCustomers =
-    filteredCustomers &&
-    filteredCustomers.map((customer) => (
-      <tr key={customer._id} className="atim">
-        <td className="td">{customer.companyName}</td>
-        <td className="td">{customer.state}</td>
-        <td className="td">{customer.city}</td>
-        <td className="td">{customer.status}</td>
-        {user.userRole === "admin" && (
-          // <td className="td">{customer.user}</td>
-          <td className="td">
-            {users.map((u) => {
-              if (u._id === customer.user) {
-                return u.fullName; // Return the full name here
-              }
-
-              return null; // Return null if no match found
-            })}
-          </td>
-        )}
-        <td className="td">
-          <ViewCustomerModal customer={customer} />
-          <Button
-            variant="link"
-            className="symbol-button tdd"
-            as={Link}
-            to={{
-              pathname: `/customers/editCustomer/${customer._id}`,
-            }}
-          >
-            <PencilSquare className="tdd" />
-          </Button>
-          <DeleteCustomer className="tdd" customer={customer} />
-        </td>
-      </tr>
-    ));
-=======
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredCustomers.slice(indexOfFirstItem, indexOfLastItem);
->>>>>>> 2f3abf0e79cf8e5a373b7513b3108dac8b52142d
+  const currentItems = filteredCustomers.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
 
   const totalPages = Math.ceil(filteredCustomers.length / itemsPerPage);
 
@@ -198,24 +162,11 @@ const Customers = () => {
             <Table>
               <thead>
                 <tr>
-<<<<<<< HEAD
-                  <th className="tr">Business Name</th>
-                  <th className="tr">State</th>
-                  <th className="tr">City</th>
-                  <th className="tr">Status</th>
-                  {user?.userRole === "admin" ? (
-                    <th className="tr">Agent</th>
-                  ) : (
-                    ""
-                  )}
-                  <th className="tr">Action</th>
-=======
                   <th className="custoner-col-name">Business Name</th>
                   <th className="custoner-col-name">State</th>
                   <th className="custoner-col-name">City</th>
                   <th className="custoner-col-name">Status</th>
                   <th className="custoner-col-name">Action</th>
->>>>>>> 2f3abf0e79cf8e5a373b7513b3108dac8b52142d
                 </tr>
               </thead>
               <tbody className="tbody">{renderCustomers}</tbody>
@@ -223,7 +174,8 @@ const Customers = () => {
           )}
 
           <div className="pagination-controls">
-            <Button className="previous_btn"
+            <Button
+              className="previous_btn"
               variant="secondary"
               disabled={currentPage === 1}
               onClick={() => setCurrentPage(currentPage - 1)}
@@ -231,7 +183,8 @@ const Customers = () => {
               Previous Page
             </Button>
             <ul className="page-numbers-list">{renderPageNumbers}</ul>
-            <Button className="next_btn"
+            <Button
+              className="next_btn"
               variant="secondary"
               disabled={indexOfLastItem >= filteredCustomers.length}
               onClick={() => setCurrentPage(currentPage + 1)}

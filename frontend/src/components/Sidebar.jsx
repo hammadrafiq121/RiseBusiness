@@ -99,22 +99,15 @@ const Sidebar = ({ isDarkMode, toggleDarkMode }) => {
             </li>
             {/* Add more dropdown items as needed */}
             <li className="nav-link">
-<<<<<<< HEAD
               <Link to="/customers/upload">
-                <i class="bx bxs-file-doc icon"></i>{" "}
+                <i className="bx bxs-file-doc icon"></i>{" "}
                 <span className="text nav-text">Upload File</span>
-=======
-              <Link to ="/UploadCSV">
-              <i className='bx bxs-file-doc icon'></i>                <span className="text nav-text">Upload File</span>
->>>>>>> 2f3abf0e79cf8e5a373b7513b3108dac8b52142d
               </Link>
             </li>
-           
           </ul>
         </div>
 
         <div className="bottom-content">
-<<<<<<< HEAD
           {/* {user ? (
             <>
               <li>
@@ -135,11 +128,6 @@ const Sidebar = ({ isDarkMode, toggleDarkMode }) => {
           </li>
 
           <li className="mode" onClick={toggleDarkMode}>
-=======
-   
-       
-              <li className="mode" onClick={toggleDarkMode}>
->>>>>>> 2f3abf0e79cf8e5a373b7513b3108dac8b52142d
             <div className="sun-moon">
               <i className={`bx ${isDarkMode ? "bx-moon" : "bx-sun"} icon`}></i>
             </div>
@@ -159,14 +147,8 @@ const Sidebar = ({ isDarkMode, toggleDarkMode }) => {
 
 export default Sidebar;
 
-
-
-
-
-
-
-
-     {/* {user ? (
+{
+  /* {user ? (
               <>
               
                    <li>
@@ -181,13 +163,11 @@ export default Sidebar;
               
                
               </>
-            )} */}
+            )} */
+}
 
-
-
-
-
- {/* <li className="nav-link">
+{
+  /* <li className="nav-link">
               <Link to="#">
                 <i className="bx bx-home-alt icon"></i>
                 <span className="text nav-text">Notification</span>
@@ -204,6 +184,9 @@ export default Sidebar;
                 <i className="bx bx-home-alt icon"></i>
                 <span className="text nav-text">Notification</span>
               </Link>
-            </li> */}
+            </li> */
+}
 
-            {/* Other menu items... */}
+{
+  /* Other menu items... */
+}
