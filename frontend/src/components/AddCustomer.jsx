@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
-import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Container from "react-bootstrap/Container";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-import csc from "country-state-city";
 import { MultiSelect } from "react-multi-select-component";
 import { connect, useSelector } from "react-redux";
 import { addCustomer, reset } from "../app/reducers/customerSlice";

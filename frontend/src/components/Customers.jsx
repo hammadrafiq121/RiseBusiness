@@ -19,7 +19,7 @@ const Customers = () => {
   const { users } = useSelector((state) => state.users);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 8;
+  const itemsPerPage = 25;
 
   useEffect(() => {
     if (user) {
@@ -140,7 +140,7 @@ const Customers = () => {
                 <Form.Group className="mb-2 create ">
                   <Link to="/addCustomers">
                     <Button
-                      className="mb-2 mr-2 "
+                      className=" mr-3 "
                       variant="secondary"
                       type="submit"
                     >
@@ -151,7 +151,7 @@ const Customers = () => {
                 <Form.Group className="mb-2">
                   <Link to="/customers/upload">
                     <Button
-                      className="mb-2 mr-2 create"
+                      className=" mr-3 create"
                       variant="secondary"
                       type="submit"
                     >

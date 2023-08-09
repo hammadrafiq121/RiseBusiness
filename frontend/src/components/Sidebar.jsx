@@ -67,36 +67,29 @@ const Sidebar = ({ isDarkMode, toggleDarkMode }) => {
               </Link>
             </li>
 
-            <li className="nav-link">
-              <div className="nav-dropdown">
-                <div
-                  className="nav-link-with-dropdown"
-                  onClick={handleToggleCustomersDropdown}
-                >
-                  <i className="bx bx-bar-chart-alt-2 icon"></i>
-                  <span className="text nav-text txt">Customers</span>
-                  <i
-                    className={`bx ${
-                      isCustomersDropdownOpen
-                        ? "bx-chevron-up"
-                        : "bx-chevron-down"
-                    }`}
-                  ></i>
-                </div>
-              </div>
-            </li>
-            <li>
-              <Link to="/customers">
-                <i className="bx bx-user icon"></i>
-                <span className="text nav-text">Customer List</span>
-              </Link>
-            </li>
-            <li>
-              <Link to="/addcustomers">
-                <i className="bx bx-store icon"></i>
-                <span className="text nav-text">Add Customers</span>
-              </Link>
-            </li>
+            <div className="nav-dropdown">
+  <div className="nav-link-with-dropdown" onClick={handleToggleCustomersDropdown}>
+    <i className="bx bx-bar-chart-alt-2 icon"></i>
+    <span className="text nav-text txt">Customers</span>
+    <i className={`bx ${isCustomersDropdownOpen ? "bx-chevron-up" : "bx-chevron-down"}`}></i>
+  </div>
+  <ul className={`dropdown-list ${isCustomersDropdownOpen ? "open" : ""}`}>
+    <li>
+      <Link to="/customers">
+        <i className="bx bx-user icon"></i>
+        <span className="text nav-text">Customer List</span>
+      </Link>
+    </li>
+    <li>
+      <Link to="/addcustomers">
+        <i className="bx bx-store icon"></i>
+        <span className="text nav-text">Add Customers</span>
+      </Link>
+    </li>
+    {/* Add more dropdown items as needed */}
+  </ul>
+</div>
+
             {/* Add more dropdown items as needed */}
             <li className="nav-link">
               <Link to="/customers/upload">
@@ -137,8 +130,8 @@ const Sidebar = ({ isDarkMode, toggleDarkMode }) => {
         
 
           <li className="nav-link">
-              <Link to="/login">
-                <i className="bx bx-log-out icon"></i>
+              <Link >
+                
                 <Logout />
                 {/* <span className="text nav-text">Logout</span> */}
               </Link>

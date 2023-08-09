@@ -90,9 +90,9 @@ const Users = () => {
               </Col>
               <Col lg={3}>
                 <Form.Group className="mb-2">
-                  <Link to="/users/signup">
+                  <Link to="/signup">
                     <Button
-                      className="mb-2 mr-2"
+                      className=" mr-5"
                       variant="secondary"
                       type="submit"
                     >
@@ -100,12 +100,10 @@ const Users = () => {
                     </Button>
                   </Link>
                 </Form.Group>
-              </Col>
-              <Col lg={3}>
                 <Form.Group className="mb-2">
-                  <Link to="#">
+                  <Link to="/uploadCSV">
                     <Button
-                      className="mb-2 mr-2"
+                      className=" mr-5"
                       variant="secondary"
                       type="submit"
                     >
@@ -114,6 +112,7 @@ const Users = () => {
                   </Link>
                 </Form.Group>
               </Col>
+             
             </Row>
           </Form>
 

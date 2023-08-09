@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 
 import { logout } from "../app/reducers/authSlice";
 import { reset } from "../app/reducers/customerSlice";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { BoxArrowInLeft } from "react-bootstrap-icons";
 import { toast } from "react-toastify";
@@ -47,12 +47,12 @@ const Logout = () => {
   //    </Link>
   //  </li>
   //  </ul>
-    
     <span  onClick={handleLogout}>
-      {/* <i  class="bx bx-log-out icon nav-link">
-    </i> */}
+      <Link>
+    <i className="bx bx-log-out icon"></i>
       <span className="text nav-text ">Logout
     </span>
+    </Link>
     </span>
     
   );

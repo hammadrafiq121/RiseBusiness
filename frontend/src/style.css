@@ -86,7 +86,7 @@ body{
     background-color: transparent !important;
     color: white !important;
     padding-top: 15px !important;
-    font-size: 16px;
+    font-size: 15px;
 }
 .mb-2 {
     margin-bottom: 0.5rem!important;
@@ -104,10 +104,12 @@ body{
     height: 100%;
 
 }
-.tdd {
+
+.img, svg {
+    font-size: 14px;
     vertical-align: middle;
-    font-size: 20px;
 }
+
 .submit{
     background-color: #1f41a9 !important;
 
@@ -125,6 +127,9 @@ body{
 }
 .table_1{
     background-color: transparent !important;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: flex-end;
 }
 .tab_div1{
   float: left;
@@ -240,7 +245,7 @@ option{
 }
 [type=button]:not(:disabled), [type=reset]:not(:disabled), [type=submit]:not(:disabled), button:not(:disabled) {
     cursor: pointer;
-    border-color: white;
+    border:1px solid whitesmoke;
 }
 .agent_icon{
     font-size: 40px;
@@ -355,6 +360,9 @@ h1{
 .customer-row{
     padding-top: 20px !important;
     background-color: transparent !important;
+    display: flex;
+    align-items: flex-end;
+
 }
 
 
@@ -1059,6 +1067,13 @@ div.dark .home .text{
  .user_edit{
     color: black !important;
  }
+ .dropdown-list {
+    display: none;
+  }
+  
+  .dropdown-list.open {
+    display: block;
+  }
   /* .main-web{
     width: 100%;
     height: auto;
