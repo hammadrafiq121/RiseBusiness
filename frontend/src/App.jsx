@@ -27,6 +27,7 @@ function App() {
 
   return (
     <div className={`app ${isDarkMode ? "dark" : ""}`}>
+    
       <BrowserRouter>
         {user && (
           <Sidebar isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
@@ -47,25 +48,51 @@ function App() {
                 path="/customers/editCustomer/:id"
                 element={<EditCustomer />}
               />
-              {user && (
-                <Route
-                  path="/customers/upload"
-                  element={
-                    user.userRole === "admin" ? (
-                      <UploadCSV />
-                    ) : (
-                      <Navigate to="/test" />
-                    )
-                  }
-                />
-              )}
+          {user && (
+                      <>
+                        <Route
+                          path="/customers/upload"
+                          element={
+                            user.userRole === "admin" ? (
+                              <UploadCSV />
+                            ) : (
+                              <Navigate to="/test" />
+                            )
+                          }
+                        />
+    
+                        <Route
+                          path="/users"
+                          element={
+                            user.userRole === "admin" ? (
+                              <Users />
+                            ) : (
+                              <Navigate to="/test" />
+                            )
+                          }
+                        />
+                        <Route
+                          path="/signup"
+                          element={
+                            user.userRole === "admin" ? (
+                              <Signup />
+                            ) : (
+                              <Navigate to="/test" />
+                            )
+                          }
+                        />
+
+   
+                      </>
+                    )}
+
               <Route
                 path="/customers/editCustomer/:id"
                 element={<EditCustomer />}
               />
               <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/users" element={<Users />} />
+       
+              {/* <Route path="/users" element={<Users />} /> */}
               <Route path="/users/editUser/:id" element={<EditUser />} />
               {/* Other routes for logged-in users */}
             </>
@@ -86,10 +113,12 @@ function App() {
               {/* Other restricted routes */}
             </>
           )}
+                 {/* <Route path="/signup" element={<Signup />} /> */}
         </Routes>
 
         <ToastContainer />
       </BrowserRouter>
+     
     </div>
   );
 }
