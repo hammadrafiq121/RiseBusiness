@@ -40,7 +40,7 @@ const Signup = () => {
       toast.success(message);
     }
     if (user) {
-      navigate("/customers");
+      navigate("/signup");
     }
 
     dispatch(reset());
@@ -63,12 +63,12 @@ const Signup = () => {
   }
 
   return (
-    <section className="tab">
-      <Container className="tab_div1">
+    <section className="signup_tab">
+      <Container className="signup_container">
         <Form onSubmit={handleSubmit}>
-          <Form.Group controlId="fullName">
-            <Form.Label>Full Name</Form.Label>
-            <Form.Control
+          <Form.Group className="signup_group" controlId="fullName">
+            <Form.Label className="signup_label" >Full Name</Form.Label>
+            <Form.Control className="signup_name"
               type="text"
               name="fullName"
               value={formData.fullName}
@@ -77,9 +77,9 @@ const Signup = () => {
             />
           </Form.Group>
 
-          <Form.Group controlId="userName">
+          <Form.Group className="signup_group" controlId="userName">
             <Form.Label>User Name</Form.Label>
-            <Form.Control
+            <Form.Control className="signup_name"
               type="text"
               name="userName"
               value={formData.userName}
@@ -88,9 +88,9 @@ const Signup = () => {
             />
           </Form.Group>
 
-          <Form.Group controlId="email">
+          <Form.Group className="signup_group" controlId="email">
             <Form.Label>Email</Form.Label>
-            <Form.Control
+            <Form.Control className="signup_name"
               type="email"
               name="email"
               value={formData.email}
@@ -99,9 +99,9 @@ const Signup = () => {
             />
           </Form.Group>
 
-          <Form.Group controlId="password">
+          <Form.Group className="signup_group" controlId="password">
             <Form.Label>Password</Form.Label>
-            <Form.Control
+            <Form.Control className="signup_name"
               type="password"
               name="password"
               value={formData.password}
@@ -110,9 +110,9 @@ const Signup = () => {
             />
           </Form.Group>
 
-          <Form.Group controlId="userRole">
+          <Form.Group className="signup_group" controlId="userRole">
             <Form.Label>User Role</Form.Label>
-            <Form.Control
+            <Form.Control className="signup_name"
               as="select"
               name="userRole"
               value={formData.userRole}
@@ -128,7 +128,7 @@ const Signup = () => {
             </Form.Control>
           </Form.Group>
 
-          <Button className="mb-2 ml-2 mt-2" variant="secondary" type="submit">
+          <Button  className="mb-2 ml-2 mt-2 signup_btn" variant="secondary" type="submit">
             Signup
           </Button>
         </Form>

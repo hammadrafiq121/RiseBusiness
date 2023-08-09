@@ -102,8 +102,19 @@ const Customers = () => {
   const renderPageNumbers = Array.from({ length: totalPages }, (_, index) => (
     <li
       key={index}
-      className={index + 1 === currentPage ? "active" : ""}
+      className={`pagination-number ${
+        index + 1 === currentPage ? "active" : ""
+      }`}
       onClick={() => setCurrentPage(index + 1)}
+      style={{
+        cursor: "pointer",
+        margin: "0 5px",
+        padding: "5px 10px",
+        border: index + 1 === currentPage ? "1px solid #007bff" : "1px solid #ccc",
+        backgroundColor: index + 1 === currentPage ? "#007bff" : "white",
+        color: index + 1 === currentPage ? "white" : "black",
+        borderRadius: "5px",
+      }}
     >
       {index + 1}
     </li>
@@ -116,7 +127,7 @@ const Customers = () => {
           <Form>
             <Row className="customer-row">
               <Col lg={6}>
-                <Form.Group controlId="companyName" className="mb-2">
+                <Form.Group controlId="companyName" className="mb-2 ">
                   <Form.Control
                     type="text"
                     value={searchKeyword}
@@ -125,11 +136,11 @@ const Customers = () => {
                   />
                 </Form.Group>
               </Col>
-              <Col lg={3}>
-                <Form.Group className="mb-2">
+              <Col lg={6}>
+                <Form.Group className="mb-2 create ">
                   <Link to="/addCustomers">
                     <Button
-                      className="mb-2 mr-2 create"
+                      className="mb-2 mr-2 "
                       variant="secondary"
                       type="submit"
                     >
@@ -137,12 +148,10 @@ const Customers = () => {
                     </Button>
                   </Link>
                 </Form.Group>
-              </Col>
-              <Col lg={3}>
                 <Form.Group className="mb-2">
                   <Link to="/customers/upload">
                     <Button
-                      className="mb-2 mr-2 upload"
+                      className="mb-2 mr-2 create"
                       variant="secondary"
                       type="submit"
                     >
@@ -151,45 +160,56 @@ const Customers = () => {
                   </Link>
                 </Form.Group>
               </Col>
+              {/* <Col lg={3}>
+                
+              </Col> */}
             </Row>
           </Form>
 
-          {isLoading ? (
-            <p>Loading...</p>
-          ) : customers.length === 0 ? (
-            <p>No Customer</p>
-          ) : (
-            <Table>
-              <thead>
-                <tr>
-                  <th className="custoner-col-name">Business Name</th>
-                  <th className="custoner-col-name">State</th>
-                  <th className="custoner-col-name">City</th>
-                  <th className="custoner-col-name">Status</th>
-                  <th className="custoner-col-name">Action</th>
-                </tr>
-              </thead>
-              <tbody className="tbody">{renderCustomers}</tbody>
-            </Table>
-          )}
+          <Table className="customers_table" >
+            <thead>
+              <tr>
+                <th className="custoner-col-name">Business Name</th>
+                <th className="custoner-col-name">State</th>
+                <th className="custoner-col-name">City</th>
+                <th className="custoner-col-name">Status</th>
+                <th className="custoner-col-name">Action</th>
+              </tr>
+            </thead>
+            <tbody className="tbody">{renderCustomers}</tbody>
+          </Table>
 
-          <div className="pagination-controls">
+          <div className="pagination-controls" style={{ textAlign: "center", marginTop: "20px" }}>
             <Button
-              className="previous_btn"
+              className="pagination-btn previous_btn"
               variant="secondary"
               disabled={currentPage === 1}
               onClick={() => setCurrentPage(currentPage - 1)}
+              style={{
+                marginRight: "10px",
+                padding: "5px 10px",
+                border: "1px solid #ccc",
+                borderRadius: "5px",
+              }}
             >
-              Previous Page
+              Previous 
             </Button>
-            <ul className="page-numbers-list">{renderPageNumbers}</ul>
+            <ul className="page-numbers-list" style={{ display: "inline-block", listStyle: "none", padding: 0 }}>
+              {renderPageNumbers}
+            </ul>
             <Button
-              className="next_btn"
+              className="pagination-btn next_btn"
               variant="secondary"
               disabled={indexOfLastItem >= filteredCustomers.length}
               onClick={() => setCurrentPage(currentPage + 1)}
+              style={{
+                marginLeft: "10px",
+                padding: "5px 10px",
+                border: "1px solid #ccc",
+                borderRadius: "5px",
+              }}
             >
-              Next Page
+              Next
             </Button>
           </div>
         </Container>

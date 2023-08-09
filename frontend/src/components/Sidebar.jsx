@@ -104,6 +104,18 @@ const Sidebar = ({ isDarkMode, toggleDarkMode }) => {
                 <span className="text nav-text">Upload File</span>
               </Link>
             </li>
+            <li className="nav-link">
+              <Link to="/signup">
+              <i class="bx bxs-user-plus icon"></i>{" "}
+                <span className="text nav-text">Add User</span>
+              </Link>
+            </li>
+            <li className="nav-link">
+              <Link to="/users">
+              <i class='bx bx-list-ul icon' ></i>{" "}
+                <span className="text nav-text">User List</span>  
+              </Link>
+            </li>
           </ul>
         </div>
 
@@ -120,12 +132,17 @@ const Sidebar = ({ isDarkMode, toggleDarkMode }) => {
           ) : (
             <></>
           )} */}
+      
+            
+        
+
           <li className="nav-link">
-            <Link to="">
-              {/* <i class="bx bx-log-out icon"></i> */}
-              <Logout />
-            </Link>
-          </li>
+              <Link to="/login">
+                <i className="bx bx-log-out icon"></i>
+                <Logout />
+                {/* <span className="text nav-text">Logout</span> */}
+              </Link>
+            </li>
 
           <li className="mode" onClick={toggleDarkMode}>
             <div className="sun-moon">
@@ -190,3 +207,9 @@ export default Sidebar;
 {
   /* Other menu items... */
 }
+// {/* <li className="nav-link">
+// <Link to="">
+//   {/* <i class="bx bx-log-out icon"></i> */}
+//   <Logout />
+// </Link>
+// </li> */}

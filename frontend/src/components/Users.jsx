@@ -4,7 +4,7 @@ import { Table, Form, Container, Row, Col, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 // import DeleteCustomer from "./DeleteCustomer";
 import { PencilSquare } from "react-bootstrap-icons";
-
+import "../style.css";
 import { getUsers } from "../app/reducers/userSlice.js";
 import Spinner from "./Spinner";
 import { toast } from "react-toastify";
@@ -54,7 +54,7 @@ const Users = () => {
         <td>
           <Button
             variant="link"
-            className="symbol-button"
+            className="symbol-button  "
             as={Link}
             to={{
               pathname: `/users/editUser/${user._id}`,
@@ -90,7 +90,7 @@ const Users = () => {
               </Col>
               <Col lg={3}>
                 <Form.Group className="mb-2">
-                  <Link to="/users/adduser">
+                  <Link to="/users/signup">
                     <Button
                       className="mb-2 mr-2"
                       variant="secondary"
@@ -120,7 +120,7 @@ const Users = () => {
           {isLoading ? (
             <p>Loading...</p>
           ) : (
-            <Table>
+            <Table className="user_list" >
               <thead>
                 <tr>
                   <th>Full Name</th>

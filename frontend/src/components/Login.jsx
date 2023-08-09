@@ -37,7 +37,7 @@ const Login = () => {
       toast.success(message);
     }
     if (user) {
-      navigate("/dashboard");
+      navigate("/");
     }
   }, [user, isSuccess, isError, message, isLoading]);
 
