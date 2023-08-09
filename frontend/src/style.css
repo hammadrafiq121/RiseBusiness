@@ -3,7 +3,7 @@
     font-size: 14px;
 }
 body{
-    background-image: url(./assets/BG.svg) !important;
+    background-image: url(./assets/BG.png) !important;
     background-color:var(--primary-color)!important ;
     background-position: center;
     background-repeat: no-repeat;
@@ -16,7 +16,7 @@ body{
     align-items: center;
 }
 .chart_div1{
-    background-image: url(./assets/BG.svg) !important;
+    background-image: url(./assets/IMAGE.png) !important;
     background-color: #1f41a9;
     background-position: center;
     background-repeat: no-repeat;
@@ -25,6 +25,8 @@ body{
     height: 100% !important;
 
 }
+
+
 .agent-text{
     color: white;
 }
@@ -47,8 +49,8 @@ body{
 
 
 .agent_col{
-    background-image: url(./assets/BG.svg) !important;
-   background-color: #1f41a9;
+    background-image: url(./assets/IMAGE.png) !important;
+   background-color: var(--primary-color);
    background-position: center;
    background-repeat: no-repeat;
    background-size: cover;
@@ -77,7 +79,7 @@ body{
 }
 
 .custoner-col-name{
-    background-color:#ff3c3c !important ;
+    background-color:#219eb8!important ;
 }
 
 .td{
@@ -85,9 +87,11 @@ body{
     color: white !important;
     padding-top: 15px !important;
     font-size: 16px;
-.create{
-    margin-left: 60px !important;
 }
+.mb-2 {
+    margin-bottom: 0.5rem!important;
+    display: inline;
+    margin-left: 10px;
 }
 
 .symbol-button {
@@ -100,9 +104,8 @@ body{
     height: 100%;
 
 }
-.img, svg {
+.tdd {
     vertical-align: middle;
-    color: white;
     font-size: 20px;
 }
 .submit{
@@ -116,6 +119,16 @@ body{
     justify-content: center;
   height: 100%;
   
+}
+.tab{
+    display: flex;
+}
+.table_1{
+    background-color: transparent !important;
+}
+.tab_div1{
+  float: left;
+  padding-top: 40px;
 }
 .chart_container{
    height: 100% !important;
@@ -180,6 +193,7 @@ padding-top:18px ;
     border: 1px solid white !important;
     padding-top: 25px !important;
     margin-top: 20px;
+    width: 100% !important;
 }
 .label{
     color: white !important;
@@ -276,9 +290,10 @@ h1{
     border-color: white !important;
 }   
 
-table{
-    margin-top: 20px;
 
+.table{
+    --bs-table-bg: rgba(0, 0, 0, 0.075) !important;
+    --bs-table-color: #ffffff !important;
 }
 
 
@@ -305,6 +320,32 @@ table{
     align-items: center;
     justify-content: center;
 }
+.signup_tab{
+    
+    display: flex;
+    height: 90vh;
+        align-items: center;
+    }
+    .signup_name{
+        background-color: white !important;
+        font-size: 16px !important;
+    }
+    .signup_container{
+        background-color: white !important;
+        padding: 25px;
+        width: 50% !important;
+    }
+    .signup_group{
+        padding-bottom: 25px !important;
+    }
+    .signup_btn{
+        background-color:#0dcaf0 !important;
+        width: 20%;
+        padding: 10px !important;
+        border: 0PX !important;
+    }
+    
+
 
 .table_button{
     background: #6b86e1 !important;
@@ -314,10 +355,6 @@ table{
 .customer-row{
     padding-top: 20px !important;
     background-color: transparent !important;
-}
-.tbody{
-    background-color: transparent !important;
-    padding-left: 50px !important;
 }
 
 
@@ -418,15 +455,22 @@ input.form-control , textarea.form-control, #state , #city, #country  {
   }
   .upload-container{
       
-      background-repeat: no-repeat;
-      border: 0px !important;
-      background-color: white !important;
-      background-image: url(./assets/BG.svg);
-      background-size: cover;
-      background-repeat: no-repeat;
-      width: 30% !important;
-      background-position: center;
-      height: 50% !important;
+    background-repeat: no-repeat;
+    border: 0px !important;
+    background-color: white !important;
+    background-image: url(./assets/BG.svg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100% !important;
+    background-position: center;
+    height: 100% !important;
+    padding: 20px;
+    }
+    .upload{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 90vh !important;
     }
     .Select{
         /* display: none !important; */
@@ -473,6 +517,12 @@ input.form-control , textarea.form-control, #state , #city, #country  {
     @media only screen and (max-width: 992px) {
          .agent_div{
             margin-left: 18px ;
+
+         }
+        }
+    @media only screen and (max-width: 413px) {
+        .upload-container{
+            width: 85% !important ;
 
          }
         }
@@ -531,7 +581,7 @@ div.dark{
     position: static !important;
     top: 0;
     left: 0;
-    height: 100%;
+    height: 100vh !important;
     width: 300px !important  ;
     padding: 10px 14px;
     background: var(--sidebar-color);
@@ -661,8 +711,12 @@ div.dark [type=button]:not(:disabled), [type=reset]:not(:disabled), [type=submit
     border-color: #000;
 }
 
+
 .sidebar.close .toggle{
     transform: translateY(-50%) rotate(0deg);
+}
+.customers_table{
+    margin-top: 20px;
 }
 
 .sidebar .menu{
@@ -990,6 +1044,8 @@ div.dark .home .text{
     cursor: pointer;
     border-radius: 50%;
     margin-right: 10px;
+    width: 50px !important;
+    height: 50px !important;
   }
   .pagination-controls ul li:hover{
     background:#1f41a9;
@@ -1000,3 +1056,11 @@ div.dark .home .text{
     background-color: #1f41a9 !important;
 
   }
+ .user_edit{
+    color: black !important;
+ }
+  /* .main-web{
+    width: 100%;
+    height: auto;
+ 
+  } */
