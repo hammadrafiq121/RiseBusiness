@@ -1038,17 +1038,21 @@ div.dark .home .text{
   /* Paginatio section */
 
   .pagination-controls{
-    display: flex;
-    justify-content: flex-end;
+   align-items: center;
+    justify-content: center;
+    font-size: 17px;
+}
+.status{
+    width: 20% !important;
+    display: inline !important ;
+}
 
-  }
-  .pagination-controls ul li{
+  
+.pagination-controls ul li{
     display: inline;
     list-style: none;
     padding: 8px;
-    background: red;
-    color: white;
-    border: 1px solid white;
+   
     cursor: pointer;
     border-radius: 50%;
     margin-right: 10px;

@@ -13,6 +13,9 @@ const Sidebar = ({ isDarkMode, toggleDarkMode }) => {
 
   const handleToggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
+    if (!isSidebarOpen) {
+      setIsCustomersDropdownOpen(false);
+    }
   };
 
   // const handleModeSwitch = () => {
