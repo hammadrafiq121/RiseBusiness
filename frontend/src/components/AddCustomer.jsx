@@ -39,10 +39,6 @@ const AddCustomer = () => {
     products: [],
   };
   const [formData, setFormData] = useState(blankForm);
-  const [countries, setCountries] = useState([]);
-  const [states, setStates] = useState([]);
-  const [cities, setCities] = useState([]);
-  const [isLoad, setIsLoad] = useState(false);
   const { isLoading, isSuccess, isError, message } = useSelector(
     (state) => state.customers
   );
@@ -74,95 +70,14 @@ const AddCustomer = () => {
     { label: "Patient Monitors", value: "patient-monitors" },
   ];
 
-  useEffect(() => {
-    const getCountries = async () => {
-      try {
-        setIsLoad(true);
-        const result = await csc.getAllCountries();
-        let allCountries = [];
-        allCountries = result?.map(({ isoCode, name }) => ({
-          isoCode,
-          name,
-        }));
-
-        const [{ isoCode: firstCountry } = {}] = allCountries;
-        setCountries(allCountries);
-        setFormData((prev) => ({
-          ...prev,
-          country: firstCountry,
-        }));
-        setIsLoad(false);
-      } catch (error) {
-        setCountries([]);
-        setIsLoad(false);
-      }
-    };
-    getCountries();
-  }, []);
-
-  useEffect(() => {
-    const getStates = async () => {
-      try {
-        const result = await csc.getStatesOfCountry(formData.country);
-        let allStates = [];
-        allStates = result?.map(({ isoCode, name }) => ({
-          isoCode,
-          name,
-        }));
-        const [{ isoCode: firstState = "" } = {}] = allStates;
-        setCities([]);
-        setFormData((prev) => ({
-          ...prev,
-          city: "",
-        }));
-        setStates(allStates);
-        setFormData((prev) => ({
-          ...prev,
-          state: firstState,
-        }));
-      } catch (error) {
-        setStates([]);
-        setCities([]);
-        setFormData((prev) => ({
-          ...prev,
-          city: "",
-        }));
-      }
-    };
-
-    getStates();
-  }, [formData.country]);
-
-  useEffect(() => {
-    const getCities = async () => {
-      try {
-        const result = await csc.getCitiesOfState(
-          formData.country,
-          formData.state
-        );
-        let allCities = [];
-        allCities = result?.map(({ name }) => ({
-          name,
-        }));
-        const [{ name: firstCity = "" } = {}] = allCities;
-        setCities(allCities);
-        setFormData((prev) => ({
-          ...prev,
-          city: firstCity,
-        }));
-      } catch (error) {
-        setCities([]);
-      }
-    };
-    getCities();
-  }, [formData.state]);
-
-  const handleChange = (event) => {
+  const handleChange = async (event) => {
     setFormData((formData) => ({
       ...formData,
       [event.target.name]: event.target.value,
     }));
+    console.log(formData);
   };
+
   const handleInputChange = (name, value) => {
     setFormData((prevFormData) => ({
       ...prevFormData,
@@ -170,37 +85,9 @@ const AddCustomer = () => {
     }));
   };
 
-  // const updatedData = async () => {
-  //   await setFormData((prev) => ({
-  //     ...prev,
-  //     country: countries.find((country) => country.isoCode === formData.country)
-  //       ?.name,
-  //     state:
-  //       states.find((state) => state.isoCode === formData.state)?.name || "",
-  //   }));
-  // };
-
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // try {
-    // await updatedData();
-
     await dispatch(addCustomer(formData)); // Dispatch the addCustomer action
-
-    // if (isSuccess) {
-    //   toast.loading(message);
-    //   toast.dismiss();
-    //   toast.success(message);
-    //   setFormData(blankForm);
-    // }
-    // if (isError) {
-    //   toast.loading(message);
-    //   toast.dismiss();
-    //   toast.error(message);
-    // }
-    // } catch (error) {
-    // console.log("error", error.message);
-    // }
   };
 
   return (
@@ -272,27 +159,19 @@ const AddCustomer = () => {
                 </Col>
               </Form.Group>
               <Form.Group as={Row} controlId="country" className="mb-2">
-                {isLoad && (
-                  <p className="loading">Loading countries. Please wait...</p>
-                )}
                 <Form.Label className="label" column sm={3}>
                   Country
                 </Form.Label>
                 <Col sm={9}>
                   <Form.Control
                     className="input"
-                    as="select"
+                    type="text"
+                    placeholder=""
                     name="country"
                     value={formData.country}
                     onChange={handleChange}
                     required
-                  >
-                    {countries.map(({ isoCode, name }) => (
-                      <option value={isoCode} key={isoCode}>
-                        {name}
-                      </option>
-                    ))}
-                  </Form.Control>
+                  />
                 </Col>
               </Form.Group>
               <Form.Group as={Row} controlId="SCZ" className="mb-2">
@@ -302,23 +181,13 @@ const AddCustomer = () => {
                     <Form.Label className="label">State</Form.Label>
                     <Form.Control
                       className="input"
-                      as="select"
+                      type="text"
+                      placeholder=""
                       name="state"
                       value={formData.state}
                       onChange={handleChange}
-                    >
-                      {states.length > 0 ? (
-                        states.map(({ isoCode, name }) => (
-                          <option value={isoCode} key={isoCode}>
-                            {name}
-                          </option>
-                        ))
-                      ) : (
-                        <option value="" key="">
-                          No state found
-                        </option>
-                      )}
-                    </Form.Control>
+                      required
+                    />
                   </Form.Group>
                 </Col>
 
@@ -327,21 +196,13 @@ const AddCustomer = () => {
                     <Form.Label className="label">City</Form.Label>
                     <Form.Control
                       className="input"
-                      as="select"
+                      type="text"
+                      placeholder=""
                       name="city"
                       value={formData.city}
                       onChange={handleChange}
-                    >
-                      {cities.length > 0 ? (
-                        cities.map(({ name }) => (
-                          <option value={name} key={name}>
-                            {name}
-                          </option>
-                        ))
-                      ) : (
-                        <option value="">No cities found</option>
-                      )}
-                    </Form.Control>
+                      required
+                    />
                   </Form.Group>
                 </Col>
 
@@ -351,7 +212,7 @@ const AddCustomer = () => {
                     <Form.Control
                       className="input"
                       type="number"
-                      style={{ backgroundColor: "#ced4da" }}
+                      placeholder=""
                       name="zipCode"
                       value={formData.zipCode}
                       onChange={handleChange}
@@ -457,18 +318,6 @@ const AddCustomer = () => {
                       }
                       labelledBy="Select"
                     />
-                    {/* <MultiSelect
-                      name="products"
-                      options={productNames.map((name) => ({
-                        label: name,
-                        value: name,
-                      }))}
-                      value={formData.products}
-                      onChange={(selected) =>
-                        handleProductChange("products", selected)
-                      }
-                      labelledBy="Select"
-                    /> */}
                   </Col>
                 </Form.Group>
               </div>
