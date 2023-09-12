@@ -5,7 +5,8 @@ import { Link } from "react-router-dom";
 import ViewCustomerModal from "./ViewCustomerModal";
 import DeleteCustomer from "./DeleteCustomer";
 import { PencilSquare } from "react-bootstrap-icons";
-import { getCustomers } from "../app/reducers/customerSlice.js";
+import { getCustomers, reset } from "../app/reducers/customerSlice.js";
+import { toast } from "react-toastify";
 import { getUsers } from "../app/reducers/userSlice.js";
 
 const Customers = () => {
@@ -18,14 +19,28 @@ const Customers = () => {
   const { users } = useSelector((state) => state.users);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedStatus, setSelectedStatus] = useState("");
-  const itemsPerPage = 11;
+  const itemsPerPage = 25;
 
   useEffect(() => {
     if (user) {
       dispatch(getCustomers());
     }
   }, [user, dispatch]);
+
+  useEffect(() => {
+    if (isLoading) {
+      toast.dismiss();
+      toast.loading(message);
+    }
+    if (isError) {
+      toast.dismiss();
+      toast.error(message);
+    }
+    if (isSuccess) {
+      toast.dismiss();
+      toast.success(message);
+    }
+  }, [isError, isLoading, isSuccess, message]);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -42,20 +57,13 @@ const Customers = () => {
     setCurrentPage(1);
   };
 
-  const handleStatusChange = (event) => {
-    setSelectedStatus(event.target.value);
-    setCurrentPage(1);
-  };
-
   const filteredCustomers = customers.filter((customer) => {
     const keyword = searchKeyword.toLowerCase();
-    const statusMatch =
-      selectedStatus === "" || customer.status === selectedStatus;
     return (
-      (customer.companyName.toLowerCase().includes(keyword) ||
-        customer.state.toLowerCase().includes(keyword) ||
-        customer.city.toLowerCase().includes(keyword)) &&
-      statusMatch
+      customer.companyName.toLowerCase().includes(keyword) ||
+      customer.state.toLowerCase().includes(keyword) ||
+      customer.city.toLowerCase().includes(keyword) ||
+      customer.status.toLowerCase().includes(keyword)
     );
   });
 
@@ -118,9 +126,8 @@ const Customers = () => {
         <Container className="customer-container">
           <Form>
             <Row className="customer-row">
-             
               <Col lg={6}>
-                <Form.Group controlId="companyName" className="mb-2">
+                <Form.Group controlId="companyName" className="mb-2 ">
                   <Form.Control
                     type="text"
                     value={searchKeyword}
@@ -132,35 +139,34 @@ const Customers = () => {
               <Col lg={6}>
                 <Form.Group className="mb-2 create ">
                   <Link to="/addCustomers">
-                    <Button className=" mr-3 " variant="secondary" type="submit">
+                    <Button
+                      className=" mr-3 "
+                      variant="secondary"
+                      type="submit"
+                    >
                       Create Customer
                     </Button>
                   </Link>
                 </Form.Group>
                 <Form.Group className="mb-2">
                   <Link to="/customers/upload">
-                    <Button className=" mr-3 create" variant="secondary" type="submit">
+                    <Button
+                      className=" mr-3 create"
+                      variant="secondary"
+                      type="submit"
+                    >
                       Upload
                     </Button>
                   </Link>
                 </Form.Group>
-                <Form.Group controlId="statusFilter" className="mb-2">
-                  <Form.Control className="status"
-                    as="select"
-                    value={selectedStatus}
-                    onChange={handleStatusChange}
-                  >
-                    <option value="">All</option>
-                    <option value="Active">Active</option>
-                    <option value="Interested">Interested</option>
-                    <option value="Inactive">Inactive</option>
-                  </Form.Control>
-                </Form.Group>
               </Col>
+              {/* <Col lg={3}>
+                
+              </Col> */}
             </Row>
           </Form>
 
-          <Table className="customers_table">
+          <Table className="customers_table" >
             <thead>
               <tr>
                 <th className="custoner-col-name">Business Name</th>
@@ -179,8 +185,14 @@ const Customers = () => {
               variant="secondary"
               disabled={currentPage === 1}
               onClick={() => setCurrentPage(currentPage - 1)}
+              style={{
+                marginRight: "10px",
+                padding: "5px 10px",
+                border: "1px solid #ccc",
+                borderRadius: "5px",
+              }}
             >
-              Previous
+              Previous 
             </Button>
             <ul className="page-numbers-list" style={{ display: "inline-block", listStyle: "none", padding: 0 }}>
               {renderPageNumbers}
@@ -190,6 +202,12 @@ const Customers = () => {
               variant="secondary"
               disabled={indexOfLastItem >= filteredCustomers.length}
               onClick={() => setCurrentPage(currentPage + 1)}
+              style={{
+                marginLeft: "10px",
+                padding: "5px 10px",
+                border: "1px solid #ccc",
+                borderRadius: "5px",
+              }}
             >
               Next
             </Button>
