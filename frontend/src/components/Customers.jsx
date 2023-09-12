@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Table, Form, Container, Row, Col, Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, json } from "react-router-dom";
 import ViewCustomerModal from "./ViewCustomerModal";
 import DeleteCustomer from "./DeleteCustomer";
 import { PencilSquare } from "react-bootstrap-icons";
-import { getCustomers, reset } from "../app/reducers/customerSlice.js";
+import { getCustomers } from "../app/reducers/customerSlice.js";
 import { toast } from "react-toastify";
-import { getUsers } from "../app/reducers/userSlice.js";
+// import { getUsers } from "../app/reducers/userSlice.js";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { parseISO, isBefore, startOfDay, endOfDay } from "date-fns";
+// import Spinner from "./Spinner";
+// import { da } from "date-fns/locale";
+import { getStatus } from "../services/statusApi.js";
 
 const Customers = () => {
   const dispatch = useDispatch();
@@ -16,16 +22,45 @@ const Customers = () => {
   const { customers, isLoading, isError, message, isSuccess } = useSelector(
     (state) => state.customers
   );
-  const { users } = useSelector((state) => state.users);
+  // const { users } = useSelector((state) => state.users);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 25;
+  const itemsPerPage = 10;
+  const [selectedStatus, setSelectedStatus] = useState("");
+  const [selectedStartDate, setSelectedStartDate] = useState(null);
+  const [selectedEndDate, setSelectedEndDate] = useState(null);
+  const [statusData, setStatusData] = useState({});
+  const [statusOptions, setStatusOptions] = useState([]);
 
   useEffect(() => {
-    if (user) {
-      dispatch(getCustomers());
+    const fetchCustomers = async () => {
+      if (user) {
+        const fetchedCustomers = await dispatch(getCustomers());
+        for (const customer of fetchedCustomers.payload) {
+          const response = await getStatus(customer.status);
+          setStatusData((statusData) => ({
+            ...statusData,
+            [customer._id]: response,
+          }));
+        }
+      }
+    };
+    fetchCustomers();
+  }, []);
+
+  useEffect(() => {
+    // Fetch statuses from your API
+    async function fetchStatuses() {
+      try {
+        const response = await fetch("http://localhost:3000/api/statuses/all");
+        const data = await response.json();
+        setStatusOptions(data);
+      } catch (error) {
+        console.error("Error fetching statuses:", error);
+      }
     }
-  }, [user, dispatch]);
+    fetchStatuses();
+  }, []);
 
   useEffect(() => {
     if (isLoading) {
@@ -42,28 +77,56 @@ const Customers = () => {
     }
   }, [isError, isLoading, isSuccess, message]);
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      if (isError) {
-        console.log(message);
-      }
-      await dispatch(getUsers());
-    };
-    fetchUsers();
-  }, [dispatch]);
+  // useEffect(() => {
+  //   const fetchUsers = async () => {
+  //     if (isError) {
+  //       console.log(message);
+  //     }
+  //     await dispatch(getUsers());
+  //   };
+  //   fetchUsers();
+  // }, [dispatch]);
 
   const handleSearchChange = (event) => {
     setSearchKeyword(event.target.value);
     setCurrentPage(1);
   };
 
+  const handleStatusChange = (event) => {
+    setSelectedStatus(event.target.value);
+    setCurrentPage(1);
+  };
+
+  const handleStartDateChange = (date) => {
+    setSelectedStartDate(date);
+    setCurrentPage(1);
+  };
+
+  const handleEndDateChange = (date) => {
+    setSelectedEndDate(date);
+    setCurrentPage(1);
+  };
+
   const filteredCustomers = customers.filter((customer) => {
     const keyword = searchKeyword.toLowerCase();
+    const isStatusMatch =
+      selectedStatus === "" || customer.status === selectedStatus;
+
+    const creationDate = parseISO(customer.createdAt);
+    const startOfSelectedStartDate = startOfDay(selectedStartDate);
+    const endOfSelectedEndDate = endOfDay(selectedEndDate);
+    const isStartDateMatch =
+      !selectedStartDate || isBefore(creationDate, endOfSelectedEndDate);
+    const isEndDateMatch =
+      !selectedEndDate || isBefore(startOfSelectedStartDate, creationDate);
+
     return (
-      customer.companyName.toLowerCase().includes(keyword) ||
-      customer.state.toLowerCase().includes(keyword) ||
-      customer.city.toLowerCase().includes(keyword) ||
-      customer.status.toLowerCase().includes(keyword)
+      (customer.companyName.toLowerCase().includes(keyword) ||
+        customer.state.toLowerCase().includes(keyword) ||
+        customer.city.toLowerCase().includes(keyword)) &&
+      isStatusMatch &&
+      isStartDateMatch &&
+      isEndDateMatch
     );
   });
 
@@ -81,9 +144,14 @@ const Customers = () => {
       <td className="td">{customer.companyName}</td>
       <td className="td">{customer.state}</td>
       <td className="td">{customer.city}</td>
-      <td className="td">{customer.status}</td>
       <td className="td">
-        <ViewCustomerModal customer={customer} />
+        {statusData[customer._id] ? statusData[customer._id] : "Unknown"}
+      </td>
+      <td className="td">
+        {new Date(customer.createdAt).toLocaleDateString()}
+      </td>
+      <td className="td">
+        <ViewCustomerModal customer={customer} statusData={statusData} />
         <Button
           variant="link"
           className="symbol-button tdd"
@@ -92,7 +160,7 @@ const Customers = () => {
             pathname: `/customers/editCustomer/${customer._id}`,
           }}
         >
-          <PencilSquare className="tdd" />
+          <PencilSquare />
         </Button>
         <DeleteCustomer className="tdd" customer={customer} />
       </td>
@@ -100,25 +168,25 @@ const Customers = () => {
   ));
 
   const renderPageNumbers = Array.from({ length: totalPages }, (_, index) => (
-    <li
+    <div
       key={index}
       className={`pagination-number ${
         index + 1 === currentPage ? "active" : ""
       }`}
       onClick={() => setCurrentPage(index + 1)}
       style={{
-        cursor: "pointer",
-        margin: "0 5px",
-        padding: "5px 10px",
+     
         border: index + 1 === currentPage ? "1px solid #007bff" : "1px solid #ccc",
         backgroundColor: index + 1 === currentPage ? "#007bff" : "white",
         color: index + 1 === currentPage ? "white" : "black",
-        borderRadius: "5px",
+       
       }}
     >
       {index + 1}
-    </li>
+    </div>
   ));
+  
+  
 
   return (
     <div className="customer_div">
@@ -126,75 +194,114 @@ const Customers = () => {
         <Container className="customer-container">
           <Form>
             <Row className="customer-row">
-              <Col lg={6}>
-                <Form.Group controlId="companyName" className="mb-2 ">
-                  <Form.Control
-                    type="text"
-                    value={searchKeyword}
-                    onChange={handleSearchChange}
-                    placeholder="Search..."
-                  />
-                </Form.Group>
+              <Col lg={9}>
+                <Row>
+                  <Col Lg={3}>
+                    <Form.Group controlId="companyName" className="mb-2 ">
+                      <Form.Control
+                        type="text"
+                        value={searchKeyword}
+                        onChange={handleSearchChange}
+                        placeholder="Search Business ..."
+                      />
+                    </Form.Group>
+                  </Col>
+                  <Col lg={3}>
+                    <Form.Group controlId="statusFilter" className="mb-2  ">
+                      <Form.Control
+                        className="col_7"
+                        as="select"
+                        value={selectedStatus}
+                        onChange={handleStatusChange}
+                      >
+                        <option value="">Select Status</option>
+                        {/* <option value="Active">Active</option>
+                        <option value="Interested">Interested</option>
+                        <option value="Inactive">Inactive</option> */}
+                        {statusOptions.map((status) => (
+                          <option key={status._id} value={status._id}>
+                            {status.status}
+                          </option>
+                        ))}
+                      </Form.Control>
+                    </Form.Group>
+                  </Col>
+
+                  <Col lg={3}>
+                    <Form.Group controlId="startDateFilter" className="mb-2">
+                      <DatePicker
+                        selected={selectedStartDate}
+                        onChange={handleStartDateChange}
+                        placeholderText="Start Date"
+                        dateFormat="yyyy-MM-dd"
+                        className="form-control date_picker"
+                      />
+                    </Form.Group>
+                  </Col>
+                  <Col lg={3}>
+                    <Form.Group controlId="endDateFilter" className="mb-2">
+                      <DatePicker
+                        selected={selectedEndDate}
+                        onChange={handleEndDateChange}
+                        placeholderText="End Date"
+                        dateFormat="yyyy-MM-dd"
+                        className="form-control date_picker"
+                      />
+                    </Form.Group>
+                  </Col>
+                </Row>
               </Col>
-              <Col lg={6}>
-                <Form.Group className="mb-2 create ">
-                  <Link to="/addCustomers">
-                    <Button
-                      className=" mr-3 "
-                      variant="secondary"
-                      type="submit"
-                    >
-                      Create Customer
-                    </Button>
-                  </Link>
-                </Form.Group>
-                <Form.Group className="mb-2">
-                  <Link to="/customers/upload">
-                    <Button
-                      className=" mr-3 create"
-                      variant="secondary"
-                      type="submit"
-                    >
-                      Upload
-                    </Button>
-                  </Link>
-                </Form.Group>
+              <Col lg={3}>
+                <Row>
+                  <Col Lg={9}>
+                    <Form.Group className="mb-2 create ">
+                      <Link to="/addCustomers">
+                        <Button
+                          className=" mr-3 "
+                          variant="secondary"
+                          type="submit"
+                        >
+                          Create Customer
+                        </Button>
+                      </Link>
+                    </Form.Group>
+                  </Col>
+              
+                </Row>
               </Col>
-              {/* <Col lg={3}>
-                
-              </Col> */}
             </Row>
           </Form>
 
-          <Table className="customers_table" >
+          <Table className="customers_table">
             <thead>
               <tr>
                 <th className="custoner-col-name">Business Name</th>
                 <th className="custoner-col-name">State</th>
                 <th className="custoner-col-name">City</th>
                 <th className="custoner-col-name">Status</th>
+                <th className="custoner-col-name">Date</th>
                 <th className="custoner-col-name">Action</th>
               </tr>
             </thead>
             <tbody className="tbody">{renderCustomers}</tbody>
           </Table>
 
-          <div className="pagination-controls" style={{ textAlign: "center", marginTop: "20px" }}>
-            <Button
+          <div
+            className="pagination-controls"
+          >
+          <Button
               className="pagination-btn previous_btn"
               variant="secondary"
               disabled={currentPage === 1}
               onClick={() => setCurrentPage(currentPage - 1)}
-              style={{
-                marginRight: "10px",
-                padding: "5px 10px",
-                border: "1px solid #ccc",
-                borderRadius: "5px",
-              }}
+             
             >
-              Previous 
+              Previous
             </Button>
-            <ul className="page-numbers-list" style={{ display: "inline-block", listStyle: "none", padding: 0 }}>
+            <ul
+              className="page-numbers-list"
+             
+            >
               {renderPageNumbers}
             </ul>
             <Button
@@ -202,16 +309,12 @@ const Customers = () => {
               variant="secondary"
               disabled={indexOfLastItem >= filteredCustomers.length}
               onClick={() => setCurrentPage(currentPage + 1)}
-              style={{
-                marginLeft: "10px",
-                padding: "5px 10px",
-                border: "1px solid #ccc",
-                borderRadius: "5px",
-              }}
+            
             >
               Next
             </Button>
           </div>
+          
         </Container>
       </section>
     </div>

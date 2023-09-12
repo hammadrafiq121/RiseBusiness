@@ -48,11 +48,13 @@ const Logout = () => {
   //  </li>
   //  </ul>
     <span  onClick={handleLogout}>
-      <Link>
+      <li className="nav-link ">
+      <Link  to="/login" >  
     <i className="bx bx-log-out icon"></i>
       <span className="text nav-text ">Logout
     </span>
     </Link>
+      </li>
     </span>
     
   );

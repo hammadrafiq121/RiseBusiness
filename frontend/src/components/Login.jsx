@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { login, reset } from "../app/reducers/authSlice";
 import Spinner from "./Spinner";
+import logApi from "../services/logApi";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -37,7 +38,11 @@ const Login = () => {
       toast.success(message);
     }
     if (user) {
-      navigate("/");
+      const a = async () => {
+        await logApi.logUserLogin(user.userName);
+        navigate("/");
+      };
+      a();
     }
   }, [user, isSuccess, isError, message, isLoading]);
 
@@ -94,7 +99,7 @@ const Login = () => {
             />
           </Form.Group>
           <Button
-            className="mb-2 ml-2 mt-4 btn-1"
+            className="mb-2  mt-2 btn-1"
             variant="secondary"
             type="submit"
           >

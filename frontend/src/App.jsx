@@ -15,7 +15,13 @@ import Users from "./components/Users";
 import EditUser from "./components/EditUser";
 import Sidebar from "./components/Sidebar";
 import Dashboard from "./components/Dashboard";
-import Test from "./components/Test";
+import NotFound from "./components/NotFound";
+import LogViewer from "./components/LogViewer";
+import PermissionDenied from "./components/PermissionDenied";
+import Viewprofile from "./components/Viewprofile";
+import Status from "./components/Status";
+
+// import Test from "./components/Test";
 
 function App() {
   const { user } = useSelector((state) => state.auth);
@@ -24,6 +30,7 @@ function App() {
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode);
   };
+  const isUserAdmin = user && user.userRole === "admin";
 
   return (
     <div className={`app ${isDarkMode ? "dark" : ""}`}>
@@ -36,82 +43,48 @@ function App() {
         )}
 
         <Routes>
+          {/* If the user is logged in */}
           {user ? (
             <>
-              {/* If the user is logged in */}
-              <Route path="/" element={<Dashboard isDarkMode={isDarkMode} />} />
+              <Route path="/status" element={<Status />} />
+
+              {/* Auth Routes */}
+              <Route path="/login" element={<Navigate to="/" />} />
+              <Route
+                path="/signup"
+                element={isUserAdmin ? <Signup /> : <Navigate to="/403" />}
+              />
+
+              {/* Customer Routes */}
               <Route path="/customers" element={<Customers />} />
               <Route path="/addCustomers" element={<AddCustomer />} />
-              <Route path="/uploadCSV" element={<UploadCSV />} />
+              <Route path="/logViewer" element={<LogViewer />} />
+              <Route path="/viewprofile" element={<Viewprofile />} />
               <Route
                 path="/customers/editCustomer/:id"
                 element={<EditCustomer />}
               />
-              {user && (
-                <>
-                  <Route
-                    path="/customers/upload"
-                    element={
-                      user.userRole === "admin" ? (
-                        <UploadCSV />
-                      ) : (
-                        <Navigate to="/test" />
-                      )
-                    }
-                  />
-
-                  <Route
-                    path="/users"
-                    element={
-                      user.userRole === "admin" ? (
-                        <Users />
-                      ) : (
-                        <Navigate to="/test" />
-                      )
-                    }
-                  />
-                  <Route
-                    path="/signup"
-                    element={
-                      user.userRole === "admin" ? (
-                        <Signup />
-                      ) : (
-                        <Navigate to="/test" />
-                      )
-                    }
-                  />
-                </>
-              )}
-
               <Route
-                path="/customers/editCustomer/:id"
-                element={<EditCustomer />}
+                path="/customers/upload"
+                element={isUserAdmin ? <UploadCSV /> : <Navigate to="/403" />}
               />
-              <Route path="/login" element={<Login />} />
 
-              {/* <Route path="/users" element={<Users />} /> */}
+              {/* User Routes */}
+              <Route path="/" element={<Dashboard isDarkMode={isDarkMode} />} />
+              <Route
+                path="/users"
+                element={isUserAdmin ? <Users /> : <Navigate to="/403" />}
+              />
               <Route path="/users/editUser/:id" element={<EditUser />} />
-              <Route path="/*" element="404 Not Found" />
-              {/* Other routes for logged-in users */}
+              <Route path="/403" element={<PermissionDenied />} />
+              <Route path="/*" element={<NotFound />} />
             </>
           ) : (
             <>
-              {/* If the user is not logged in */}
-              <Route path="/*" element={<Login />} />
-              {/* Redirect to login page if trying to access other routes */}
-              {/* <Route path="/dashboard" element={<Navigate to="/" />} />
-              <Route path="/addCustomers" element={<Navigate to="/" />} />
-              <Route path="/customers" element={<Navigate to="/" />} /> */}
-              {/* <Route
-                path="/customers/editCustomer/:id"
-                element={<Navigate to="/" />}
-              />
-              <Route path="/uploadCSV" element={<Navigate to="/" />} /> */}
-
-              {/* Other restricted routes */}
+              <Route path="/login" element={<Login />} />
+              <Route path="/*" element={<Navigate to="/login" />} />
             </>
           )}
-          {/* <Route path="/signup" element={<Signup />} /> */}
         </Routes>
 
         <ToastContainer />

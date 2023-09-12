@@ -18,7 +18,8 @@ export const signup = createAsyncThunk(
   "auth/signup",
   async (user, thunkAPI) => {
     try {
-      return await authApi.signup(user);
+      const token = thunkAPI.getState().auth.user.token;
+      return await authApi.signup(token, user);
     } catch (error) {
       //multiple checks for error
       const message =
@@ -70,7 +71,7 @@ const authSlice = createSlice({
         state.isSuccess = true;
         state.isError = false;
         state.message = "User registered successfully";
-        state.user = action.payload;
+        // state.user = action.payload;
       })
       .addCase(signup.rejected, (state, action) => {
         state.isLoading = false;

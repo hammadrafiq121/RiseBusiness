@@ -7,12 +7,7 @@ import { toast } from "react-toastify";
 import Spinner from "./Spinner";
 
 const EditUser = () => {
-  const stlye = {
-    padding: "20px",
-    backgroundColor: "white",
-    borderRadius: "10px",
-    boxShadow: "0 0 3px rgba(0, 0, 0, 0.2)",
-  };
+
   const [isDisabled, setIsDisabled] = useState(true);
 
   const [formData, setFormData] = useState({
@@ -64,16 +59,45 @@ const EditUser = () => {
   }
 
   return (
-    <main className="tab">
-      <Container style={stlye}>
+    <main className="user_main">
+      <div className="edit_user_container">
         <Form onSubmit={handleUpdate}>
           <Row>
-            <Col md={12}>
-              <Form.Group as={Row} controlId="fullName" className="mb-2">
-                <Form.Label column sm={3}>
+            <Col lg={4}>
+                <Form.Label column sm={12}>
                   Full Name
                 </Form.Label>
-                <Col sm={9}>
+
+
+              
+
+
+                <Form.Label column sm={12} >
+                  Username
+                </Form.Label>
+
+        
+
+
+                <Form.Label column sm={12}>
+                  Email
+                </Form.Label>
+
+            
+
+
+
+                <Form.Label column sm={12}>
+                  Role
+                </Form.Label>
+                </Col>
+
+<Col  lg={6} >
+
+
+           {/* name feild */}
+   <Form.Group as={Row} controlId="fullName" className="mb-2">
+                
                   <Form.Control
                     disabled={isDisabled}
                     type="text"
@@ -83,13 +107,13 @@ const EditUser = () => {
                     onChange={handleChange}
                     required
                   />
-                </Col>
+                
               </Form.Group>
+
+
+               {/* user feild  */}
               <Form.Group as={Row} controlId="userName" className="mb-2">
-                <Form.Label column sm={3}>
-                  Username
-                </Form.Label>
-                <Col sm={9}>
+              
                   <Form.Control
                     disabled={isDisabled}
                     type="text"
@@ -99,13 +123,12 @@ const EditUser = () => {
                     onChange={handleChange}
                     required
                   />
-                </Col>
+               
               </Form.Group>
+
+              {/* email feild  */}
               <Form.Group as={Row} controlId="email" className="mb-2">
-                <Form.Label column sm={3}>
-                  Email
-                </Form.Label>
-                <Col sm={9}>
+               
                   <Form.Control
                     disabled={isDisabled}
                     type="email"
@@ -115,13 +138,12 @@ const EditUser = () => {
                     onChange={handleChange}
                     required
                   />
-                </Col>
+                
               </Form.Group>
+
+                 {/* role feild */}
               <Form.Group as={Row} controlId="userRole" className="mb-2">
-                <Form.Label column sm={3}>
-                  Role
-                </Form.Label>
-                <Col sm={9}>
+                
                   <Form.Select
                     disabled={isDisabled}
                     value={formData.userRole}
@@ -136,27 +158,31 @@ const EditUser = () => {
                     <option value="manager">Manager</option>
                     <option value="agent">Agent</option>
                   </Form.Select>
-                </Col>
+                
               </Form.Group>
-              <Form.Group as={Row} className="mb-2">
+
+
+
+              <Form.Group as={Row} className="mb-2  " >
                 {isDisabled && (
                   <Button
-                    className="mb-2 mr-2"
+                  className="mb-2 mr-2 edit_user_btn "
                     variant="secondary"
                     type="button"
                     onClick={handleEdit}
-                  >
+                    >
                     Edit
                   </Button>
                 )}
-                <Button className="mb-2 mr-2" variant="secondary" type="submit">
+                <Button className="mb-2 mr-2 update_user_btn " variant="secondary" type="submit">
                   Update
                 </Button>
               </Form.Group>
-            </Col>
+                </Col>
+            
           </Row>
         </Form>
-      </Container>
+      </div>
     </main>
   );
 };

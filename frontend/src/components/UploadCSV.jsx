@@ -67,7 +67,7 @@ const UploadCSV = () => {
 
   return (
     <div className="upload" >
-    <div >
+   
       <Container className=" upload-container ">
         <Row>
           <Col>
@@ -107,7 +107,7 @@ const UploadCSV = () => {
         </Row>
       </Container>
     </div>
-    </div>
+    
   );
 };
 

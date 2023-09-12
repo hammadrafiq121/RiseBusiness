@@ -18,12 +18,7 @@ import { toast } from "react-toastify";
 import Spinner from "./Spinner";
 
 const EditCustomer = () => {
-  const stlye = {
-    padding: "20px",
-    backgroundColor: "white",
-    borderRadius: "10px",
-    boxShadow: "0 0 3px rgba(0, 0, 0, 0.2)",
-  };
+
   const [isDisabled, setIsDisabled] = useState(true);
   const blackForm = {
     companyName: "",
@@ -49,6 +44,7 @@ const EditCustomer = () => {
   const { isLoading, isSuccess, isError, message } = useSelector(
     (state) => state.customers
   );
+  const [statusOptions, setStatusOptions] = useState([]);
 
   useEffect(() => {
     const fetch = async () => {
@@ -80,6 +76,21 @@ const EditCustomer = () => {
       toast.error(message);
     }
   }, [isError, isLoading, isSuccess, message]);
+
+  useEffect(() => {
+    // Fetch statuses from your API
+    async function fetchStatuses() {
+      try {
+        const response = await fetch("http://localhost:3000/api/statuses/all");
+        const data = await response.json();
+        setStatusOptions(data);
+        console.log(statusOptions);
+      } catch (error) {
+        console.error("Error fetching statuses:", error);
+      }
+    }
+    fetchStatuses();
+  }, []);
 
   // useEffect(() => {
   //   const fetch = async () => {
@@ -128,7 +139,7 @@ const EditCustomer = () => {
 
   return (
     <main className=" editcustomer-div">
-      <Container className="editcustomer-container" style={stlye}>
+      <Container className="editcustomer-container">
         <Form onSubmit={handleUpdate}>
           <Row>
             <Col md={8}>
@@ -349,9 +360,31 @@ const EditCustomer = () => {
                       <option value="" disabled>
                         Select Status
                       </option>
-                      <option value="Interested">Interested</option>
-                      <option value="Active">Active</option>
-                      <option value="Inactive">Inactive</option>
+
+                      {/* {statusOptions.map((status) => {
+                        if (status._id === formData.status) {
+                          return (
+                            <option key={status._id} value={status._id}>
+                              {status.status}
+                            </option>
+                          );
+                        } else {
+                          return (
+                            <option key={status._id} value={status._id}>
+                              {status.status}
+                            </option>
+                          );
+                        }
+                      })} */}
+                      {statusOptions.map((status) => (
+                        <option
+                          key={status._id}
+                          value={status._id}
+                          selected={status._id === formData.status}
+                        >
+                          {status.status}
+                        </option>
+                      ))}
                     </Form.Select>
                   </Col>
                 </Form.Group>
@@ -373,7 +406,7 @@ const EditCustomer = () => {
               <Form.Group as={Row} className="mb-2">
                 {isDisabled && (
                   <Button
-                    className="mb-2 mr-2 edit_btn"
+                    className="mb-2 mr-2 edit_btn1"
                     variant="secondary"
                     type="button"
                     onClick={handleEdit}

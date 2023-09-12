@@ -143,7 +143,7 @@ const dashboard = ({ isDarkMode, toggleDarkMode }) => {
                 <Col lg={3} className="agent_col">
                   <Row className="agent-row2">
                     <Col lg={2}>
-                      <i class="bx bx-terminal agent_icon"></i>
+                      <i className="bx bx-terminal agent_icon"></i>
                     </Col>
                     <Col lg={7} className="agent-text">
                       <h2>Total Client</h2>
@@ -152,15 +152,15 @@ const dashboard = ({ isDarkMode, toggleDarkMode }) => {
                   </Row>
                 </Col>
               </Row>
-            </div>
+            
 
             {/* two chart line & pie chart  */}
             <Row className="line_chart">
               {/* line chart  */}
 
-              <Col lg={6}>
-                <ResponsiveContainer width="80%" height="100%" aspect={2}>
-                  <LineChart data={data}>
+              <Col lg={6} md={12}>
+              <ResponsiveContainer width="100%" height={300}>
+          <LineChart data={data}>
                     <CartesianGrid />
                     <XAxis
                       dataKey="name"
@@ -188,16 +188,15 @@ const dashboard = ({ isDarkMode, toggleDarkMode }) => {
 
               {/* composed chart  */}
 
-              <Col lg={5}>
-                <ResponsiveContainer>
-                  <ComposedChart width="80%" height="100%" data={data}>
+              <Col lg={5} md={12}>
+              <ResponsiveContainer width="100%" height={300}>
+          <ComposedChart data={data}>
                     <XAxis
                       dataKey="name"
                       interval={"preserveStartEnd"}
                       tickFormatter={(value) => value + " ECT"}
                     />
-                    <YAxis className="yaxis" />
-                    <Tooltip contentStyle={{ backgroundClip: "blue" }} />
+                   
                     <Legend />
                     <CartesianGrid stroke="#f5f5f5" />
                     <Area
@@ -215,9 +214,9 @@ const dashboard = ({ isDarkMode, toggleDarkMode }) => {
             <Row className="line_chart">
               {/* line chart  */}
 
-              <Col lg={6}>
-                <ResponsiveContainer width="80%" height="100%" aspect={2}>
-                  <PieChart width={700} height={400}>
+              <Col lg={6} md={12}>
+              <ResponsiveContainer width="100%" height={300}>
+          <PieChart>
                     <Pie
                       data={dataa}
                       cx="50%"
@@ -243,12 +242,12 @@ const dashboard = ({ isDarkMode, toggleDarkMode }) => {
 
               {/* composed chart  */}
 
-              <Col lg={5}>
-                <ResponsiveContainer>
-                  <BarChart
+              <Col lg={5} md={12}>
+              <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={data}
                     width="80%"
                     height="100%"
-                    data={data}
+                    
                     margin={{
                       top: 20,
                       right: 30,
@@ -276,6 +275,7 @@ const dashboard = ({ isDarkMode, toggleDarkMode }) => {
             </Row>
 
             {/* SECOND ROW  */}
+          </div>
           </div>
         </div>
       </div>

@@ -3,17 +3,18 @@ import { Form, Button, Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { signup, reset } from "../app/reducers/authSlice";
-import Spinner from "./Spinner";
+import { signup } from "../app/reducers/authSlice";
+// import Spinner from "./Spinner";
 
 const Signup = () => {
-  const [formData, setFormData] = useState({
+  const blankForm = {
     fullName: "",
     userName: "",
     email: "",
     password: "",
     userRole: "",
-  });
+  };
+  const [formData, setFormData] = useState(blankForm);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -21,9 +22,9 @@ const Signup = () => {
     (state) => state.auth
   );
 
-  useEffect(() => {
-    dispatch(reset());
-  }, []);
+  // useEffect(() => {
+  //   dispatch(reset());
+  // }, []);
 
   useEffect(() => {
     if (isLoading) {
@@ -38,13 +39,9 @@ const Signup = () => {
     if (isSuccess) {
       toast.dismiss();
       toast.success(message);
+      setFormData(blankForm);
     }
-    if (user) {
-      navigate("/signup");
-    }
-
-    dispatch(reset());
-  }, [user, isSuccess, isError, message, isLoading]);
+  }, [isSuccess, isError, message, isLoading]);
 
   const handleChange = (e) => {
     setFormData({
@@ -53,22 +50,23 @@ const Signup = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(signup(formData));
+    await dispatch(signup(formData));
   };
 
-  if (isLoading) {
-    return <Spinner />;
-  }
+  // if (isLoading) {
+  //   return <Spinner />;
+  // }
 
   return (
     <section className="signup_tab">
       <Container className="signup_container">
         <Form onSubmit={handleSubmit}>
           <Form.Group className="signup_group" controlId="fullName">
-            <Form.Label className="signup_label" >Full Name</Form.Label>
-            <Form.Control className="signup_name"
+            <Form.Label className="signup_label">Full Name</Form.Label>
+            <Form.Control
+              className="signup_name"
               type="text"
               name="fullName"
               value={formData.fullName}
@@ -79,7 +77,8 @@ const Signup = () => {
 
           <Form.Group className="signup_group" controlId="userName">
             <Form.Label>User Name</Form.Label>
-            <Form.Control className="signup_name"
+            <Form.Control
+              className="signup_name"
               type="text"
               name="userName"
               value={formData.userName}
@@ -90,7 +89,8 @@ const Signup = () => {
 
           <Form.Group className="signup_group" controlId="email">
             <Form.Label>Email</Form.Label>
-            <Form.Control className="signup_name"
+            <Form.Control
+              className="signup_name"
               type="email"
               name="email"
               value={formData.email}
@@ -101,7 +101,8 @@ const Signup = () => {
 
           <Form.Group className="signup_group" controlId="password">
             <Form.Label>Password</Form.Label>
-            <Form.Control className="signup_name"
+            <Form.Control
+              className="signup_name"
               type="password"
               name="password"
               value={formData.password}
@@ -112,7 +113,8 @@ const Signup = () => {
 
           <Form.Group className="signup_group" controlId="userRole">
             <Form.Label>User Role</Form.Label>
-            <Form.Control className="signup_name"
+            <Form.Control
+              className="signup_name"
               as="select"
               name="userRole"
               value={formData.userRole}
@@ -128,7 +130,11 @@ const Signup = () => {
             </Form.Control>
           </Form.Group>
 
-          <Button  className="mb-2 ml-2 mt-2 signup_btn" variant="secondary" type="submit">
+          <Button
+            className="mb-2 ml-2 mt-2 signup_btn"
+            variant="secondary"
+            type="submit"
+          >
             Signup
           </Button>
         </Form>

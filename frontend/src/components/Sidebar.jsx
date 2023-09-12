@@ -1,208 +1,199 @@
-import React, { useState } from "react";
-import "../style.css";
-import logo from "../assets/logo 1.png";
-import Logout from "./Logout";
-// import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-// import {  useNavigate } from "react-router-dom";
-// import { reset, logout } from "../app/reducers/authSlice";
+  import React, { useState } from "react";
+  import "../style.css";
+  import logo from "../assets/logo 1.png";
+  import Logout from "./Logout";
+  import { useSelector } from "react-redux";
+  import { Link  } from "react-router-dom";
 
-const Sidebar = ({ isDarkMode, toggleDarkMode }) => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [isCustomersDropdownOpen, setIsCustomersDropdownOpen] = useState(false);
 
-  const handleToggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
+  const Sidebar = ({ isDarkMode, toggleDarkMode }) => {
+    const { user } = useSelector((state) => state.auth);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const [isCustomersDropdownOpen, setIsCustomersDropdownOpen] = useState(false);
+    const [isCustomerDropdownOpen, setIsCustomerDropdownOpen] = useState(false);
 
-  // const handleModeSwitch = () => {
-  //   setIsDarkMode(!isDarkMode);
-  // };
+    const handleToggleSidebar = () => {
+      setIsSidebarOpen(!isSidebarOpen);
+      if (!isSidebarOpen) {
+        setIsCustomersDropdownOpen(false);
+        
+      }
+    };
 
-  const handleToggleCustomersDropdown = () => {
-    setIsCustomersDropdownOpen(!isCustomersDropdownOpen);
-  };
+    const handleToggleCustomersDropdown = () => {
+      setIsCustomersDropdownOpen(!isCustomersDropdownOpen);
+    };
+    const handleToggleCustomerDropdown = () => {
+      setIsCustomerDropdownOpen(!isCustomerDropdownOpen);
+    };
 
-  // const dispatch = useDispatch();
-  // const { user } = useSelector((state) => state.auth);
-  // const navigate = useNavigate();
+    return (
+      <div
+        className={`sidebar ${isSidebarOpen ? "close" : ""} ${
+          isDarkMode ? "dark" : ""
+        }`}
+      >
+        {/* Header */}
+        <header>
+          <div className="image-text">
+            <span className="image">
+              <img src={logo} alt="Logo" />
+            </span>
+            <div className="text logo-text">
+              <span className="name">RBS</span>
+              <span className="profession">
+                {user.userRole}
+              </span>
+            </div>
+          </div>
+          <i
+            className="bx bx-chevron-right toggle"
+            onClick={handleToggleSidebar}
+          ></i>
+        </header>
 
-  // const handleLogout = () => {
-  //   dispatch(logout());
-  //   dispatch(reset());
-  //   navigate("/");
-  // };
+        {/* Sidebar menu */}
+        <div className="menu-bar">
+          <div className="menu">
+            <ul className="menu-links">
+              {/* Dashboard link */}
+              <li className="nav-link">
+                <Link to="/" title="Click to Go Dashborad"  >
+                  <i className="bx bx-home-alt icon"></i>
+                  <span className="text nav-text">Dashboard</span>
+                </Link>
+              </li>
 
-  return (
-    <div
-      className={`sidebar ${isSidebarOpen ? "close" : ""} ${
-        isDarkMode ? "dark" : ""
-      }`}
-    >
-      <header>
-        <div className="image-text">
-          <span className="image">
-            <img src={logo} alt="" />
-          </span>
+              {/* Customers dropdown */}
+              {(user && (user.userRole === "admin" || user.userRole === "manager" || user.userRole === "agent")) && (
+                <div className="nav-dropdown">
+                  <div
+                    className="nav-link-with-dropdown nav-link1  "
+                    onClick={handleToggleCustomersDropdown}
+                  >
+                    <i className="bx bx-bar-chart-alt-2 icon"></i>
+                    <span className="text nav-text txt">Customers</span>
+                    <i
+                      className={`bx ${
+                        isCustomersDropdownOpen
+                          ? "bx-chevron-up"
+                          : "bx-chevron-down"
+                      }`}
+                    ></i>
+                  </div>
+                  <dl 
+                className={`dropdown-list ${
+                  isCustomersDropdownOpen ? "open" : ""
+                } ${isSidebarOpen ? '' : 'dropdown-ul-closed'}`}
+                  >
+                    <li>
+                      <Link to="/customers" title="Click to View Customers List" >
+                        <i className="bx bx-user icon"></i>
+                        <span className="text nav-text">Customers</span>
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/addcustomers " title="Click to Add Customers"  >
+                        <i className="bx bx-store icon"></i>
+                        <span className="text nav-text">Add</span>
+                      </Link>
+                    </li>
+                    {(user && user.userRole === "admin") && (
+                <li className="nav-link">
+                  <Link to="/customers/upload" title="Click to Upload File" >
+                    <i className="bx bxs-file-doc icon"></i>{" "}
+                    <span className="text nav-text">Upload</span>
+                  </Link>
+                </li>
+              )}
+                  </dl>
+                </div>
+              )}
 
-          <div className="text logo-text">
-            <span className="name">Rise Business Solution</span>
-            <span className="profession">Super Admin</span>
+              {/* Upload link (for admin only) */}
+              {/* {(user && user.userRole === "admin") && (
+                <li className="nav-link">
+                  <Link to="/customers/upload" title="Click to Upload File" >
+                    <i className="bx bxs-file-doc icon"></i>{" "}
+                    <span className="text nav-text">Upload File</span>
+                  </Link>
+                </li>
+              )} */}
+
+              {/* Admin-specific menu items */}
+              {/* {(user && user.userRole === "admin") && ( */}
+                {(user && user.userRole === "admin") && (
+                <div className="nav-dropdowna">
+                  <div
+                    className="nav-link-with-dropdown nav-link1"
+                    onClick={handleToggleCustomerDropdown}
+                  >
+                  <i className="bx bxs-user icon"></i>
+                    <span className="text nav-text txt">User </span>
+                    <i
+                      className={`bx ${
+                        isCustomerDropdownOpen
+                          ? "bx-chevron-up"
+                          : "bx-chevron-down"
+                      }`}
+                    ></i>
+                  </div>
+                  <ul
+                    className={`dropdown-list ${
+                      isCustomerDropdownOpen ? "open" : ""
+                    } ${isSidebarOpen ? '' : 'dropdown-ul-closed'}`}
+                  >
+                    <li>
+                    <Link to="/signup" title="Click to Add User" >
+                        <i className="bx bx-user icon"></i>
+                        <span className="text nav-text">Add </span>
+                      </Link>
+                    </li>
+                    <li>
+                    <Link to="/users"  title="Click to view user list">
+                        <i className="bx bx-store icon"></i>
+                        <span className="text nav-text">Users</span>
+                      </Link>
+                    </li>
+              </ul>
+             
+                </div>
+              )}
+            </ul>
+          </div>
+
+          {/* Logout and Dark Mode */}
+          <div className="bottom-content">
+            <li className="nav-link">
+            <Link to="/Viewprofile"  title="Click to view Profile">
+            <i className='bx bxs-user-account icon'></i>{" "}
+                      <span className="text nav-text">Profile</span>
+                    </Link>
+            </li>
+
+
+            
+              <Link to="/login"  title="Click to Logout" >
+                <Logout />
+              </Link>
+      
+
+            <li className="mode" onClick={toggleDarkMode}>
+              <div className="sun-moon">
+                <i className={`bx ${isDarkMode ? "bx-moon" : "bx-sun"} icon`}></i>
+              </div>
+              {/* <span className="mode-text text">
+                {isDarkMode ? "Light mode" : "Dark mode"}
+              </span> */}
+
+              <div className="toggle-switch">
+                <span className={`switch ${isDarkMode ? "dark" : ""}`}></span>
+              </div>
+            </li>
           </div>
         </div>
-
-        <i
-          className="bx bx-chevron-right toggle"
-          onClick={handleToggleSidebar}
-        ></i>
-      </header>
-
-      <div className="menu-bar">
-        <div className="menu">
-          <ul className="menu-links">
-            <li className="nav-link">
-              <Link to="/">
-                <i className="bx bx-home-alt icon"></i>
-                <span className="text nav-text">Dashboard</span>
-              </Link>
-            </li>
-
-            <div className="nav-dropdown">
-  <div className="nav-link-with-dropdown" onClick={handleToggleCustomersDropdown}>
-    <i className="bx bx-bar-chart-alt-2 icon"></i>
-    <span className="text nav-text txt">Customers</span>
-    <i className={`bx ${isCustomersDropdownOpen ? "bx-chevron-up" : "bx-chevron-down"}`}></i>
-  </div>
-  <ul className={`dropdown-list ${isCustomersDropdownOpen ? "open" : ""}`}>
-    <li>
-      <Link to="/customers">
-        <i className="bx bx-user icon"></i>
-        <span className="text nav-text">Customer List</span>
-      </Link>
-    </li>
-    <li>
-      <Link to="/addcustomers">
-        <i className="bx bx-store icon"></i>
-        <span className="text nav-text">Add Customers</span>
-      </Link>
-    </li>
-    {/* Add more dropdown items as needed */}
-  </ul>
-</div>
-
-            {/* Add more dropdown items as needed */}
-            <li className="nav-link">
-              <Link to="/customers/upload">
-                <i className="bx bxs-file-doc icon"></i>{" "}
-                <span className="text nav-text">Upload File</span>
-              </Link>
-            </li>
-            <li className="nav-link">
-              <Link to="/signup">
-              <i class="bx bxs-user-plus icon"></i>{" "}
-                <span className="text nav-text">Add User</span>
-              </Link>
-            </li>
-            <li className="nav-link">
-              <Link to="/users">
-              <i class='bx bx-list-ul icon' ></i>{" "}
-                <span className="text nav-text">User List</span>  
-              </Link>
-            </li>
-          </ul>
-        </div>
-
-        <div className="bottom-content">
-          {/* {user ? (
-            <>
-              <li>
-                <button className="btn-2">
-                  <i className="bx bx-log-out icon"></i>
-                  <span className="text nav-text ">Logout</span>
-                </button>
-              </li>
-            </>
-          ) : (
-            <></>
-          )} */}
-      
-            
-        
-
-          <li className="nav-link">
-              <Link >
-                
-                <Logout />
-                {/* <span className="text nav-text">Logout</span> */}
-              </Link>
-            </li>
-
-          <li className="mode" onClick={toggleDarkMode}>
-            <div className="sun-moon">
-              <i className={`bx ${isDarkMode ? "bx-moon" : "bx-sun"} icon`}></i>
-            </div>
-            <span className="mode-text text">
-              {isDarkMode ? "Light mode" : "Dark mode"}
-            </span>
-
-            <div className="toggle-switch">
-              <span className={`switch ${isDarkMode ? "dark" : ""}`}></span>
-            </div>
-          </li>
-        </div>
       </div>
-    </div>
-  );
-};
+    );
+  };
 
-export default Sidebar;
-
-{
-  /* {user ? (
-              <>
-              
-                   <li>
-            <button className="btn-2" onClick={handleLogout}>
-              <i className="bx bx-log-out icon"></i>
-              <span className="text nav-text "  >Logout</span>
-            </button>
-          </li>
-              </>
-            ) : (
-              <>
-              
-               
-              </>
-            )} */
-}
-
-{
-  /* <li className="nav-link">
-              <Link to="#">
-                <i className="bx bx-home-alt icon"></i>
-                <span className="text nav-text">Notification</span>
-              </Link>
-            </li>
-            <li className="nav-link">
-              <Link to="#">
-                <i className="bx bx-home-alt icon"></i>
-                <span className="text nav-text">Notification</span>
-              </Link>
-            </li>
-            <li className="nav-link">
-              <Link to="#">
-                <i className="bx bx-home-alt icon"></i>
-                <span className="text nav-text">Notification</span>
-              </Link>
-            </li> */
-}
-
-{
-  /* Other menu items... */
-}
-// {/* <li className="nav-link">
-// <Link to="">
-//   {/* <i class="bx bx-log-out icon"></i> */}
-//   <Logout />
-// </Link>
-// </li> */}
+  export default Sidebar;

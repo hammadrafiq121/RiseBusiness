@@ -52,10 +52,10 @@ const customerSchema = new mongoose.Schema(
       required: true,
     },
     comments: String,
-    status: {
-      type: String,
-      required: true,
-    },
+    // status: {
+    //   type: String,
+    //   required: true,
+    // },
     products: [
       {
         label: String,
@@ -65,6 +65,13 @@ const customerSchema = new mongoose.Schema(
     // products: [String],
 
     //referencing customer added by which particular user
+
+    status: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "Status",
+    },
+
     user: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,

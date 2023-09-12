@@ -3,6 +3,7 @@ import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Container from "react-bootstrap/Container";
+import Button from "react-bootstrap/Button";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { MultiSelect } from "react-multi-select-component";
@@ -10,14 +11,10 @@ import { connect, useSelector } from "react-redux";
 import { addCustomer, reset } from "../app/reducers/customerSlice";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 
 const AddCustomer = () => {
-  const stlye = {
-    padding: "20px",
-    backgroundColor: "white",
-    borderRadius: "10px",
-    boxShadow: "0 0 3px rgba(0, 0, 0, 0.2)",
-  };
+
 
   const dispatch = useDispatch();
   const blankForm = {
@@ -40,10 +37,25 @@ const AddCustomer = () => {
   const { isLoading, isSuccess, isError, message } = useSelector(
     (state) => state.customers
   );
+  const [statusOptions, setStatusOptions] = useState([]);
 
   useEffect(() => {
     dispatch(reset());
-  }, [isSuccess]);
+  }, []);
+
+  useEffect(() => {
+    // Fetch statuses from your API
+    async function fetchStatuses() {
+      try {
+        const response = await fetch("http://localhost:3000/api/statuses/all");
+        const data = await response.json();
+        setStatusOptions(data);
+      } catch (error) {
+        console.error("Error fetching statuses:", error);
+      }
+    }
+    fetchStatuses();
+  }, []);
 
   useEffect(() => {
     if (isLoading) {
@@ -73,7 +85,6 @@ const AddCustomer = () => {
       ...formData,
       [event.target.name]: event.target.value,
     }));
-    console.log(formData);
   };
 
   const handleInputChange = (name, value) => {
@@ -90,7 +101,7 @@ const AddCustomer = () => {
 
   return (
     <main className="Addcustomer_main">
-      <Container className="Addcustomer-container" style={stlye}>
+      <Container className="Addcustomer-container">
         <Form onSubmit={handleSubmit}>
           <Row>
             <Col md={8}>
@@ -284,7 +295,6 @@ const AddCustomer = () => {
                 </Col>
               </Form.Group>
             </Col>
-
             <Col md={4}>
               <div className="drop-container">
                 <Form.Group as={Row} className="mb-2">
@@ -299,9 +309,12 @@ const AddCustomer = () => {
                       <option value="" disabled>
                         Select Status
                       </option>
-                      <option value="Interested">Interested</option>
-                      <option value="Active">Active</option>
-                      <option value="Inactive">Inactive</option>
+
+                      {statusOptions?.map((option) => (
+                        <option key={option._id} value={option._id}>
+                          {option.status}
+                        </option>
+                      ))}
                     </Form.Select>
                   </Col>
                 </Form.Group>

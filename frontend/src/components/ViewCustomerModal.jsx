@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button, Modal, ListGroup } from "react-bootstrap";
 import { EyeFill } from "react-bootstrap-icons";
 
-const ViewCustomerModal = ({ customer }) => {
+const ViewCustomerModal = ({ customer, statusData }) => {
   const [showModal, setShowModal] = useState(false);
 
   const handleCloseModal = () => setShowModal(false);
@@ -47,7 +47,7 @@ const ViewCustomerModal = ({ customer }) => {
           <br />
           <strong>Comments:</strong> {customer.comments}
           <br />
-          <strong>Status:</strong> {customer.status}
+          <strong>Status:</strong> {statusData[customer._id] || "Unknown"}
           <br />
           <strong>Products:</strong>
           <ListGroup>

@@ -68,8 +68,9 @@ export const signupUser = async (request, response) => {
       password: hashedPassword,
       userRole,
     });
-    const token = createToken(user._id);
-    return response.status(200).json({ email, token });
+    // const token = createToken(user._id);
+    // return response.status(200).json({ email, token });
+    return response.status(200).json({ email });
   } catch (error) {
     return response.status(400).json({ error: "Registration Failed" });
   }
@@ -172,7 +173,15 @@ export const getSingleUser = async (request, response) => {
 
 export const updateUser = async (request, response) => {
   try {
-    const { id: userId } = request.params;
+    // const { id: userId } = request.params;
+    let userId;
+    if (request.params.id) {
+      userId = request.params.id;
+    } else {
+      const token = request.headers.authorization.split(" ")[1];
+      const decoded = JWT.verify(token, process.env.JWT_SECRET);
+      userId = decoded._id;
+    }
     const { password, userRole, email, userName, fullName } = request.body;
     const user = await User.findById(userId);
     if (!user) {
