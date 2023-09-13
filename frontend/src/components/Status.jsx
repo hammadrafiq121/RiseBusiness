@@ -1,52 +1,48 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { Table, Container, Form } from "react-bootstrap";
+import EditStatusModal from "./EditStatusModal";
 
 const Status = () => {
-  const statusOptions = [
-    { _id: "1", status: "Status 1" },
-    { _id: "2", status: "Status 2" },
-    { _id: "3", status: "Status 3" },
-    { _id: "4", status: "Status 4" },
-    { _id: "5", status: "Status 5" },
-    { _id: "6", status: "Status 6" },
-  ];
+  const [statusOptions, setStatusOptions] = useState([]);
 
-  const handleStatusEdit = async () => {
-    const [editStatus, setEditStatus] = useState(false);
-    const [statusForm, setStatusForm] = useState({
-      status: "",
-    });
-    setEditStatus(!editStatus);
-    console.log(editStatus);
-  };
-  const handleStatusChange = async (event) => {
-    setStatusForm((statusForm) => ({
-      ...statusForm,
-      [event.target.name]: event.target.value,
-    }));
-  };
-  const handleStatusSubmit = async (event) => {
-    event.preventDefault();
-    console.log(statusForm);
-  };
+  useEffect(() => {
+    // Fetch statuses from your API
+    async function fetchStatuses() {
+      try {
+        const response = await fetch("http://localhost:3000/api/statuses/all");
+        const data = await response.json();
+        setStatusOptions(data);
+      } catch (error) {
+        console.error("Error fetching statuses:", error);
+      }
+    }
+    fetchStatuses();
+  }, []);
 
-  return {
-    /* {editing ? (
-        <div>
-          <input
-            type="text"
-            value={editedStatus}
-            onChange={handleInputChange}
-          />
-          <button onClick={handleUpdateClick}>Update</button>
-          <button onClick={handleCancelClick}>Cancel</button>
-        </div>
-      ) : (
-        <div>
-          {statusData.status}
-          <button onClick={handleEditClick}>Edit</button>
-        </div>
-      )} */
-  };
+  const statuses = statusOptions.map((status) => (
+    <tr key={status._id} className="atim">
+      <td>
+        {status.status} <EditStatusModal status={status} />
+      </td>
+    </tr>
+  ));
+
+  return (
+    <div>
+      <section className="tab">
+        <Container className="tab_div1">
+          <Table style={{ width: "15%" }} className="user_list">
+            <thead>
+              <tr className="user_col_name">
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody className="tbody">{statuses}</tbody>
+          </Table>
+        </Container>
+      </section>
+    </div>
+  );
 };
 
 export default Status;

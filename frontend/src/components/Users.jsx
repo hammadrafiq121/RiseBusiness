@@ -11,7 +11,7 @@ import DeleteUser from "./DeleteUser";
 
 const Users = () => {
   const dispatch = useDispatch();
-  
+
   const { user } = useSelector((state) => state.auth);
 
   const { users, isLoading, isError, message, isSuccess } = useSelector(
@@ -19,7 +19,7 @@ const Users = () => {
   );
 
   const [searchKeyword, setSearchKeyword] = useState("");
-  const [selectedRole, setSelectedRole] = useState(""); 
+  const [selectedRole, setSelectedRole] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
@@ -54,12 +54,10 @@ const Users = () => {
     fetchUsers();
   }, [dispatch]);
 
-
   const handleSearchChange = (event) => {
     setSearchKeyword(event.target.value);
     setCurrentPage(1);
   };
-  
 
   const handleRoleFilterChange = (event) => {
     setSelectedRole(event.target.value);
@@ -140,22 +138,14 @@ const Users = () => {
               <Col lg={3}>
                 <Form.Group className="mb-2">
                   <Link to="/signup">
-                    <Button
-                      className="mr-5"
-                      variant="secondary"
-                      type="submit"
-                    >
+                    <Button className="mr-5" variant="secondary" type="submit">
                       Create User
                     </Button>
                   </Link>
                 </Form.Group>
                 <Form.Group className="mb-2">
                   <Link to="/customers/upload">
-                    <Button
-                      className="mr-5"
-                      variant="secondary"
-                      type="submit"
-                    >
+                    <Button className="mr-5" variant="secondary" type="submit">
                       Upload
                     </Button>
                   </Link>
@@ -169,7 +159,7 @@ const Users = () => {
           ) : (
             <Table className="user_list">
               <thead>
-                <tr className="user_col_name" >
+                <tr className="user_col_name">
                   <th>Full Name</th>
                   <th>Username</th>
                   <th>email</th>
@@ -181,10 +171,7 @@ const Users = () => {
             </Table>
           )}
 
-          <div
-            className="pagination-controls"
-            style={{ textAlign: "center", marginTop: "20px" }}
-          >
+          <div className="pagination-controls">
             <Button
               className="pagination-btn previous_btn"
               variant="secondary"
@@ -199,14 +186,7 @@ const Users = () => {
             >
               Previous
             </Button>
-            <ul
-              className="page-numbers-list"
-              style={{
-                display: "inline-block",
-                listStyle: "none",
-                padding: 0,
-              }}
-            >
+            <ul className="page-numbers-list">
               {Array.from({ length: totalPages }, (_, index) => (
                 <li
                   key={index}
@@ -215,9 +195,6 @@ const Users = () => {
                   }`}
                   onClick={() => setCurrentPage(index + 1)}
                   style={{
-                    cursor: "pointer",
-                    margin: "0 5px",
-                    padding: "5px 10px",
                     border:
                       index + 1 === currentPage
                         ? "1px solid #007bff"
@@ -225,7 +202,6 @@ const Users = () => {
                     backgroundColor:
                       index + 1 === currentPage ? "#007bff" : "white",
                     color: index + 1 === currentPage ? "white" : "black",
-                    borderRadius: "5px",
                   }}
                 >
                   {index + 1}
@@ -237,12 +213,6 @@ const Users = () => {
               variant="secondary"
               disabled={indexOfLastItem >= filteredUsers.length}
               onClick={() => setCurrentPage(currentPage + 1)}
-              style={{
-                marginLeft: "10px",
-                padding: "5px 10px",
-                border: "1px solid #ccc",
-                borderRadius: "5px",
-              }}
             >
               Next
             </Button>

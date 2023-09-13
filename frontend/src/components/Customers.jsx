@@ -175,18 +175,15 @@ const Customers = () => {
       }`}
       onClick={() => setCurrentPage(index + 1)}
       style={{
-     
-        border: index + 1 === currentPage ? "1px solid #007bff" : "1px solid #ccc",
+        border:
+          index + 1 === currentPage ? "1px solid #007bff" : "1px solid #ccc",
         backgroundColor: index + 1 === currentPage ? "#007bff" : "white",
         color: index + 1 === currentPage ? "white" : "black",
-       
       }}
     >
       {index + 1}
     </div>
   ));
-  
-  
 
   return (
     <div className="customer_div">
@@ -215,9 +212,6 @@ const Customers = () => {
                         onChange={handleStatusChange}
                       >
                         <option value="">Select Status</option>
-                        {/* <option value="Active">Active</option>
-                        <option value="Interested">Interested</option>
-                        <option value="Inactive">Inactive</option> */}
                         {statusOptions.map((status) => (
                           <option key={status._id} value={status._id}>
                             {status.status}
@@ -266,7 +260,6 @@ const Customers = () => {
                       </Link>
                     </Form.Group>
                   </Col>
-              
                 </Row>
               </Col>
             </Row>
@@ -286,35 +279,25 @@ const Customers = () => {
             <tbody className="tbody">{renderCustomers}</tbody>
           </Table>
 
-          <div
-            className="pagination-controls"
-          >
-          <Button
+          <div className="pagination-controls">
+            <Button
               className="pagination-btn previous_btn"
               variant="secondary"
               disabled={currentPage === 1}
               onClick={() => setCurrentPage(currentPage - 1)}
-             
             >
               Previous
             </Button>
-            <ul
-              className="page-numbers-list"
-             
-            >
-              {renderPageNumbers}
-            </ul>
+            <ul className="page-numbers-list">{renderPageNumbers}</ul>
             <Button
               className="pagination-btn next_btn"
               variant="secondary"
               disabled={indexOfLastItem >= filteredCustomers.length}
               onClick={() => setCurrentPage(currentPage + 1)}
-            
             >
               Next
             </Button>
           </div>
-          
         </Container>
       </section>
     </div>
