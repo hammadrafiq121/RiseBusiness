@@ -108,26 +108,28 @@ export const uploadCustomers = async (request, response) => {
   try {
     const filePath = request.file.path;
     const user = request.body.user;
+    // const status = "65006c1260470819587c9f76";
     const results = [];
     await new Promise((resolve, reject) => {
       fs.createReadStream(filePath)
         .pipe(csv())
         .on("data", (data) => {
-          const productValues = data.products.split("|");
-          const products = productValues.map((product) => {
-            const trimmedProduct = product.trim();
-            const lowercaseProduct = trimmedProduct.toLowerCase();
-            const wordsInProduct = lowercaseProduct.split(" ");
-            const capitalizedProduct = wordsInProduct
-              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-              .join(" ");
-            return {
-              label: capitalizedProduct,
-              value: lowercaseProduct.replace(/\s+/g, "-"),
-            };
-          });
+          // const productValues = data.products.split("|");
+          // const products = productValues.map((product) => {
+          //   const trimmedProduct = product.trim();
+          //   const lowercaseProduct = trimmedProduct.toLowerCase();
+          //   const wordsInProduct = lowercaseProduct.split(" ");
+          //   const capitalizedProduct = wordsInProduct
+          //     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          //     .join(" ");
+          //   return {
+          //     label: capitalizedProduct,
+          //     value: lowercaseProduct.replace(/\s+/g, "-"),
+          //   };
+          // });
+
           // Create a new object with the modified products array
-          const newData = { ...data, products, user };
+          const newData = { ...data, user };
           // Push the modified data to the results array
           results.push(newData);
         })

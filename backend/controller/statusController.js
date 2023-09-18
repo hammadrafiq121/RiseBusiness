@@ -52,3 +52,13 @@ export const updateStatus = async (request, response) => {
     return response.status(500).json({ error: "Failed to update Status" });
   }
 };
+
+export const deleteStutus = async (request, response) => {
+  try {
+    const statusId = request.params.id;
+    const deletedStatus = await Status.findByIdAndDelete(statusId);
+    return response.status(200).json(deletedStatus);
+  } catch (error) {
+    return response.status(500).json({ error: error.message });
+  }
+};

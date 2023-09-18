@@ -1,13 +1,5 @@
 import mongoose from "mongoose";
 
-// const productSchema = new mongoose.Schema(
-//   {
-//     label: String,
-//     value: String,
-//   },
-//   { _id: false }
-// );
-
 const customerSchema = new mongoose.Schema(
   {
     companyName: {
@@ -58,18 +50,17 @@ const customerSchema = new mongoose.Schema(
     // },
     products: [
       {
-        label: String,
-        value: String,
+        // label: String,
+        // value: String,
+        // _id: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
       },
     ],
-    // products: [String],
-
-    //referencing customer added by which particular user
-
     status: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
       ref: "Status",
+      // required: true,
     },
 
     user: {
@@ -77,7 +68,6 @@ const customerSchema = new mongoose.Schema(
       required: true,
       ref: "User",
     },
-    // products: [productSchema],
   },
   { timestamps: true }
 );

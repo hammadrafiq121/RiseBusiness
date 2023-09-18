@@ -2,17 +2,16 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 
 import { Button, Modal } from "react-bootstrap";
-import { PencilSquare } from "react-bootstrap-icons";
 import { Form, Row, Col } from "react-bootstrap";
 import statusApi from "../services/statusApi";
-import { updateStatus } from "../app/reducers/statusSlice.js";
+import { addStatus } from "../app/reducers/statusSlice.js";
 
-const EditStatusModal = ({ status }) => {
+const EditStatusModal = () => {
   const [showModal, setShowModal] = useState(false);
   const handleCloseModal = () => setShowModal(false);
   const handleShowModal = () => setShowModal(true);
 
-  const [formData, setFormData] = useState(status);
+  const [formData, setFormData] = useState({ status: "" });
   const dispatch = useDispatch();
 
   const handleChange = async (event) => {
@@ -22,12 +21,10 @@ const EditStatusModal = ({ status }) => {
     }));
   };
 
-  const handleUpdate = async (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    await statusApi.updateStatus(formData._id, formData.status);
-    await dispatch(
-      updateStatus({ id: formData._id, updatedStatus: formData.status })
-    );
+    const response = await statusApi.addStatus(formData);
+    await dispatch(addStatus(response.data));
     handleCloseModal();
   };
 
@@ -38,7 +35,7 @@ const EditStatusModal = ({ status }) => {
         className="symbol-button"
         onClick={handleShowModal}
       >
-        <PencilSquare />
+        add new
       </Button>
 
       <Modal
@@ -52,7 +49,7 @@ const EditStatusModal = ({ status }) => {
         </Modal.Header>
 
         <Modal.Body>
-          <Form onSubmit={handleUpdate}>
+          <Form onSubmit={handleSubmit}>
             <Row>
               <Col>
                 <Form.Group controlId="status">

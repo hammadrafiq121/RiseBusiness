@@ -1,14 +1,16 @@
 import React from "react";
 import { Trash } from "react-bootstrap-icons";
 import Button from "react-bootstrap/Button";
-import { deleteCustomer } from "../app/reducers/customerSlice.js";
+import { deleteProduct } from "../app/reducers/productSlice.js";
+import productApi from "../services/productApi";
 import { useDispatch } from "react-redux";
 
-const DeleteCustomer = ({ customer }) => {
+const DeleteProduct = ({ product }) => {
   const dispatch = useDispatch();
 
   const handleDelete = async () => {
-    dispatch(deleteCustomer(customer._id));
+    await productApi.deleteProduct(product._id);
+    await dispatch(deleteProduct(product._id));
   };
 
   return (
@@ -18,4 +20,4 @@ const DeleteCustomer = ({ customer }) => {
   );
 };
 
-export default DeleteCustomer;
+export default DeleteProduct;

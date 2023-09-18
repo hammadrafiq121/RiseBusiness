@@ -3,7 +3,6 @@ import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Container from "react-bootstrap/Container";
-import Button from "react-bootstrap/Button";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { MultiSelect } from "react-multi-select-component";
@@ -11,11 +10,10 @@ import { connect, useSelector } from "react-redux";
 import { addCustomer, reset } from "../app/reducers/customerSlice";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
+import statusApi from "../services/statusApi";
+import productApi from "../services/productApi";
 
 const AddCustomer = () => {
-
-
   const dispatch = useDispatch();
   const blankForm = {
     companyName: "",
@@ -38,6 +36,7 @@ const AddCustomer = () => {
     (state) => state.customers
   );
   const [statusOptions, setStatusOptions] = useState([]);
+  const [productOptions, setProductOptions] = useState([]);
 
   useEffect(() => {
     dispatch(reset());
@@ -46,15 +45,16 @@ const AddCustomer = () => {
   useEffect(() => {
     // Fetch statuses from your API
     async function fetchStatuses() {
-      try {
-        const response = await fetch("http://localhost:3000/api/statuses/all");
-        const data = await response.json();
-        setStatusOptions(data);
-      } catch (error) {
-        console.error("Error fetching statuses:", error);
-      }
+      const data = await statusApi.getAllStatus();
+      setStatusOptions(data);
     }
     fetchStatuses();
+
+    async function fetchProducts() {
+      const data = await productApi.getProducts();
+      setProductOptions(data);
+    }
+    fetchProducts();
   }, []);
 
   useEffect(() => {
@@ -73,12 +73,18 @@ const AddCustomer = () => {
     }
   }, [isError, isLoading, isSuccess, message]);
 
-  const productNames = [
-    { label: "Hospital Stretchers", value: "hospital-stretchers" },
-    { label: "Defibrillators", value: "defibrillators" },
-    { label: "Anesthesia Machines", value: "anesthesia-machines" },
-    { label: "Patient Monitors", value: "patient-monitors" },
-  ];
+  // const productNames = [
+  //   { label: "Hospital Stretchers", value: "hospital-stretchers" },
+  //   { label: "Defibrillators", value: "defibrillators" },
+  //   { label: "Anesthesia Machines", value: "anesthesia-machines" },
+  //   { label: "Patient Monitors", value: "patient-monitors" },
+  // ];
+
+  const products = productOptions.map((product) => ({
+    label: product.product,
+    value: product.slug,
+    _id: product._id,
+  }));
 
   const handleChange = async (event) => {
     setFormData((formData) => ({
@@ -93,9 +99,28 @@ const AddCustomer = () => {
       [name]: value,
     }));
   };
+  // const handleProductChange = (name, value) => {
+  //   setFormData((prevFormData) => ({
+  //     ...prevFormData,
+  //     [name]: value,
+  //   }));
+  //   console.log(formData.products);
+  // };
+
+  // const handleProductChange = (name, value) => {
+  //   const productIds = value.map((product) => product._id);
+
+  //   setFormData((prevFormData) => ({
+  //     ...prevFormData,
+  //     [name]: productIds, // Assign the array of _id values to the products field
+  //   }));
+
+  //   console.log(formData.products);
+  // };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    console.log(formData);
     await dispatch(addCustomer(formData)); // Dispatch the addCustomer action
   };
 
@@ -322,7 +347,7 @@ const AddCustomer = () => {
                   <Col sm={12}>
                     <MultiSelect
                       name="products"
-                      options={productNames}
+                      options={products}
                       value={formData.products}
                       onChange={(selected) =>
                         handleInputChange("products", selected)

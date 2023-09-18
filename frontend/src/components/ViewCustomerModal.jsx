@@ -2,9 +2,8 @@ import React, { useState } from "react";
 import { Button, Modal, ListGroup } from "react-bootstrap";
 import { EyeFill } from "react-bootstrap-icons";
 
-const ViewCustomerModal = ({ customer, statusData }) => {
+const ViewCustomerModal = ({ customer, statusData, productsData }) => {
   const [showModal, setShowModal] = useState(false);
-
   const handleCloseModal = () => setShowModal(false);
   const handleShowModal = () => setShowModal(true);
 
@@ -47,13 +46,16 @@ const ViewCustomerModal = ({ customer, statusData }) => {
           <br />
           <strong>Comments:</strong> {customer.comments}
           <br />
-          <strong>Status:</strong> {statusData[customer._id] || "Unknown"}
+          <strong>Status:</strong>{" "}
+          {statusData[customer._id] ? statusData[customer._id] : "Not Yet Set"}
           <br />
           <strong>Products:</strong>
           <ListGroup>
-            {customer.products.map((product) => (
-              <ListGroup.Item key={product._id}>{product.label}</ListGroup.Item>
-            ))}
+            {productsData[customer._id]?.map((product) => (
+              <ListGroup.Item key={product._id}>
+                {product.product}
+              </ListGroup.Item>
+            )) || "Not Yet Set"}
           </ListGroup>
         </Modal.Body>
         <Modal.Footer>

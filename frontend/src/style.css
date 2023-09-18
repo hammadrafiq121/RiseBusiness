@@ -1175,19 +1175,13 @@ div.dark .home .text{
 .pagination-controls ul li{
     display: inline;
     list-style: none;
-    padding: 8px;
 
     cursor: pointer;
-    border-radius: 50%;
     margin-right: 10px;
     width: 50px !important;
     height: 50px !important;
   }
-  .pagination-controls ul li:hover{
-    background:#1f41a9;
-    color: rgb(53, 47, 47) !important;
-
-  }
+  
   .pagination-controls ul li:active{
     background-color: #1f41a9 !important;
 

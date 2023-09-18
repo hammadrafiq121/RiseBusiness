@@ -1,32 +1,39 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-
 import { Button, Modal } from "react-bootstrap";
 import { PencilSquare } from "react-bootstrap-icons";
 import { Form, Row, Col } from "react-bootstrap";
-import statusApi from "../services/statusApi";
-import { updateStatus } from "../app/reducers/statusSlice.js";
+import productApi from "../services/productApi";
+import { updateProduct } from "../app/reducers/productSlice.js";
 
-const EditStatusModal = ({ status }) => {
+const EditProductModal = ({ product }) => {
   const [showModal, setShowModal] = useState(false);
   const handleCloseModal = () => setShowModal(false);
   const handleShowModal = () => setShowModal(true);
 
-  const [formData, setFormData] = useState(status);
+  const [formData, setFormData] = useState(product);
   const dispatch = useDispatch();
 
-  const handleChange = async (event) => {
-    setFormData((formData) => ({
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    const updatedFormData = {
       ...formData,
-      [event.target.name]: event.target.value,
-    }));
+      [name]: value,
+    };
+    const slug = value
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-zA-Z0-9-]/g, "");
+
+    updatedFormData.slug = slug;
+    setFormData(updatedFormData);
   };
 
   const handleUpdate = async (event) => {
     event.preventDefault();
-    await statusApi.updateStatus(formData._id, formData.status);
+    await productApi.updateProduct(formData._id, formData);
     await dispatch(
-      updateStatus({ id: formData._id, updatedStatus: formData.status })
+      updateProduct({ id: formData._id, updatedProduct: formData.product })
     );
     handleCloseModal();
   };
@@ -48,20 +55,20 @@ const EditStatusModal = ({ status }) => {
         dialogClassName="custom-modal-width"
       >
         <Modal.Header closeButton>
-          <Modal.Title>Status</Modal.Title>
+          <Modal.Title>Product</Modal.Title>
         </Modal.Header>
 
         <Modal.Body>
           <Form onSubmit={handleUpdate}>
             <Row>
               <Col>
-                <Form.Group controlId="status">
+                <Form.Group controlId="product">
                   <Col>
                     <Form.Control
                       type="text"
                       placeholder=""
-                      name="status"
-                      value={formData.status}
+                      name="product"
+                      value={formData.product}
                       onChange={handleChange}
                       required
                     />
@@ -84,4 +91,4 @@ const EditStatusModal = ({ status }) => {
   );
 };
 
-export default EditStatusModal;
+export default EditProductModal;

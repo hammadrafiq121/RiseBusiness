@@ -50,7 +50,7 @@ const UploadCSV = () => {
     } catch (error) {
       console.log("Error uploading customers from CSV:", error);
     }
-    navigate("/customers/");
+    // navigate("/customers/");
   };
 
   const allUsers =
@@ -66,8 +66,7 @@ const UploadCSV = () => {
   }
 
   return (
-    <div className="upload" >
-   
+    <div className="upload">
       <Container className=" upload-container ">
         <Row>
           <Col>
@@ -107,7 +106,6 @@ const UploadCSV = () => {
         </Row>
       </Container>
     </div>
-    
   );
 };
 

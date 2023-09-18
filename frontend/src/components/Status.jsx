@@ -1,28 +1,30 @@
 import React, { useEffect, useState } from "react";
 import { Table, Container, Form } from "react-bootstrap";
 import EditStatusModal from "./EditStatusModal";
+import statusApi from "../services/statusApi";
+import { useSelector, useDispatch } from "react-redux";
+import { setsStatuses } from "../app/reducers/statusSlice.js";
+import AddStatusModal from "./AddStatusModal";
+import DeleteStatus from "./DeleteStatus";
 
 const Status = () => {
-  const [statusOptions, setStatusOptions] = useState([]);
+  // const [statusOptions, setStatusOptions] = useState([]);
+  const { statuses } = useSelector((state) => state.statuses);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    // Fetch statuses from your API
     async function fetchStatuses() {
-      try {
-        const response = await fetch("http://localhost:3000/api/statuses/all");
-        const data = await response.json();
-        setStatusOptions(data);
-      } catch (error) {
-        console.error("Error fetching statuses:", error);
-      }
+      await dispatch(setsStatuses(await statusApi.getAllStatus()));
+      // setStatusOptions(data);
     }
     fetchStatuses();
   }, []);
 
-  const statuses = statusOptions.map((status) => (
+  const allStatus = statuses.map((status) => (
     <tr key={status._id} className="atim">
       <td>
-        {status.status} <EditStatusModal status={status} />
+        {status.status} <EditStatusModal status={status} />{" "}
+        {/* <DeleteStatus className="tdd" status={status} /> */}
       </td>
     </tr>
   ));
@@ -37,7 +39,10 @@ const Status = () => {
                 <th>Status</th>
               </tr>
             </thead>
-            <tbody className="tbody">{statuses}</tbody>
+            <tbody className="tbody">{allStatus}</tbody>
+            <tfoot>
+              <AddStatusModal />
+            </tfoot>
           </Table>
         </Container>
       </section>

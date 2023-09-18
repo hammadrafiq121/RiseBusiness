@@ -16,9 +16,10 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Spinner from "./Spinner";
+import { getStatus, getAllStatus } from "../services/statusApi";
+import { getProducts, getSelectedProducts } from "../services/productApi";
 
 const EditCustomer = () => {
-
   const [isDisabled, setIsDisabled] = useState(true);
   const blackForm = {
     companyName: "",
@@ -44,23 +45,44 @@ const EditCustomer = () => {
   const { isLoading, isSuccess, isError, message } = useSelector(
     (state) => state.customers
   );
+  const [productOptions, setProductOptions] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
+  // const [selectedProducts, setSelectedProducts] = useState([]);
 
   useEffect(() => {
-    const fetch = async () => {
+    const fetchData = async () => {
       if (user) {
         await dispatch(reset());
-        const customer = await dispatch(getCustomer(id));
-        if (isSuccess) {
-          setFormData(customer.payload);
-        }
-        if (isError) {
-          setFormData(blackForm);
-        }
+        const statuses = await getAllStatus();
+        setStatusOptions(statuses);
+        const allProducts = await getProducts();
+        setProductOptions(allProducts);
+        const { payload } = await dispatch(getCustomer(id));
+
+        //want to ask query
+        // const customerProducts = productNames.filter((product) =>
+        //   payload.products.includes(product._id)
+        // );
+        // setSelectedProducts(customerProducts);
+        // setFormData({
+        //   ...payload,
+        //   products: selectedProducts,
+        // });
+
+        const customerProducts = await getSelectedProducts(payload.products);
+        const mappedProducts = customerProducts.map((product) => ({
+          label: product.product,
+          value: product.slug,
+          _id: product._id,
+        }));
+        setFormData({
+          ...payload,
+          products: mappedProducts,
+        });
       }
     };
-    fetch();
-  }, [id, dispatch, user]);
+    fetchData();
+  }, [user]);
 
   useEffect(() => {
     if (isLoading) {
@@ -77,20 +99,20 @@ const EditCustomer = () => {
     }
   }, [isError, isLoading, isSuccess, message]);
 
-  useEffect(() => {
-    // Fetch statuses from your API
-    async function fetchStatuses() {
-      try {
-        const response = await fetch("http://localhost:3000/api/statuses/all");
-        const data = await response.json();
-        setStatusOptions(data);
-        console.log(statusOptions);
-      } catch (error) {
-        console.error("Error fetching statuses:", error);
-      }
-    }
-    fetchStatuses();
-  }, []);
+  // useEffect(() => {
+  //   // Fetch statuses from your API
+  //   async function fetchStatuses() {
+  //     try {
+  //       const response = await fetch("http://localhost:3000/api/statuses/all");
+  //       const data = await response.json();
+  //       setStatusOptions(data);
+  //       console.log(statusOptions);
+  //     } catch (error) {
+  //       console.error("Error fetching statuses:", error);
+  //     }
+  //   }
+  //   fetchStatuses();
+  // }, []);
 
   // useEffect(() => {
   //   const fetch = async () => {
@@ -105,12 +127,23 @@ const EditCustomer = () => {
   //   fetch();
   // }, [user, dispatch, id]);
 
-  const productNames = [
-    { label: "Hospital Stretchers", value: "hospital-stretchers" },
-    { label: "Defibrillators", value: "defibrillators" },
-    { label: "Anesthesia Machines", value: "anesthesia-machines" },
-    { label: "Patient Monitors", value: "patient-monitors" },
-  ];
+  const productNames = productOptions.map((product) => ({
+    label: product.product,
+    value: product.slug,
+    _id: product._id,
+  }));
+
+  // const selectedProducts = productNames.filter((product) =>
+  //   formData.products.includes(product._id)
+  // );
+  // console.log(selectedProducts);
+
+  // const productNames = [
+  //   { label: "Hospital Stretchers", value: "hospital-stretchers" },
+  //   { label: "Defibrillators", value: "defibrillators" },
+  //   { label: "Anesthesia Machines", value: "anesthesia-machines" },
+  //   { label: "Patient Monitors", value: "patient-monitors" },
+  // ];
 
   const handleEdit = () => {
     setIsDisabled(!isDisabled);
@@ -360,27 +393,11 @@ const EditCustomer = () => {
                       <option value="" disabled>
                         Select Status
                       </option>
-
-                      {/* {statusOptions.map((status) => {
-                        if (status._id === formData.status) {
-                          return (
-                            <option key={status._id} value={status._id}>
-                              {status.status}
-                            </option>
-                          );
-                        } else {
-                          return (
-                            <option key={status._id} value={status._id}>
-                              {status.status}
-                            </option>
-                          );
-                        }
-                      })} */}
                       {statusOptions.map((status) => (
                         <option
                           key={status._id}
                           value={status._id}
-                          selected={status._id === formData.status}
+                          defaultValue={status._id === formData.status}
                         >
                           {status.status}
                         </option>

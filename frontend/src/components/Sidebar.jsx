@@ -38,7 +38,7 @@ const Sidebar = ({ isDarkMode, toggleDarkMode }) => {
             <img src={logo} alt="Logo" />
           </span>
           <div className="text logo-text">
-            <span className="name">RBS</span>
+            <span className="name">{user.fullName}</span>
             <span className="profession">{user.userRole}</span>
           </div>
         </div>

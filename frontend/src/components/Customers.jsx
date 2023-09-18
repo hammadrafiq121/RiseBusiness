@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Table, Form, Container, Row, Col, Button } from "react-bootstrap";
-import { Link, json } from "react-router-dom";
+import { Link } from "react-router-dom";
 import ViewCustomerModal from "./ViewCustomerModal";
 import DeleteCustomer from "./DeleteCustomer";
 import { PencilSquare } from "react-bootstrap-icons";
@@ -11,9 +11,8 @@ import { toast } from "react-toastify";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { parseISO, isBefore, startOfDay, endOfDay } from "date-fns";
-// import Spinner from "./Spinner";
-// import { da } from "date-fns/locale";
-import { getStatus } from "../services/statusApi.js";
+import { getStatus, getAllStatus } from "../services/statusApi";
+import { getSelectedProducts } from "../services/productApi";
 
 const Customers = () => {
   const dispatch = useDispatch();
@@ -30,6 +29,7 @@ const Customers = () => {
   const [selectedStartDate, setSelectedStartDate] = useState(null);
   const [selectedEndDate, setSelectedEndDate] = useState(null);
   const [statusData, setStatusData] = useState({});
+  const [productsData, setProductsData] = useState({});
   const [statusOptions, setStatusOptions] = useState([]);
 
   useEffect(() => {
@@ -37,11 +37,20 @@ const Customers = () => {
       if (user) {
         const fetchedCustomers = await dispatch(getCustomers());
         for (const customer of fetchedCustomers.payload) {
-          const response = await getStatus(customer.status);
-          setStatusData((statusData) => ({
-            ...statusData,
-            [customer._id]: response,
-          }));
+          if (customer.status?.length > 0) {
+            const status = await getStatus(customer.status);
+            setStatusData((statusData) => ({
+              ...statusData,
+              [customer._id]: status,
+            }));
+          }
+          if (customer.products?.length > 0) {
+            const products = await getSelectedProducts(customer.products);
+            setProductsData((productsData) => ({
+              ...productsData,
+              [customer._id]: products,
+            }));
+          }
         }
       }
     };
@@ -51,13 +60,8 @@ const Customers = () => {
   useEffect(() => {
     // Fetch statuses from your API
     async function fetchStatuses() {
-      try {
-        const response = await fetch("http://localhost:3000/api/statuses/all");
-        const data = await response.json();
-        setStatusOptions(data);
-      } catch (error) {
-        console.error("Error fetching statuses:", error);
-      }
+      const data = await getAllStatus();
+      setStatusOptions(data);
     }
     fetchStatuses();
   }, []);
@@ -151,7 +155,11 @@ const Customers = () => {
         {new Date(customer.createdAt).toLocaleDateString()}
       </td>
       <td className="td">
-        <ViewCustomerModal customer={customer} statusData={statusData} />
+        <ViewCustomerModal
+          customer={customer}
+          statusData={statusData}
+          productsData={productsData}
+        />
         <Button
           variant="link"
           className="symbol-button tdd"

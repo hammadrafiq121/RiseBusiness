@@ -2,32 +2,41 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 
 import { Button, Modal } from "react-bootstrap";
-import { PencilSquare } from "react-bootstrap-icons";
 import { Form, Row, Col } from "react-bootstrap";
-import statusApi from "../services/statusApi";
-import { updateStatus } from "../app/reducers/statusSlice.js";
+import productApi from "../services/productApi";
+import { addProduct } from "../app/reducers/productSlice.js";
 
-const EditStatusModal = ({ status }) => {
+const AddProductModal = () => {
   const [showModal, setShowModal] = useState(false);
   const handleCloseModal = () => setShowModal(false);
   const handleShowModal = () => setShowModal(true);
 
-  const [formData, setFormData] = useState(status);
+  const [formData, setFormData] = useState({ product: "", slug: "" });
   const dispatch = useDispatch();
 
-  const handleChange = async (event) => {
-    setFormData((formData) => ({
-      ...formData,
-      [event.target.name]: event.target.value,
-    }));
-  };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
 
-  const handleUpdate = async (event) => {
+    // Update the product value
+    const updatedFormData = {
+      ...formData,
+      [name]: value,
+    };
+
+    // Generate the slug based on the product value
+    const slug = value
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-zA-Z0-9-]/g, "");
+
+    updatedFormData.slug = slug;
+
+    setFormData(updatedFormData);
+  };
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    await statusApi.updateStatus(formData._id, formData.status);
-    await dispatch(
-      updateStatus({ id: formData._id, updatedStatus: formData.status })
-    );
+    const response = await productApi.addProduct(formData);
+    await dispatch(addProduct(response.data));
     handleCloseModal();
   };
 
@@ -38,7 +47,7 @@ const EditStatusModal = ({ status }) => {
         className="symbol-button"
         onClick={handleShowModal}
       >
-        <PencilSquare />
+        add new
       </Button>
 
       <Modal
@@ -48,20 +57,20 @@ const EditStatusModal = ({ status }) => {
         dialogClassName="custom-modal-width"
       >
         <Modal.Header closeButton>
-          <Modal.Title>Status</Modal.Title>
+          <Modal.Title>Product</Modal.Title>
         </Modal.Header>
 
         <Modal.Body>
-          <Form onSubmit={handleUpdate}>
+          <Form onSubmit={handleSubmit}>
             <Row>
               <Col>
-                <Form.Group controlId="status">
+                <Form.Group controlId="product">
                   <Col>
                     <Form.Control
                       type="text"
                       placeholder=""
-                      name="status"
-                      value={formData.status}
+                      name="product"
+                      value={formData.product}
                       onChange={handleChange}
                       required
                     />
@@ -84,4 +93,15 @@ const EditStatusModal = ({ status }) => {
   );
 };
 
-export default EditStatusModal;
+export default AddProductModal;
+
+// const trimmedProduct = product.trim();
+// const lowercaseProduct = trimmedProduct.toLowerCase();
+// const wordsInProduct = lowercaseProduct.split(" ");
+// const capitalizedProduct = wordsInProduct
+//   .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+//   .join(" ");
+// return {
+//   product: capitalizedProduct,
+//   slug: lowercaseProduct.replace(/\s+/g, "-"),
+// };

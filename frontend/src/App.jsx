@@ -20,6 +20,7 @@ import LogViewer from "./components/LogViewer";
 import PermissionDenied from "./components/PermissionDenied";
 import Viewprofile from "./components/Viewprofile";
 import Status from "./components/Status";
+import Product from "./components/Product";
 
 // import Test from "./components/Test";
 
@@ -47,6 +48,7 @@ function App() {
           {user ? (
             <>
               <Route path="/status" element={<Status />} />
+              <Route path="/product" element={<Product />} />
 
               {/* Auth Routes */}
               <Route path="/login" element={<Navigate to="/" />} />

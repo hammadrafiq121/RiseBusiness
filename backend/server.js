@@ -8,6 +8,7 @@ import logRoutes from "./routes/logRoutes.js";
 import statusRoutes from "./routes/statusRoutes.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import LogEntry from "./model/logSchema.js";
+import productRoutes from "./routes/productRoutes.js";
 
 dotenv.config();
 const PORT = process.env.PORT;
@@ -34,6 +35,8 @@ app.use("/", customerRoutes);
 app.use("/", logRoutes);
 //Status Route
 app.use("/", statusRoutes);
+//Product Route
+app.use("/", productRoutes);
 
 // Routes
 app.get("/api/logs", async (req, res) => {
