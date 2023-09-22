@@ -15,6 +15,7 @@ export const addStatus = async (req, res) => {
 
   try {
     const existingStatus = await Status.findOne({ status: status });
+    console.log(existingStatus);
     if (existingStatus) {
       return res.status(400).json({ error: "Status already exists" });
     }

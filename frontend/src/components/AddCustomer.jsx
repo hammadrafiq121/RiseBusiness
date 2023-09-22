@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
@@ -29,11 +29,14 @@ const AddCustomer = () => {
     personName: "",
     personPhone: "",
     personEmail: "",
-    comments: "",
+    comments: [""],
     status: "",
     products: [],
   };
+
   const [formData, setFormData] = useState(blankForm);
+  const newCommentInputRef = useRef(null);
+
   const { isLoading, isSuccess, isError, message } = useSelector(
     (state) => state.customers
   );
@@ -92,6 +95,32 @@ const AddCustomer = () => {
     _id: product._id,
   }));
 
+  const handleCommentChange = (index, value) => {
+    const newComments = [...formData.comments];
+    newComments[index] = value;
+    // const nonEmptyComments = newComments.filter(
+    //   (comment) => comment.trim() !== ""
+    // );
+    setFormData((formData) => ({
+      ...formData,
+      comments: newComments,
+    }));
+  };
+
+  const addCommentField = () => {
+    if (formData.comments[formData.comments.length - 1].trim() !== "") {
+      // setComments([...comments, ""]); // Add a new empty comment field
+      setFormData((formData) => ({
+        ...formData,
+        comments: [...formData.comments, ""],
+      }));
+    } else {
+      if (newCommentInputRef.current) {
+        newCommentInputRef.current.focus();
+      }
+    }
+  };
+
   const handleChange = async (event) => {
     setFormData((formData) => ({
       ...formData,
@@ -126,8 +155,11 @@ const AddCustomer = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(formData);
-    await dispatch(addCustomer(formData)); // Dispatch the addCustomer action
+    const nonEmptyComments = await formData.comments.filter(
+      (comment) => comment.trim() !== ""
+    );
+
+    await dispatch(addCustomer({ ...formData, comments: nonEmptyComments })); // Dispatch the addCustomer action
   };
 
   return (
@@ -313,16 +345,30 @@ const AddCustomer = () => {
                   Comments
                 </Form.Label>
                 <Col sm={9}>
-                  <Form.Control
-                    className="input"
-                    as="textarea"
-                    placeholder=""
-                    rows={3}
-                    value={formData.comments}
-                    name="comments"
-                    onChange={handleChange}
-                    required
-                  />
+                  {formData.comments.map((comment, index) => (
+                    <Form.Control
+                      ref={newCommentInputRef}
+                      className="input"
+                      as="textarea"
+                      placeholder=""
+                      rows={2}
+                      value={comment}
+                      onChange={(e) =>
+                        handleCommentChange(index, e.target.value)
+                      }
+                      // required
+                      // name="comments"
+                      // value={formData.comments}
+                      // onChange={handleChange}
+                    />
+                  ))}
+                  <button
+                    type="button"
+                    onClick={addCommentField}
+                    className="plus-check"
+                  >
+                    +
+                  </button>
                 </Col>
               </Form.Group>
             </Col>

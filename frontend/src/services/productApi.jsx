@@ -13,8 +13,7 @@ export const getProducts = async (token) => {
     return await axios.get(`${backendUrl}/api/products/all`, config);
   } catch (error) {
     console.log(`Error while calling getProducts api ${error}`);
-    // throw error;
-    return error;
+    throw error;
   }
 };
 
@@ -32,8 +31,7 @@ export const getSelectedProducts = async (token, productIds) => {
     );
   } catch (error) {
     console.log(`Error while calling getSelectedProducts api ${error}`);
-    // throw error;
-    return error;
+    throw error;
   }
 };
 
@@ -51,7 +49,7 @@ export const updateProduct = async (token, id, product) => {
     );
   } catch (error) {
     console.log(`Error while calling updateProduct api ${error}`);
-    return error;
+    throw error;
   }
 };
 
@@ -86,7 +84,7 @@ export const deleteProduct = async (token, id) => {
     );
   } catch (error) {
     console.log(`Error while calling add status api ${error}`);
-    return error;
+    throw error;
   }
 };
 

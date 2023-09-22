@@ -7,14 +7,12 @@ import DeleteCustomer from "./DeleteCustomer";
 import { PencilSquare } from "react-bootstrap-icons";
 import { getCustomers } from "../app/reducers/customerSlice.js";
 import { toast } from "react-toastify";
-// import { getUsers } from "../app/reducers/userSlice.js";
+import { getUsers } from "../app/reducers/userSlice.js";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { parseISO, isBefore, startOfDay, endOfDay } from "date-fns";
-import { getAllStatus, getStatus } from "../app/reducers/statusSlice.js";
+import { getAllStatus } from "../app/reducers/statusSlice.js";
 import { getProducts } from "../app/reducers/productSlice.js";
-
-// import { getSelectedProducts } from "../services/productApi";
 
 const Customers = () => {
   const dispatch = useDispatch();
@@ -25,49 +23,29 @@ const Customers = () => {
   );
   const { statuses } = useSelector((state) => state.statuses);
   const { products } = useSelector((state) => state.products);
-
-  // const { users } = useSelector((state) => state.users);
+  const { users } = useSelector((state) => state.users);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [selectedStatus, setSelectedStatus] = useState("");
+  const [selectedUser, setSelectedUser] = useState("");
   const [selectedStartDate, setSelectedStartDate] = useState(null);
   const [selectedEndDate, setSelectedEndDate] = useState(null);
-  // const [statusData, setStatusData] = useState({});
-  // const [productsData, setProductsData] = useState({});
-  // const [statusOptions, setStatusOptions] = useState([]);
+  const admin = user && user.userRole === "admin";
 
   useEffect(() => {
-    const fetchCustomers = async () => {
+    const fetchData = async () => {
       if (user) {
         await dispatch(getAllStatus());
         await dispatch(getProducts());
-
-        const fetchedCustomers = await dispatch(getCustomers());
-        for (const customer of fetchedCustomers.payload) {
-          // if (customer.status?.length > 0) {
-          //   // const status = await dispatch(getStatus(customer.status));
-          //   const status = await statuses.find(
-          //     (status) => status._id === customer.status
-          //   );
-          //   setStatusData((statusData) => ({
-          //     ...statusData,
-          //     [customer._id]: status.status,
-          //   }));
-          // }
-          // if (customer.products?.length > 0) {
-          //   console.log(customer.products);
-          //   const products = await getSelectedProducts(customer.products);
-          //   setProductsData((productsData) => ({
-          //     ...productsData,
-          //     [customer._id]: products,
-          // }));
-          // }
-        }
+        await dispatch(getCustomers());
+      }
+      if (admin) {
+        await dispatch(getUsers());
       }
     };
-    fetchCustomers();
-  }, []);
+    fetchData();
+  }, [dispatch]);
 
   // useEffect(() => {
   //   if (isLoading) {
@@ -89,7 +67,6 @@ const Customers = () => {
   //     if (isError) {
   //       console.log(message);
   //     }
-  //     await dispatch(getUsers());
   //   };
   //   fetchUsers();
   // }, [dispatch]);
@@ -101,6 +78,10 @@ const Customers = () => {
 
   const handleStatusChange = (event) => {
     setSelectedStatus(event.target.value);
+    setCurrentPage(1);
+  };
+  const handleUserChange = (event) => {
+    setSelectedUser(event.target.value);
     setCurrentPage(1);
   };
 
@@ -119,6 +100,8 @@ const Customers = () => {
     const isStatusMatch =
       selectedStatus === "" || customer.status === selectedStatus;
 
+    const isUserMatch = selectedUser === "" || customer.user === selectedUser;
+
     const creationDate = parseISO(customer.createdAt);
     const startOfSelectedStartDate = startOfDay(selectedStartDate);
     const endOfSelectedEndDate = endOfDay(selectedEndDate);
@@ -132,6 +115,7 @@ const Customers = () => {
         customer.state.toLowerCase().includes(keyword) ||
         customer.city.toLowerCase().includes(keyword)) &&
       isStatusMatch &&
+      isUserMatch &&
       isStartDateMatch &&
       isEndDateMatch
     );
@@ -152,6 +136,7 @@ const Customers = () => {
       status:
         statuses.find((status) => status._id === item.status)?.status ||
         "Unknown",
+      user: users.find((user) => user._id === item.user)?.userName || "Unknown",
       products: products.filter((product) =>
         item.products.includes(product._id)
       ),
@@ -162,7 +147,18 @@ const Customers = () => {
         <td className="td">{customer.companyName}</td>
         <td className="td">{customer.state}</td>
         <td className="td">{customer.city}</td>
+        {admin && <td className="td">{customer.user}</td>}
+        {/* {admin &&
+          users
+            .filter((user) => user._id === customer.user)
+            .map((currentUser) => (
+              <td key={currentUser._id} className="td">
+                {currentUser.userName}
+              </td>
+            ))} */}
+
         <td className="td">{customer.status}</td>
+
         <td className="td">
           {new Date(customer.createdAt).toLocaleDateString()}
         </td>
@@ -241,6 +237,25 @@ const Customers = () => {
                       </Form.Control>
                     </Form.Group>
                   </Col>
+                  {admin && (
+                    <Col lg={2}>
+                      <Form.Group controlId="userFilter" className="mb-2  ">
+                        <Form.Control
+                          className="col_7 Select-status"
+                          as="select"
+                          value={selectedUser}
+                          onChange={handleUserChange}
+                        >
+                          <option value="">Select User</option>
+                          {users.map((user) => (
+                            <option key={user._id} value={user._id}>
+                              {user.userName}
+                            </option>
+                          ))}
+                        </Form.Control>
+                      </Form.Group>
+                    </Col>
+                  )}
 
                   <Col lg={5}>
                     <Form.Group
@@ -304,6 +319,7 @@ const Customers = () => {
                 <th className="custoner-col-name">Business Name</th>
                 <th className="custoner-col-name">State</th>
                 <th className="custoner-col-name">City</th>
+                {admin && <th className="custoner-col-name">User</th>}
                 <th className="custoner-col-name">Status</th>
                 <th className="custoner-col-name">Date</th>
                 <th className="custoner-col-name">Action</th>

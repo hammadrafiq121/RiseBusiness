@@ -81,7 +81,7 @@ const AddProductModal = () => {
               <Col>
                 <Form.Group>
                   <Button variant="secondary" type="submit">
-                    Update
+                    Add
                   </Button>
                 </Form.Group>
               </Col>

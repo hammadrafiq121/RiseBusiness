@@ -5,7 +5,7 @@ function Sample() {
   const addStatus = async (comments) => {
     try {
       const response = await axios.post(
-        `https://rise-business-backend-kcsmg.ondigitalocean.app/api/samples/add`,
+        `http://localhost:3000/api/samples/add`,
         { comments }
       );
       return response.data;

@@ -4,6 +4,7 @@ export const addProduct = async (req, res) => {
   const { product, slug } = req.body;
   try {
     const existingProduct = await Product.findOne({ product: product });
+    console.log(existingProduct);
     if (existingProduct) {
       return res.status(400).json({ error: "Product already exists" });
     }

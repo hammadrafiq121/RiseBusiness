@@ -3,52 +3,93 @@ import axios from "axios";
 const backendUrl = "https://rise-business-backend-kcsmg.ondigitalocean.app";
 // const backendUrl = "http://localhost:3000";
 
-export const getAllStatus = async () => {
+export const getAllStatus = async (token) => {
   try {
-    const response = await axios.get(`${backendUrl}/api/statuses/all`);
-    return response.data;
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    return await axios.get(`${backendUrl}/api/statuses/all`, config);
   } catch (error) {
     console.log(`Error while calling get status api ${error}`);
-    // throw error;
-    return error;
+    throw error;
   }
 };
-export const getStatus = async (id) => {
+export const getStatus = async (token, id) => {
   try {
-    const response = await axios.get(`${backendUrl}/api/statuses/get/${id}`);
-    return response.data.status;
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    return await axios.get(`${backendUrl}/api/statuses/get/${id}`, config);
   } catch (error) {
     console.log(`Error while calling get status api ${error}`);
-    return error;
+    throw error;
   }
 };
 
-export const updateStatus = async (id, status) => {
+export const updateStatus = async (token, id, status) => {
   try {
-    return await axios.put(`${backendUrl}/api/statuses/update/${id}`, {
-      status,
-    });
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    return await axios.put(
+      `${backendUrl}/api/statuses/update/${id}`,
+      {
+        status,
+      },
+      config
+    );
   } catch (error) {
     console.log(`Error while calling edit status api ${error}`);
-    return error;
+    throw error;
   }
 };
 
-export const addStatus = async (status) => {
+export const addStatus = async (token, status) => {
   try {
-    return await axios.post(`${backendUrl}/api/statuses/add`, status);
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    const response = await axios.post(
+      `${backendUrl}/api/statuses/add`,
+      status,
+      config
+    );
+    if (response.status === 200) {
+      return response;
+    }
   } catch (error) {
-    console.log(`Error while calling add status api ${error}`);
-    return error;
+    if (error.response.status === 400) {
+      console.log(error.response.data.error);
+      throw error;
+    } else {
+      console.log(`Error while calling add status api ${error}`);
+      throw error;
+    }
   }
 };
 
-export const deleteStatus = async (id) => {
+export const deleteStatus = async (token, id) => {
   try {
-    return await axios.delete(`${backendUrl}/api/statuses/delete/${id}`);
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    return await axios.delete(
+      `${backendUrl}/api/statuses/delete/${id}`,
+      config
+    );
   } catch (error) {
     console.log(`Error while calling add status api ${error}`);
-    return error;
+    throw error;
   }
 };
 

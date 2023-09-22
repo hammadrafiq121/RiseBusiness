@@ -43,16 +43,10 @@ const customerSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    comments: String,
-    // status: {
-    //   type: String,
-    //   required: true,
-    // },
+    comments: [String],
+
     products: [
       {
-        // label: String,
-        // value: String,
-        // _id: mongoose.Schema.Types.ObjectId,
         type: mongoose.Schema.Types.ObjectId,
         ref: "Product",
       },
