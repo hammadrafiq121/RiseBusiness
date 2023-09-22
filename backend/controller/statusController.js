@@ -11,8 +11,13 @@ export const getStatuses = async (req, res) => {
 
 export const addStatus = async (req, res) => {
   const { status } = req.body;
+  console.log(status);
 
   try {
+    const existingStatus = await Status.findOne({ status: status });
+    if (existingStatus) {
+      return res.status(400).json({ error: "Status already exists" });
+    }
     const newStatus = await Status.create({
       status,
     });
@@ -27,7 +32,7 @@ export const getStatus = async (req, res) => {
   try {
     const statusId = req.params.id;
     const status = await Status.findById(statusId);
-    return res.status(200).json({ status: status.status });
+    return res.status(200).json(status);
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }

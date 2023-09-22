@@ -2,13 +2,15 @@ import Product from "../model/productSchema.js";
 
 export const addProduct = async (req, res) => {
   const { product, slug } = req.body;
-
   try {
+    const existingProduct = await Product.findOne({ product: product });
+    if (existingProduct) {
+      return res.status(400).json({ error: "Product already exists" });
+    }
     const newProduct = await Product.create({
       product,
       slug,
     });
-
     await newProduct.save();
     return res.status(200).json(newProduct);
   } catch (error) {

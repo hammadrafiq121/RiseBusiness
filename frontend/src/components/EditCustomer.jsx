@@ -16,8 +16,11 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Spinner from "./Spinner";
-import { getStatus, getAllStatus } from "../services/statusApi";
-import { getProducts, getSelectedProducts } from "../services/productApi";
+// import { getStatus, getAllStatus } from "../services/statusApi";
+import { getAllStatus } from "../app/reducers/statusSlice.js";
+import { getProducts } from "../app/reducers/productSlice.js";
+
+// import { getProducts, getSelectedProducts } from "../services/productApi";
 
 const EditCustomer = () => {
   const [isDisabled, setIsDisabled] = useState(true);
@@ -42,23 +45,39 @@ const EditCustomer = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
+  const { statuses } = useSelector((state) => state.statuses);
+  const { products } = useSelector((state) => state.products);
   const { isLoading, isSuccess, isError, message } = useSelector(
     (state) => state.customers
   );
-  const [productOptions, setProductOptions] = useState([]);
-  const [statusOptions, setStatusOptions] = useState([]);
+  // const [productOptions, setProductOptions] = useState([]);
+  // const [statusOptions, setStatusOptions] = useState([]);
   // const [selectedProducts, setSelectedProducts] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       if (user) {
         await dispatch(reset());
-        const statuses = await getAllStatus();
-        setStatusOptions(statuses);
-        const allProducts = await getProducts();
-        setProductOptions(allProducts);
-        const { payload } = await dispatch(getCustomer(id));
+        await dispatch(getAllStatus());
+        await dispatch(getProducts());
 
+        // setStatusOptions(statuses);
+        // console.log(statusOptions);
+        // const allProducts = await getProducts();
+        // setProductOptions(allProducts);
+        const { payload } = await dispatch(getCustomer(id));
+        const selectedProducts = await products.filter((product) =>
+          payload.products.includes(product._id)
+        );
+        const mappedProducts = selectedProducts.map((product) => ({
+          label: product.product,
+          value: product.slug,
+          _id: product._id,
+        }));
+        setFormData({
+          ...payload,
+          products: mappedProducts,
+        });
         //want to ask query
         // const customerProducts = productNames.filter((product) =>
         //   payload.products.includes(product._id)
@@ -69,35 +88,35 @@ const EditCustomer = () => {
         //   products: selectedProducts,
         // });
 
-        const customerProducts = await getSelectedProducts(payload.products);
-        const mappedProducts = customerProducts.map((product) => ({
-          label: product.product,
-          value: product.slug,
-          _id: product._id,
-        }));
-        setFormData({
-          ...payload,
-          products: mappedProducts,
-        });
+        // const customerProducts = await getSelectedProducts(payload.products);
+        // const mappedProducts = customerProducts.map((product) => ({
+        //   label: product.product,
+        //   value: product.slug,
+        //   _id: product._id,
+        // }));
+        // setFormData({
+        //   ...payload,
+        //   products: mappedProducts,
+        // });
       }
     };
     fetchData();
   }, [user]);
 
-  useEffect(() => {
-    if (isLoading) {
-      toast.dismiss();
-      toast.loading(message);
-    }
-    if (isSuccess) {
-      toast.dismiss();
-      toast.success(message);
-    }
-    if (isError) {
-      toast.dismiss();
-      toast.error(message);
-    }
-  }, [isError, isLoading, isSuccess, message]);
+  // useEffect(() => {
+  //   if (isLoading) {
+  //     toast.dismiss();
+  //     toast.loading(message);
+  //   }
+  //   if (isSuccess) {
+  //     toast.dismiss();
+  //     toast.success(message);
+  //   }
+  //   if (isError) {
+  //     toast.dismiss();
+  //     toast.error(message);
+  //   }
+  // }, [isError, isLoading, isSuccess, message]);
 
   // useEffect(() => {
   //   // Fetch statuses from your API
@@ -127,7 +146,7 @@ const EditCustomer = () => {
   //   fetch();
   // }, [user, dispatch, id]);
 
-  const productNames = productOptions.map((product) => ({
+  const productNames = products.map((product) => ({
     label: product.product,
     value: product.slug,
     _id: product._id,
@@ -266,6 +285,7 @@ const EditCustomer = () => {
                   <Form.Group as={Col} controlId="state" className="mb-2">
                     <Form.Label>State</Form.Label>
                     <Form.Control
+                      className="form-control"
                       disabled
                       as="select"
                       name="state"
@@ -381,6 +401,25 @@ const EditCustomer = () => {
 
             <Col md={4}>
               <div className="drop-container">
+                <Form.Group as={Row} className="mb-2 submt">
+                  {isDisabled && (
+                    <Button
+                      className="mb-2 mr-2 btn_f"
+                      variant="secondary"
+                      type="button"
+                      onClick={handleEdit}
+                    >
+                      Edit
+                    </Button>
+                  )}
+                  <Button
+                    className="mb-2 mr-2 btn_f "
+                    variant="secondary"
+                    type="submit"
+                  >
+                    Update
+                  </Button>
+                </Form.Group>
                 <Form.Group as={Row} className="mb-2">
                   <Col sm={12}>
                     <Form.Select
@@ -393,7 +432,7 @@ const EditCustomer = () => {
                       <option value="" disabled>
                         Select Status
                       </option>
-                      {statusOptions.map((status) => (
+                      {statuses.map((status) => (
                         <option
                           key={status._id}
                           value={status._id}
@@ -405,7 +444,7 @@ const EditCustomer = () => {
                     </Form.Select>
                   </Col>
                 </Form.Group>
-                <Form.Group as={Row} className="mb-2">
+                <Form.Group as={Row} className="mb-2 drop">
                   <Col sm={12}>
                     <MultiSelect
                       disabled={isDisabled}
@@ -420,25 +459,6 @@ const EditCustomer = () => {
                   </Col>
                 </Form.Group>
               </div>
-              <Form.Group as={Row} className="mb-2">
-                {isDisabled && (
-                  <Button
-                    className="mb-2 mr-2 edit_btn1"
-                    variant="secondary"
-                    type="button"
-                    onClick={handleEdit}
-                  >
-                    Edit
-                  </Button>
-                )}
-                <Button
-                  className="mb-2 mr-2 update_btn "
-                  variant="secondary"
-                  type="submit"
-                >
-                  Update
-                </Button>
-              </Form.Group>
             </Col>
           </Row>
         </Form>

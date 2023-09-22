@@ -1,7 +1,6 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Container, Row, Col, Dropdown, DropdownButton } from "react-bootstrap";
-import logo from "../assets/logo.png";
 import { useDispatch, useSelector } from "react-redux";
 // import { reset, logout } from "../app/reducers/authSlice";
 import { Link, useNavigate } from "react-router-dom";

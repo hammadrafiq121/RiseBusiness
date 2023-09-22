@@ -79,7 +79,7 @@ const Login = () => {
           <Form.Group controlId="email">
             <Form.Label></Form.Label>
             <Form.Control
-              className="input"
+              className="input login"
               type="email"
               name="email"
               value={formData.email}
@@ -90,7 +90,7 @@ const Login = () => {
           <Form.Group controlId="password">
             <Form.Label></Form.Label>
             <Form.Control
-              className="input"
+              className="input  login "
               type="password"
               name="password"
               value={formData.password}
@@ -99,7 +99,7 @@ const Login = () => {
             />
           </Form.Group>
           <Button
-            className="mb-2  mt-2 btn-1"
+            className="mb-2  mt-2 btn-1 "
             variant="secondary"
             type="submit"
           >

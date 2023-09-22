@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-
 import { Button, Modal } from "react-bootstrap";
 import { Form, Row, Col } from "react-bootstrap";
-import statusApi from "../services/statusApi";
 import { addStatus } from "../app/reducers/statusSlice.js";
 
 const EditStatusModal = () => {
@@ -23,8 +21,7 @@ const EditStatusModal = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const response = await statusApi.addStatus(formData);
-    await dispatch(addStatus(response.data));
+    await dispatch(addStatus(formData));
     handleCloseModal();
   };
 

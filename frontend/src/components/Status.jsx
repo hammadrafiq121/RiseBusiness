@@ -1,20 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { Table, Container, Form } from "react-bootstrap";
-import EditStatusModal from "./EditStatusModal";
-import statusApi from "../services/statusApi";
 import { useSelector, useDispatch } from "react-redux";
-import { setsStatuses } from "../app/reducers/statusSlice.js";
+import { getAllStatus } from "../app/reducers/statusSlice.js";
+import EditStatusModal from "./EditStatusModal";
 import AddStatusModal from "./AddStatusModal";
 import DeleteStatus from "./DeleteStatus";
 
 const Status = () => {
   // const [statusOptions, setStatusOptions] = useState([]);
-  const { statuses } = useSelector((state) => state.statuses);
   const dispatch = useDispatch();
+  const { statuses } = useSelector((state) => state.statuses);
 
   useEffect(() => {
     async function fetchStatuses() {
-      await dispatch(setsStatuses(await statusApi.getAllStatus()));
+      await dispatch(getAllStatus());
       // setStatusOptions(data);
     }
     fetchStatuses();

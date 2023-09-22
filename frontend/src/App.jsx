@@ -21,6 +21,7 @@ import PermissionDenied from "./components/PermissionDenied";
 import Viewprofile from "./components/Viewprofile";
 import Status from "./components/Status";
 import Product from "./components/Product";
+import Sample from "./components/Sample";
 
 // import Test from "./components/Test";
 
@@ -49,6 +50,7 @@ function App() {
             <>
               <Route path="/status" element={<Status />} />
               <Route path="/product" element={<Product />} />
+              <Route path="/sample" element={<Sample />} />
 
               {/* Auth Routes */}
               <Route path="/login" element={<Navigate to="/" />} />

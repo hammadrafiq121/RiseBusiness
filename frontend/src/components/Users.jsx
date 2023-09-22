@@ -120,7 +120,7 @@ const Users = () => {
                   />
                 </Form.Group>
               </Col>
-              <Col lg={3}>
+              <Col lg={2}>
                 <Form.Group controlId="roleFilter" className="mb-2">
                   <Form.Control
                     className="role_agent"
@@ -135,21 +135,21 @@ const Users = () => {
                   </Form.Control>
                 </Form.Group>
               </Col>
-              <Col lg={3}>
-                <Form.Group className="mb-2">
+              <Col lg={6}>
+                <Form.Group className="mb-2 user_btn">
                   <Link to="/signup">
                     <Button className="mr-5" variant="secondary" type="submit">
                       Create User
                     </Button>
                   </Link>
                 </Form.Group>
-                <Form.Group className="mb-2">
+                {/* <Form.Group className="mb-2">
                   <Link to="/customers/upload">
                     <Button className="mr-5" variant="secondary" type="submit">
                       Upload
                     </Button>
                   </Link>
-                </Form.Group>
+                </Form.Group> */}
               </Col>
             </Row>
           </Form>

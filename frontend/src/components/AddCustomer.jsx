@@ -10,8 +10,10 @@ import { connect, useSelector } from "react-redux";
 import { addCustomer, reset } from "../app/reducers/customerSlice";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import statusApi from "../services/statusApi";
-import productApi from "../services/productApi";
+// import statusApi from "../services/statusApi";
+import { getAllStatus } from "../app/reducers/statusSlice.js";
+import { getProducts } from "../app/reducers/productSlice.js";
+// import productApi from "../services/productApi";
 
 const AddCustomer = () => {
   const dispatch = useDispatch();
@@ -35,8 +37,11 @@ const AddCustomer = () => {
   const { isLoading, isSuccess, isError, message } = useSelector(
     (state) => state.customers
   );
-  const [statusOptions, setStatusOptions] = useState([]);
-  const [productOptions, setProductOptions] = useState([]);
+  const { statuses } = useSelector((state) => state.statuses);
+  const { products } = useSelector((state) => state.products);
+
+  // const [statusOptions, setStatusOptions] = useState([]);
+  // const [productOptions, setProductOptions] = useState([]);
 
   useEffect(() => {
     dispatch(reset());
@@ -45,14 +50,15 @@ const AddCustomer = () => {
   useEffect(() => {
     // Fetch statuses from your API
     async function fetchStatuses() {
-      const data = await statusApi.getAllStatus();
-      setStatusOptions(data);
+      await dispatch(getAllStatus());
+      // setStatusOptions(data);
     }
     fetchStatuses();
 
     async function fetchProducts() {
-      const data = await productApi.getProducts();
-      setProductOptions(data);
+      await dispatch(getAllStatus());
+
+      // setProductOptions(data);
     }
     fetchProducts();
   }, []);
@@ -80,7 +86,7 @@ const AddCustomer = () => {
   //   { label: "Patient Monitors", value: "patient-monitors" },
   // ];
 
-  const products = productOptions.map((product) => ({
+  const productNames = products.map((product) => ({
     label: product.product,
     value: product.slug,
     _id: product._id,
@@ -321,6 +327,15 @@ const AddCustomer = () => {
               </Form.Group>
             </Col>
             <Col md={4}>
+              <Form.Group as={Row} className="mb-2 submt">
+                <button
+                  className="mb-2 mr-2 mt-3 btn_f submit "
+                  variant="secondary"
+                  type="submit"
+                >
+                  Submit
+                </button>
+              </Form.Group>
               <div className="drop-container">
                 <Form.Group as={Row} className="mb-2">
                   <Col sm={12}>
@@ -335,7 +350,7 @@ const AddCustomer = () => {
                         Select Status
                       </option>
 
-                      {statusOptions?.map((option) => (
+                      {statuses?.map((option) => (
                         <option key={option._id} value={option._id}>
                           {option.status}
                         </option>
@@ -343,11 +358,11 @@ const AddCustomer = () => {
                     </Form.Select>
                   </Col>
                 </Form.Group>
-                <Form.Group as={Row} className="mb-2">
+                <Form.Group as={Row} className="mb-2 drop">
                   <Col sm={12}>
                     <MultiSelect
                       name="products"
-                      options={products}
+                      options={productNames}
                       value={formData.products}
                       onChange={(selected) =>
                         handleInputChange("products", selected)
@@ -357,15 +372,6 @@ const AddCustomer = () => {
                   </Col>
                 </Form.Group>
               </div>
-              <Form.Group as={Row} className="mb-2">
-                <button
-                  className="mb-2 mr-2 mt-3 btn_f "
-                  variant="secondary"
-                  type="submit"
-                >
-                  Submit
-                </button>
-              </Form.Group>
             </Col>
           </Row>
         </Form>

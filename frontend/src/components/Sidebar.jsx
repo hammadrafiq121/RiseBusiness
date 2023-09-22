@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 
 const Sidebar = ({ isDarkMode, toggleDarkMode }) => {
   const { user } = useSelector((state) => state.auth);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isCustomersDropdownOpen, setIsCustomersDropdownOpen] = useState(false);
   const [isCustomerDropdownOpen, setIsCustomerDropdownOpen] = useState(false);
 
@@ -35,7 +35,7 @@ const Sidebar = ({ isDarkMode, toggleDarkMode }) => {
       <header>
         <div className="image-text">
           <span className="image">
-            <img src={logo} alt="Logo" />
+            <img src={logo} alt="Logo" className="img" />
           </span>
           <div className="text logo-text">
             <span className="name">{user.fullName}</span>
@@ -43,7 +43,7 @@ const Sidebar = ({ isDarkMode, toggleDarkMode }) => {
           </div>
         </div>
         <i
-          className="bx bx-chevron-right toggle"
+          // className="bx bx-chevron-right toggle"
           onClick={handleToggleSidebar}
         ></i>
       </header>
@@ -169,7 +169,7 @@ const Sidebar = ({ isDarkMode, toggleDarkMode }) => {
                 </li>
                 <li className="nav-link">
                   <Link to="/product" title="Stutus list">
-                    <i className="bx bx-analyse icon"></i>
+                  <i className="bx bxl-product-hunt icon"></i>
                     <span className="text nav-text">Products</span>
                   </Link>
                 </li>
@@ -180,12 +180,12 @@ const Sidebar = ({ isDarkMode, toggleDarkMode }) => {
 
         {/* Logout and Dark Mode */}
         <div className="bottom-content">
-          <li className="nav-link">
+          {/* <li className="nav-link">
             <Link to="/Viewprofile" title="Click to view Profile">
               <i className="bx bxs-user-account icon"></i>{" "}
               <span className="text nav-text">Profile</span>
             </Link>
-          </li>
+          </li> */}
 
           <Link to="/login" title="Click to Logout">
             <Logout />

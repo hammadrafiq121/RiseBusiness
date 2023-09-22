@@ -142,7 +142,7 @@ const EditUser = () => {
               </Form.Group>
 
                  {/* role feild */}
-              <Form.Group as={Row} controlId="userRole" className="mb-2">
+              <Form.Group as={Row} controlId="userRole" className="mb-2 role">
                 
                   <Form.Select
                     disabled={isDisabled}

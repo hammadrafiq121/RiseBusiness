@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 
 import { Button, Modal } from "react-bootstrap";
 import { Form, Row, Col } from "react-bootstrap";
-import productApi from "../services/productApi";
+// import productApi from "../services/productApi";
 import { addProduct } from "../app/reducers/productSlice.js";
 
 const AddProductModal = () => {
@@ -35,8 +35,8 @@ const AddProductModal = () => {
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const response = await productApi.addProduct(formData);
-    await dispatch(addProduct(response.data));
+    // const response = await productApi.addProduct(formData);
+    await dispatch(addProduct(formData));
     handleCloseModal();
   };
 
@@ -51,7 +51,8 @@ const AddProductModal = () => {
       </Button>
 
       <Modal
-        style={{ width: "50%" }}
+        className="modal"
+        style={{ width: "100%" }}
         show={showModal}
         onHide={handleCloseModal}
         dialogClassName="custom-modal-width"

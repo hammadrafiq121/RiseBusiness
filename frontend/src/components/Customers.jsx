@@ -11,8 +11,10 @@ import { toast } from "react-toastify";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { parseISO, isBefore, startOfDay, endOfDay } from "date-fns";
-import { getStatus, getAllStatus } from "../services/statusApi";
-import { getSelectedProducts } from "../services/productApi";
+import { getAllStatus, getStatus } from "../app/reducers/statusSlice.js";
+import { getProducts } from "../app/reducers/productSlice.js";
+
+// import { getSelectedProducts } from "../services/productApi";
 
 const Customers = () => {
   const dispatch = useDispatch();
@@ -21,6 +23,9 @@ const Customers = () => {
   const { customers, isLoading, isError, message, isSuccess } = useSelector(
     (state) => state.customers
   );
+  const { statuses } = useSelector((state) => state.statuses);
+  const { products } = useSelector((state) => state.products);
+
   // const { users } = useSelector((state) => state.users);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -28,58 +33,56 @@ const Customers = () => {
   const [selectedStatus, setSelectedStatus] = useState("");
   const [selectedStartDate, setSelectedStartDate] = useState(null);
   const [selectedEndDate, setSelectedEndDate] = useState(null);
-  const [statusData, setStatusData] = useState({});
-  const [productsData, setProductsData] = useState({});
-  const [statusOptions, setStatusOptions] = useState([]);
+  // const [statusData, setStatusData] = useState({});
+  // const [productsData, setProductsData] = useState({});
+  // const [statusOptions, setStatusOptions] = useState([]);
 
   useEffect(() => {
     const fetchCustomers = async () => {
       if (user) {
+        await dispatch(getAllStatus());
+        await dispatch(getProducts());
+
         const fetchedCustomers = await dispatch(getCustomers());
         for (const customer of fetchedCustomers.payload) {
-          if (customer.status?.length > 0) {
-            const status = await getStatus(customer.status);
-            setStatusData((statusData) => ({
-              ...statusData,
-              [customer._id]: status,
-            }));
-          }
-          if (customer.products?.length > 0) {
-            const products = await getSelectedProducts(customer.products);
-            setProductsData((productsData) => ({
-              ...productsData,
-              [customer._id]: products,
-            }));
-          }
+          // if (customer.status?.length > 0) {
+          //   // const status = await dispatch(getStatus(customer.status));
+          //   const status = await statuses.find(
+          //     (status) => status._id === customer.status
+          //   );
+          //   setStatusData((statusData) => ({
+          //     ...statusData,
+          //     [customer._id]: status.status,
+          //   }));
+          // }
+          // if (customer.products?.length > 0) {
+          //   console.log(customer.products);
+          //   const products = await getSelectedProducts(customer.products);
+          //   setProductsData((productsData) => ({
+          //     ...productsData,
+          //     [customer._id]: products,
+          // }));
+          // }
         }
       }
     };
     fetchCustomers();
   }, []);
 
-  useEffect(() => {
-    // Fetch statuses from your API
-    async function fetchStatuses() {
-      const data = await getAllStatus();
-      setStatusOptions(data);
-    }
-    fetchStatuses();
-  }, []);
-
-  useEffect(() => {
-    if (isLoading) {
-      toast.dismiss();
-      toast.loading(message);
-    }
-    if (isError) {
-      toast.dismiss();
-      toast.error(message);
-    }
-    if (isSuccess) {
-      toast.dismiss();
-      toast.success(message);
-    }
-  }, [isError, isLoading, isSuccess, message]);
+  // useEffect(() => {
+  //   if (isLoading) {
+  //     toast.dismiss();
+  //     toast.loading(message);
+  //   }
+  //   if (isError) {
+  //     toast.dismiss();
+  //     toast.error(message);
+  //   }
+  //   if (isSuccess) {
+  //     toast.dismiss();
+  //     toast.success(message);
+  //   }
+  // }, [isError, isLoading, isSuccess, message]);
 
   // useEffect(() => {
   //   const fetchUsers = async () => {
@@ -143,37 +146,47 @@ const Customers = () => {
 
   const totalPages = Math.ceil(filteredCustomers.length / itemsPerPage);
 
-  const renderCustomers = currentItems.map((customer) => (
-    <tr key={customer._id} className="atim">
-      <td className="td">{customer.companyName}</td>
-      <td className="td">{customer.state}</td>
-      <td className="td">{customer.city}</td>
-      <td className="td">
-        {statusData[customer._id] ? statusData[customer._id] : "Unknown"}
-      </td>
-      <td className="td">
-        {new Date(customer.createdAt).toLocaleDateString()}
-      </td>
-      <td className="td">
-        <ViewCustomerModal
-          customer={customer}
-          statusData={statusData}
-          productsData={productsData}
-        />
-        <Button
-          variant="link"
-          className="symbol-button tdd"
-          as={Link}
-          to={{
-            pathname: `/customers/editCustomer/${customer._id}`,
-          }}
-        >
-          <PencilSquare />
-        </Button>
-        <DeleteCustomer className="tdd" customer={customer} />
-      </td>
-    </tr>
-  ));
+  const renderCustomers = currentItems.map((item) => {
+    const customer = {
+      ...item,
+      status:
+        statuses.find((status) => status._id === item.status)?.status ||
+        "Unknown",
+      products: products.filter((product) =>
+        item.products.includes(product._id)
+      ),
+    };
+
+    return (
+      <tr key={customer._id} className="atim">
+        <td className="td">{customer.companyName}</td>
+        <td className="td">{customer.state}</td>
+        <td className="td">{customer.city}</td>
+        <td className="td">{customer.status}</td>
+        <td className="td">
+          {new Date(customer.createdAt).toLocaleDateString()}
+        </td>
+        <td className="td">
+          <ViewCustomerModal
+            customer={customer}
+            statusData=""
+            productsData=""
+          />
+          <Button
+            variant="link"
+            className="symbol-button tdd"
+            as={Link}
+            to={{
+              pathname: `/customers/editCustomer/${customer._id}`,
+            }}
+          >
+            <PencilSquare />
+          </Button>
+          <DeleteCustomer className="tdd" customer={customer} />
+        </td>
+      </tr>
+    );
+  });
 
   const renderPageNumbers = Array.from({ length: totalPages }, (_, index) => (
     <div
@@ -201,7 +214,7 @@ const Customers = () => {
             <Row className="customer-row">
               <Col lg={9}>
                 <Row>
-                  <Col Lg={3}>
+                  <Col Lg={5}>
                     <Form.Group controlId="companyName" className="mb-2 ">
                       <Form.Control
                         type="text"
@@ -211,16 +224,16 @@ const Customers = () => {
                       />
                     </Form.Group>
                   </Col>
-                  <Col lg={3}>
+                  <Col lg={2}>
                     <Form.Group controlId="statusFilter" className="mb-2  ">
                       <Form.Control
-                        className="col_7"
+                        className="col_7 Select-status"
                         as="select"
                         value={selectedStatus}
                         onChange={handleStatusChange}
                       >
                         <option value="">Select Status</option>
-                        {statusOptions.map((status) => (
+                        {statuses.map((status) => (
                           <option key={status._id} value={status._id}>
                             {status.status}
                           </option>
@@ -229,8 +242,11 @@ const Customers = () => {
                     </Form.Group>
                   </Col>
 
-                  <Col lg={3}>
-                    <Form.Group controlId="startDateFilter" className="mb-2">
+                  <Col lg={5}>
+                    <Form.Group
+                      controlId="startDateFilter"
+                      className="mb-2 date"
+                    >
                       <DatePicker
                         selected={selectedStartDate}
                         onChange={handleStartDateChange}
@@ -239,8 +255,6 @@ const Customers = () => {
                         className="form-control date_picker"
                       />
                     </Form.Group>
-                  </Col>
-                  <Col lg={3}>
                     <Form.Group controlId="endDateFilter" className="mb-2">
                       <DatePicker
                         selected={selectedEndDate}
@@ -253,17 +267,28 @@ const Customers = () => {
                   </Col>
                 </Row>
               </Col>
-              <Col lg={3}>
+              <Col lg={4}>
                 <Row>
-                  <Col Lg={9}>
-                    <Form.Group className="mb-2 create ">
+                  <Col lg={12}>
+                    <Form.Group className="mb-2   ">
                       <Link to="/addCustomers">
                         <Button
-                          className=" mr-3 "
+                          className=" mr-2 "
                           variant="secondary"
                           type="submit"
                         >
                           Create Customer
+                        </Button>
+                      </Link>
+                    </Form.Group>
+                    <Form.Group className="mb-2  ">
+                      <Link to="/Upload">
+                        <Button
+                          className=" mr-2 "
+                          variant="secondary"
+                          type="submit"
+                        >
+                          Upload{" "}
                         </Button>
                       </Link>
                     </Form.Group>

@@ -1,12 +1,16 @@
 import axios from "axios";
 
-// const backendUrl = "https://rise-business-backend-kcsmg.ondigitalocean.app";
-const backendUrl = "http://localhost:3000";
+const backendUrl = "https://rise-business-backend-kcsmg.ondigitalocean.app";
+// const backendUrl = "http://localhost:3000";
 
-export const getProducts = async () => {
+export const getProducts = async (token) => {
   try {
-    const response = await axios.get(`${backendUrl}/api/products/all`);
-    return response.data;
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    return await axios.get(`${backendUrl}/api/products/all`, config);
   } catch (error) {
     console.log(`Error while calling getProducts api ${error}`);
     // throw error;
@@ -14,13 +18,18 @@ export const getProducts = async () => {
   }
 };
 
-export const getSelectedProducts = async (productIds) => {
+export const getSelectedProducts = async (token, productIds) => {
   try {
-    const response = await axios.post(
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    return await axios.post(
       `${backendUrl}/api/products/selectedProducts`,
-      { productIds } // Include the array in the request body
+      { productIds },
+      config
     );
-    return response.data;
   } catch (error) {
     console.log(`Error while calling getSelectedProducts api ${error}`);
     // throw error;
@@ -28,26 +37,53 @@ export const getSelectedProducts = async (productIds) => {
   }
 };
 
-export const updateProduct = async (id, product) => {
+export const updateProduct = async (token, id, product) => {
   try {
-    return await axios.put(`${backendUrl}/api/products/update/${id}`, product);
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    return await axios.put(
+      `${backendUrl}/api/products/update/${id}`,
+      { product },
+      config
+    );
   } catch (error) {
     console.log(`Error while calling updateProduct api ${error}`);
     return error;
   }
 };
 
-export const addProduct = async (product) => {
+export const addProduct = async (token, product) => {
   try {
-    return await axios.post(`${backendUrl}/api/products/add`, product);
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    return await axios.post(`${backendUrl}/api/products/add`, product, config);
   } catch (error) {
-    console.log(`Error while calling addProduct api ${error}`);
-    return error;
+    if (error.response.status === 400) {
+      console.log(error.response.data.error);
+      throw error;
+    } else {
+      console.log(`Error while calling add status api ${error}`);
+      throw error;
+    }
   }
 };
-export const deleteProduct = async (id) => {
+export const deleteProduct = async (token, id) => {
   try {
-    return await axios.delete(`${backendUrl}/api/products/delete/${id}`);
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    return await axios.delete(
+      `${backendUrl}/api/products/delete/${id}`,
+      config
+    );
   } catch (error) {
     console.log(`Error while calling add status api ${error}`);
     return error;

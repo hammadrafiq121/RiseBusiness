@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Table, Container, Form } from "react-bootstrap";
 import EditProductModal from "./EditProductModal";
-import productApi from "../services/productApi";
+// import productApi from "../services/productApi";
 import { useSelector, useDispatch } from "react-redux";
-import { setsProducts } from "../app/reducers/productSlice.js";
+import { getProducts } from "../app/reducers/productSlice.js";
 import AddProductModal from "./AddProductModal";
 import DeleteProduct from "./DeleteProduct";
 
@@ -14,7 +14,7 @@ const Product = () => {
 
   useEffect(() => {
     async function fetchProducts() {
-      await dispatch(setsProducts(await productApi.getProducts()));
+      await dispatch(getProducts());
       // setProductOptions(data);
     }
     fetchProducts();
@@ -34,7 +34,7 @@ const Product = () => {
     <div>
       <section className="tab">
         <Container className="tab_div1">
-          <Table style={{ width: "15%" }} className="user_list">
+          <Table style={{ width: "20%" }} className="user_list">
             <thead>
               <tr className="user_col_name">
                 <th>Product</th>

@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { Button, Modal } from "react-bootstrap";
 import { PencilSquare } from "react-bootstrap-icons";
 import { Form, Row, Col } from "react-bootstrap";
-import statusApi from "../services/statusApi";
+// import statusApi from "../services/statusApi";
 import { updateStatus } from "../app/reducers/statusSlice.js";
 
 const EditStatusModal = ({ status }) => {
@@ -24,7 +24,7 @@ const EditStatusModal = ({ status }) => {
 
   const handleUpdate = async (event) => {
     event.preventDefault();
-    await statusApi.updateStatus(formData._id, formData.status);
+    // await statusApi.updateStatus(formData._id, formData.status);
     await dispatch(
       updateStatus({ id: formData._id, updatedStatus: formData.status })
     );

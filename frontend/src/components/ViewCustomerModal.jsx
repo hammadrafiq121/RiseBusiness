@@ -46,16 +46,15 @@ const ViewCustomerModal = ({ customer, statusData, productsData }) => {
           <br />
           <strong>Comments:</strong> {customer.comments}
           <br />
-          <strong>Status:</strong>{" "}
-          {statusData[customer._id] ? statusData[customer._id] : "Not Yet Set"}
+          <strong>Status:</strong> {customer.status || "Unknown"}
           <br />
           <strong>Products:</strong>
           <ListGroup>
-            {productsData[customer._id]?.map((product) => (
+            {customer.products?.map((product) => (
               <ListGroup.Item key={product._id}>
                 {product.product}
               </ListGroup.Item>
-            )) || "Not Yet Set"}
+            )) || "Unknown"}
           </ListGroup>
         </Modal.Body>
         <Modal.Footer>
