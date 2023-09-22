@@ -297,7 +297,7 @@ const Customers = () => {
                       </Link>
                     </Form.Group>
                     <Form.Group className="mb-2  ">
-                      <Link to="/Upload">
+                      <Link to="/customers/upload">
                         <Button
                           className=" mr-2 "
                           variant="secondary"
