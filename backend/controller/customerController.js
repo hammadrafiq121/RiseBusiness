@@ -18,10 +18,17 @@ export const addCustomer = async (request, response) => {
 
 export const getAllCustomers = async (request, response) => {
   try {
-    const customers = await Customer.find({ user: request.user._id }).sort({
-      createdAt: -1,
-    });
-    return response.status(200).json(customers);
+    if (request.user.userRole === "admin") {
+      const customers = await Customer.find().sort({
+        createdAt: -1,
+      });
+      return response.status(200).json(customers);
+    } else {
+      const customers = await Customer.find({ user: request.user._id }).sort({
+        createdAt: -1,
+      });
+      return response.status(200).json(customers);
+    }
   } catch (error) {
     return response.status(500).json({ error: "Failed to get all customers" });
   }

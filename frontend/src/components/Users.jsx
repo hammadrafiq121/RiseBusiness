@@ -99,7 +99,7 @@ const Users = () => {
         >
           <PencilSquare />
         </Button>
-        <DeleteUser user={user} />
+        {/* <DeleteUser user={user} /> */}
       </td>
     </tr>
   ));

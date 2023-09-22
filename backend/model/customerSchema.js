@@ -4,44 +4,44 @@ const customerSchema = new mongoose.Schema(
   {
     companyName: {
       type: String,
-      required: true,
+      // required: true,
     },
     companyPhone: {
       type: String,
-      required: true,
+      // required: true,
     },
     companyFax: String,
     companyAddress: {
       type: String,
-      required: true,
+      // required: true,
     },
     country: {
       type: String,
-      required: true,
+      // required: true,
     },
     state: {
       type: String,
-      required: true,
+      // required: true,
     },
     city: {
       type: String,
-      required: true,
+      // required: true,
     },
     zipCode: {
       type: String,
-      required: true,
+      // required: true,
     },
     personName: {
       type: String,
-      required: true,
+      // required: true,
     },
     personPhone: {
       type: String,
-      required: true,
+      // required: true,
     },
     personEmail: {
       type: String,
-      required: true,
+      // required: true,
     },
     comments: [String],
 
@@ -59,7 +59,7 @@ const customerSchema = new mongoose.Schema(
 
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
+      // required: true,
       ref: "User",
     },
   },

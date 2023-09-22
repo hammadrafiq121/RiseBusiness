@@ -163,11 +163,11 @@ const Customers = () => {
           {new Date(customer.createdAt).toLocaleDateString()}
         </td>
         <td className="td">
-          <ViewCustomerModal
+          {/* <ViewCustomerModal
             customer={customer}
             statusData=""
             productsData=""
-          />
+          /> */}
           <Button
             variant="link"
             className="symbol-button tdd"
@@ -178,7 +178,7 @@ const Customers = () => {
           >
             <PencilSquare />
           </Button>
-          <DeleteCustomer className="tdd" customer={customer} />
+          {admin && <DeleteCustomer className="tdd" customer={customer} />}
         </td>
       </tr>
     );
