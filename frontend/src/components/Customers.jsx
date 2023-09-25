@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Table, Form, Container, Row, Col, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import ViewCustomerModal from "./ViewCustomerModal";
+// import ViewCustomerModal from "./ViewCustomerModal";
 import DeleteCustomer from "./DeleteCustomer";
 import { PencilSquare } from "react-bootstrap-icons";
 import { getCustomers } from "../app/reducers/customerSlice.js";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import { getUsers } from "../app/reducers/userSlice.js";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -47,30 +47,6 @@ const Customers = () => {
     fetchData();
   }, [dispatch]);
 
-  // useEffect(() => {
-  //   if (isLoading) {
-  //     toast.dismiss();
-  //     toast.loading(message);
-  //   }
-  //   if (isError) {
-  //     toast.dismiss();
-  //     toast.error(message);
-  //   }
-  //   if (isSuccess) {
-  //     toast.dismiss();
-  //     toast.success(message);
-  //   }
-  // }, [isError, isLoading, isSuccess, message]);
-
-  // useEffect(() => {
-  //   const fetchUsers = async () => {
-  //     if (isError) {
-  //       console.log(message);
-  //     }
-  //   };
-  //   fetchUsers();
-  // }, [dispatch]);
-
   const handleSearchChange = (event) => {
     setSearchKeyword(event.target.value);
     setCurrentPage(1);
@@ -99,9 +75,7 @@ const Customers = () => {
     const keyword = searchKeyword.toLowerCase();
     const isStatusMatch =
       selectedStatus === "" || customer.status === selectedStatus;
-
     const isUserMatch = selectedUser === "" || customer.user === selectedUser;
-
     const creationDate = parseISO(customer.createdAt);
     const startOfSelectedStartDate = startOfDay(selectedStartDate);
     const endOfSelectedEndDate = endOfDay(selectedEndDate);
@@ -148,26 +122,12 @@ const Customers = () => {
         <td className="td">{customer.state}</td>
         <td className="td">{customer.city}</td>
         {admin && <td className="td">{customer.user}</td>}
-        {/* {admin &&
-          users
-            .filter((user) => user._id === customer.user)
-            .map((currentUser) => (
-              <td key={currentUser._id} className="td">
-                {currentUser.userName}
-              </td>
-            ))} */}
-
         <td className="td">{customer.status}</td>
-
         <td className="td">
           {new Date(customer.createdAt).toLocaleDateString()}
         </td>
         <td className="td">
-          {/* <ViewCustomerModal
-            customer={customer}
-            statusData=""
-            productsData=""
-          /> */}
+          {/* <ViewCustomerModal customer={customer} /> */}
           <Button
             variant="link"
             className="symbol-button tdd"

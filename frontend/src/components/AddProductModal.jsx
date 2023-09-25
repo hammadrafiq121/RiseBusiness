@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-
 import { Button, Modal } from "react-bootstrap";
 import { Form, Row, Col } from "react-bootstrap";
-// import productApi from "../services/productApi";
 import { addProduct } from "../app/reducers/productSlice.js";
 
 const AddProductModal = () => {
@@ -17,25 +15,21 @@ const AddProductModal = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // Update the product value
     const updatedFormData = {
       ...formData,
       [name]: value,
     };
 
-    // Generate the slug based on the product value
     const slug = value
       .toLowerCase()
       .replace(/\s+/g, "-")
       .replace(/[^a-zA-Z0-9-]/g, "");
 
     updatedFormData.slug = slug;
-
     setFormData(updatedFormData);
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // const response = await productApi.addProduct(formData);
     await dispatch(addProduct(formData));
     handleCloseModal();
   };
@@ -60,7 +54,6 @@ const AddProductModal = () => {
         <Modal.Header closeButton>
           <Modal.Title>Product</Modal.Title>
         </Modal.Header>
-
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
             <Row>
@@ -95,14 +88,3 @@ const AddProductModal = () => {
 };
 
 export default AddProductModal;
-
-// const trimmedProduct = product.trim();
-// const lowercaseProduct = trimmedProduct.toLowerCase();
-// const wordsInProduct = lowercaseProduct.split(" ");
-// const capitalizedProduct = wordsInProduct
-//   .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-//   .join(" ");
-// return {
-//   product: capitalizedProduct,
-//   slug: lowercaseProduct.replace(/\s+/g, "-"),
-// };

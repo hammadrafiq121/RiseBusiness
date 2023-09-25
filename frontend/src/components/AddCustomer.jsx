@@ -1,8 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import Col from "react-bootstrap/Col";
-import Form from "react-bootstrap/Form";
-import Row from "react-bootstrap/Row";
-import Container from "react-bootstrap/Container";
+import { Col, Form, Row, Container } from "react-bootstrap";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { MultiSelect } from "react-multi-select-component";
@@ -10,10 +7,7 @@ import { connect, useSelector } from "react-redux";
 import { addCustomer, reset } from "../app/reducers/customerSlice";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-// import statusApi from "../services/statusApi";
 import { getAllStatus } from "../app/reducers/statusSlice.js";
-import { getProducts } from "../app/reducers/productSlice.js";
-// import productApi from "../services/productApi";
 
 const AddCustomer = () => {
   const dispatch = useDispatch();
@@ -43,25 +37,18 @@ const AddCustomer = () => {
   const { statuses } = useSelector((state) => state.statuses);
   const { products } = useSelector((state) => state.products);
 
-  // const [statusOptions, setStatusOptions] = useState([]);
-  // const [productOptions, setProductOptions] = useState([]);
-
   useEffect(() => {
     dispatch(reset());
   }, []);
 
   useEffect(() => {
-    // Fetch statuses from your API
     async function fetchStatuses() {
       await dispatch(getAllStatus());
-      // setStatusOptions(data);
     }
     fetchStatuses();
 
     async function fetchProducts() {
       await dispatch(getAllStatus());
-
-      // setProductOptions(data);
     }
     fetchProducts();
   }, []);
@@ -81,13 +68,6 @@ const AddCustomer = () => {
       toast.error(message);
     }
   }, [isError, isLoading, isSuccess, message]);
-
-  // const productNames = [
-  //   { label: "Hospital Stretchers", value: "hospital-stretchers" },
-  //   { label: "Defibrillators", value: "defibrillators" },
-  //   { label: "Anesthesia Machines", value: "anesthesia-machines" },
-  //   { label: "Patient Monitors", value: "patient-monitors" },
-  // ];
 
   const productNames = products.map((product) => ({
     label: product.product,
@@ -109,7 +89,6 @@ const AddCustomer = () => {
 
   const addCommentField = () => {
     if (formData.comments[formData.comments.length - 1].trim() !== "") {
-      // setComments([...comments, ""]); // Add a new empty comment field
       setFormData((formData) => ({
         ...formData,
         comments: [...formData.comments, ""],
@@ -134,24 +113,6 @@ const AddCustomer = () => {
       [name]: value,
     }));
   };
-  // const handleProductChange = (name, value) => {
-  //   setFormData((prevFormData) => ({
-  //     ...prevFormData,
-  //     [name]: value,
-  //   }));
-  //   console.log(formData.products);
-  // };
-
-  // const handleProductChange = (name, value) => {
-  //   const productIds = value.map((product) => product._id);
-
-  //   setFormData((prevFormData) => ({
-  //     ...prevFormData,
-  //     [name]: productIds, // Assign the array of _id values to the products field
-  //   }));
-
-  //   console.log(formData.products);
-  // };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
