@@ -25,12 +25,15 @@ body{
     background-color:#f7f7f7 !important;
 }
 .header{
-    width: 100%;
+    width: 100% !important;
+    /* width: calc(100% - 300px) !important; */
     height: 60px;
     background-color:#f7f7f7;
     align-items: center;
     box-shadow: 0px 10px 28px #e5e0e0;
 }
+
+
 
 
 
@@ -98,7 +101,6 @@ body{
 .mb-2 {
     margin-bottom: 0.5rem!important;
     display: inline;
-    margin-left: 10px;
 }
 .col-form-label{
     color:#414040 !important ;
@@ -128,6 +130,9 @@ body{
 .img{
     margin-right: 10px !important;
 
+}
+.Create{
+    margin-right: 3px;
 }
 
 .img, svg {
@@ -210,7 +215,7 @@ body{
 }
 .date{
 
-margin-right: -5px !important;
+    float: left  !important;
 
 }
 
@@ -223,6 +228,7 @@ input.form-control, textareainput_serach, #state, #city, #country {
 
 .agent-row2{
 padding-top:18px ;
+flex-wrap: wrap !important;
 
 }
 .editcustomer-container{
@@ -302,7 +308,7 @@ padding-top:18px ;
 .input{
     background-color: transparent !important;
     border: 1 px solid rgb(37, 34, 34);
-    border-radius: 8px !important;
+    border-radius: 5px !important;
 }
 option{
     color: #000 !important;
@@ -314,16 +320,22 @@ option{
     margin-left: 15px !important;
     margin-left: 25px !important;
 }
+.pl::placeholder{
+    color:#aaa8a8 !important;
+    font-size: 17px;
+}
+.pll::placeholder{
+    color:#aaa8a8 !important;
+    font-size: 17px;
+}
 
 
 
 .login-sec{
-    padding-top: 40px;
-   
     display: flex;
     align-items: center;
     width: 100%;
-    height: 100vh;
+    height: 90vh;
 }
 .login-container{
     background-color: rgba(245, 245, 245, 0);
@@ -381,8 +393,8 @@ h1{
     font-size: 18px !important;
     color: rgb(184, 58, 58);
     border: 0px !important;
-    padding: 5px !important;
-    border-radius: 10px !important;
+    padding: 4px !important;
+    border-radius: 5px !important;
     margin-left: 0px !important;
 }
 .btn-1:hover{
@@ -459,23 +471,30 @@ color: white;
     .signup_container{
         background-color: transparent !important;
         padding: 20px !important;
-        width: 40% !important;
+        width: 30% !important;
         border-Radius: 10px;
         border: 1px solid white;
         box-shadow: 0 0 3px rgba(0, 0, 0, 0.2)
     }
     .signup_group{
-        padding-bottom: 20px !important;
+        padding-bottom: 17px !important;
+        margin-left: 10px !important;
     }
     .signup_btn{
         background-color:#707070  !important;
         width: 20%;
-        padding: 5px !important;
         border: 0px !important;
+        margin-left: 2px;
     }
     .signup_btn:hover{
         background-color: #5c636a !important;
 
+    }
+    .end_date{
+        margin-left: -1.5rem;
+    }
+    .date_filter{
+        width: 42% !important;
     }
 
     
@@ -488,6 +507,7 @@ color: white;
 }
 .customer-row{
     background-color: transparent !important;
+    width: 96%;
 }
 
 
@@ -514,7 +534,12 @@ color: white;
   .drop-container{
     padding-left: 30px;
     border-radius: 5px;
+    margin-right: -7px;
   }
+  .search_col{
+    margin-left: 9px;
+
+}
   .rmsc * {
     box-sizing: border-box;
     transition: all .2s ease;
@@ -621,22 +646,34 @@ color: white;
   }
   .upload-container{
       
-    border: 0px !important;
-    background-color: white !important;
-    background-repeat: no-repeat;
+   
     width: 35% !important;
     padding: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
     }
+    .react-datepicker__input-container{
+        width: 84% !important;
+    }
     .upload{
         
             width: 100;
-            height: 90vh;
+            height: 80vh;
             display: flex;
             align-items: center;
       
+    }
+    .upload1{
+        margin-left: 1rem;
+        
+      }
+      .customer-row {
+        justify-content: space-between;
+      }
+    .btn_col{
+        width: 21% !important;
+        margin-left: 26px;
     }
     .Select{
         /* display: none !important; */
@@ -682,8 +719,9 @@ color: white;
 
   .submit{
 
-     border-radius: 5px !important;
-     width: 35% !important;
+    border-radius: 5px !important;
+    width: 32% !important;
+    margin-right: -5px !important;
 
   }
   
@@ -708,6 +746,14 @@ color: white;
         }
         
     }
+    @media only screen and (max-width: 1010px) {
+        .Addcustomer-container {
+            width: 95% !important;
+        }
+        .submit{
+            width: 60% !important;
+        }
+      }
     @media only screen and (max-width: 992px) {
          .agent_div{
             width: 95% !important;
@@ -715,6 +761,24 @@ color: white;
 
          }
         }
+        @media only screen and (max-width: 940px) {
+            .Addcustomer_row{
+               width: 100% !important;
+   
+            }
+           }
+       @media only screen and (max-width: 1489px) {
+            .search_col{
+               width: 80% !important;
+   
+            }
+           }
+           @media only screen and (max-width: 988px) {
+            .row{
+              
+                 flex-wrap: wrap !important;
+            }
+           }
     @media only screen and (max-width: 1448px) {
          .edit_user_container{
             width: 70% !important;
@@ -740,11 +804,17 @@ color: white;
          }
         }
     @media only screen and (max-width: 413px) {
-        .upload-container{
+        .upload1-container{
             width: 85% !important ;
 
          }
         }
+        @media only screen and (max-width: 1655px) {
+            .upload1{
+                margin-top: 5px !important;
+    
+             }
+            }
     @media only screen and (max-width:852px) {
         .signup_container{
             width: 85% !important ;
@@ -833,7 +903,7 @@ div.dark{
     width: 230px !important  ;
     padding: 10px 12px;
     background: var(--sidebar-color);
-    transition: var(--tran-05);
+    /* transition: var(--tran-05); */
     z-index: 100; 
     float: left;
      
@@ -1024,7 +1094,7 @@ div.dark .chart_container{
     color: var(--text-color);
 }
 div.dark .header{
-    background-color: var(--primary-color) !important;
+    background-color:#333 !important;
     color: var(--text-color);
 }
 
@@ -1081,6 +1151,7 @@ div.dark .pagination-controls ul li:hover{
     overflow-y: scroll;
     border-right: 1px solid rgb(236, 219, 219) !important;
     border-left: 1px solid rgb(236, 219, 219) !important;
+    border-top: 1px solid rgb(236, 219, 219) !important;
     margin-left: -8px;
 }
 .menu-bar::-webkit-scrollbar{
@@ -1194,7 +1265,7 @@ div.dark .home .text{
     width: 260px;
     height: 100vh;
     background-color: #f7f7f7;
-    transition: all 0.3s ease;
+    /* transition: all 0.3s ease; */
   }
   
  
@@ -1210,7 +1281,6 @@ div.dark .home .text{
     justify-content: space-between;
     align-items: center;
     padding: 20px;
-    border-bottom: 1px solid #e0e0e0;
   }
   
   .sidebar header .toggle {
@@ -1294,6 +1364,7 @@ div.dark .home .text{
     font-size: 17px;
     text-align: center;
     margin-top: 20px;
+    margin-right: 8rem !important;
 }
 .status{
     width: 30% !important;
@@ -1446,13 +1517,14 @@ div.dark .home .text{
     --bs-gutter-x: 1.5rem;
     --bs-gutter-y: 0;
     display: flex;
-    flex-wrap:nowrap !important;
+    flex-wrap:nowrap ;
     margin-top: calc(-1 * var(--bs-gutter-y));
     margin-right: calc(-.5 * var(--bs-gutter-x));
     margin-left: calc(-.5 * var(--bs-gutter-x));
 }
 .submt{
     justify-content: flex-end;
+    margin-right: -1px !important;
 }
 
 

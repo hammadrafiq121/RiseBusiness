@@ -127,7 +127,7 @@ const AddCustomer = () => {
     <main className="Addcustomer_main">
       <Container className="Addcustomer-container">
         <Form onSubmit={handleSubmit}>
-          <Row>
+          <Row className="Addcustomer_row">
             <Col md={8}>
               <Form.Group as={Row} controlId="companyName" className="mb-2">
                 <Form.Label className="label" column sm={3}>
@@ -336,7 +336,7 @@ const AddCustomer = () => {
             <Col md={4}>
               <Form.Group as={Row} className="mb-2 submt">
                 <button
-                  className="mb-2 mr-2 mt-3 btn_f submit "
+                  className=" btn_f submit "
                   variant="secondary"
                   type="submit"
                 >

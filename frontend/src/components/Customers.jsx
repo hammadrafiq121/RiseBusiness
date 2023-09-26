@@ -168,9 +168,9 @@ const Customers = () => {
         <Container className="customer-container">
           <Form>
             <Row className="customer-row">
-              <Col lg={9}>
+              <Col className="search_col" lg={9}>
                 <Row>
-                  <Col Lg={5}>
+                  <Col Lg={4}>
                     <Form.Group controlId="companyName" className="mb-2 ">
                       <Form.Control
                         type="text"
@@ -217,7 +217,7 @@ const Customers = () => {
                     </Col>
                   )}
 
-                  <Col lg={5}>
+                  <Col className="date_filter" lg={5}>
                     <Form.Group
                       controlId="startDateFilter"
                       className="mb-2 date"
@@ -227,28 +227,28 @@ const Customers = () => {
                         onChange={handleStartDateChange}
                         placeholderText="Start Date"
                         dateFormat="yyyy-MM-dd"
-                        className="form-control date_picker"
+                        className="form-control date_picker start"
                       />
                     </Form.Group>
-                    <Form.Group controlId="endDateFilter" className="mb-2">
+                    <Form.Group controlId="endDateFilter" className="mb-2 end_date ">
                       <DatePicker
                         selected={selectedEndDate}
                         onChange={handleEndDateChange}
                         placeholderText="End Date"
                         dateFormat="yyyy-MM-dd"
-                        className="form-control date_picker"
+                        className="form-control date_picker start"
                       />
                     </Form.Group>
                   </Col>
                 </Row>
               </Col>
-              <Col lg={4}>
-                <Row>
-                  <Col lg={12}>
+              <Col className="btn_col" lg={3}>
+                <Row className="btn_row" >
+                  <Col lg={10}>
                     <Form.Group className="mb-2   ">
                       <Link to="/addCustomers">
                         <Button
-                          className=" mr-2 "
+                          className="Create"
                           variant="secondary"
                           type="submit"
                         >
@@ -259,7 +259,7 @@ const Customers = () => {
                     <Form.Group className="mb-2  ">
                       <Link to="/customers/upload">
                         <Button
-                          className=" mr-2 "
+                          className=" mr-2 upload1"
                           variant="secondary"
                           type="submit"
                         >

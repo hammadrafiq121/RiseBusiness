@@ -60,21 +60,22 @@ const Signup = () => {
       <Container className="signup_container">
         <Form onSubmit={handleSubmit}>
           <Form.Group className="signup_group" controlId="fullName">
-            <Form.Label className="signup_label">Full Name</Form.Label>
             <Form.Control
-              className="signup_name"
+              className="signup_name pll"
               type="text"
               name="fullName"
               value={formData.fullName}
               onChange={handleChange}
               required
+              placeholder="Full Name"
             />
           </Form.Group>
 
           <Form.Group className="signup_group" controlId="userName">
-            <Form.Label>User Name</Form.Label>
+            <Form.Label></Form.Label>
             <Form.Control
-              className="signup_name"
+              className="signup_name pl"
+              placeholder="User Name"
               type="text"
               name="userName"
               value={formData.userName}
@@ -84,9 +85,10 @@ const Signup = () => {
           </Form.Group>
 
           <Form.Group className="signup_group" controlId="email">
-            <Form.Label>Email</Form.Label>
+            <Form.Label></Form.Label>
             <Form.Control
-              className="signup_name"
+              className="signup_name pl"
+              placeholder="Email"
               type="email"
               name="email"
               value={formData.email}
@@ -96,9 +98,10 @@ const Signup = () => {
           </Form.Group>
 
           <Form.Group className="signup_group" controlId="password">
-            <Form.Label>Password</Form.Label>
+            <Form.Label></Form.Label>
             <Form.Control
-              className="signup_name"
+                className="signup_name pl"
+                placeholder="Password"
               type="password"
               name="password"
               value={formData.password}
@@ -108,9 +111,9 @@ const Signup = () => {
           </Form.Group>
 
           <Form.Group className="signup_group" controlId="userRole">
-            <Form.Label>User Role</Form.Label>
+            <Form.Label></Form.Label>
             <Form.Control
-              className="signup_name"
+              className="signup_name pl"
               as="select"
               name="userRole"
               value={formData.userRole}
@@ -127,7 +130,7 @@ const Signup = () => {
           </Form.Group>
 
           <Button
-            className="mb-2 ml-2 mt-2 signup_btn"
+            className="mb-2 mt-2 signup_btn"
             variant="secondary"
             type="submit"
           >
