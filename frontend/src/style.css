@@ -13,8 +13,8 @@ position: relative;
     border-radius: 50%; /* To make it round */
     width: 30px; /* Adjust the width as needed */
     height: 30px; /* Adjust the height as needed */
-    font-size: 18px;
-    cursor: pointer;
+    font-size: 19px;
+    cursor: pointer; 
   }
 body{
     /* background-image: url(./assets/BG.png) !important; */
