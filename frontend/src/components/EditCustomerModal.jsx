@@ -1,15 +1,11 @@
 import React, { useEffect, useState } from "react";
-import Col from "react-bootstrap/Col";
-import Form from "react-bootstrap/Form";
-import Row from "react-bootstrap/Row";
-import { Button, Modal, ListGroup } from "react-bootstrap";
+import { Col, Form, Row } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 import { PencilSquare } from "react-bootstrap-icons";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-// import csc from "country-state-city";
 import { MultiSelect } from "react-multi-select-component";
-import { updateCustomer } from "../services/api";
-import { updateCustomer as updateCustomerAction } from "../app/customersSlice";
+import { updateCustomer } from "../app/reducers/customerSlice.js";
 import { useDispatch } from "react-redux";
 
 const EditCustomerModal = ({ customer }) => {
@@ -46,9 +42,8 @@ const EditCustomerModal = ({ customer }) => {
 
   const handleUpdate = async (event) => {
     event.preventDefault();
-    await updateCustomer(formData, customer._id);
-    dispatch(
-      updateCustomerAction({ id: customer._id, updatedCustomer: formData })
+    await dispatch(
+      updateCustomer({ id: customer._id, updatedCustomer: formData })
     );
     handleCloseModal();
   };

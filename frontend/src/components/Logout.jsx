@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-
 import { logout } from "../app/reducers/authSlice";
 import { reset } from "../app/reducers/customerSlice";
 import { Link, useNavigate } from "react-router-dom";
@@ -38,25 +37,14 @@ const Logout = () => {
     navigate("/login");
   };
   return (
-  
-  //   <ul>
-  //    <li onClick={handleLogout} className="nav-link">
-  //    <Link to="">
-  //      <i className="bx bxs-file-doc icon"></i>
-  //      <span className="text nav-text">Logout</span>
-  //    </Link>
-  //  </li>
-  //  </ul>
-    <span  onClick={handleLogout}>
+    <span onClick={handleLogout}>
       <li className="nav-link ">
-      <Link  to="/login" >  
-    <i className="bx bx-log-out icon"></i>
-      <span className="text nav-text ">Logout
-    </span>
-    </Link>
+        <Link to="/login">
+          <i className="bx bx-log-out icon"></i>
+          <span className="text nav-text ">Logout</span>
+        </Link>
       </li>
     </span>
-    
   );
 };
 

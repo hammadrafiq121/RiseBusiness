@@ -1,21 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { Table, Container, Form } from "react-bootstrap";
+import React, { useEffect } from "react";
+import { Table, Container } from "react-bootstrap";
 import EditProductModal from "./EditProductModal";
-// import productApi from "../services/productApi";
 import { useSelector, useDispatch } from "react-redux";
 import { getProducts } from "../app/reducers/productSlice.js";
 import AddProductModal from "./AddProductModal";
 import DeleteProduct from "./DeleteProduct";
 
 const Product = () => {
-  // const [productOptions, setProductOptions] = useState([]);
   const { products } = useSelector((state) => state.products);
   const dispatch = useDispatch();
 
   useEffect(() => {
     async function fetchProducts() {
       await dispatch(getProducts());
-      // setProductOptions(data);
     }
     fetchProducts();
   }, []);

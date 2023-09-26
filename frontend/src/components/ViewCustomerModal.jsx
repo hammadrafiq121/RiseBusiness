@@ -45,7 +45,6 @@ const ViewCustomerModal = ({ customer, statusData, productsData }) => {
           <strong>Person Email:</strong> {customer.personEmail}
           <br />
           <strong>Comments:</strong>
-          {/* {customer.comments.map((c) => c)} */}
           <ListGroup>
             {customer.comments?.map((comment, index) => (
               <ListGroup.Item key={index}>{comment}</ListGroup.Item>

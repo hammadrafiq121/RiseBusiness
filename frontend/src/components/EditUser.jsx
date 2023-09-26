@@ -7,7 +7,6 @@ import { toast } from "react-toastify";
 import Spinner from "./Spinner";
 
 const EditUser = () => {
-
   const [isDisabled, setIsDisabled] = useState(true);
 
   const [formData, setFormData] = useState({
@@ -64,122 +63,93 @@ const EditUser = () => {
         <Form onSubmit={handleUpdate}>
           <Row>
             <Col lg={4}>
-                <Form.Label column sm={12}>
-                  Full Name
-                </Form.Label>
+              <Form.Label column sm={12}>
+                Full Name
+              </Form.Label>
 
+              <Form.Label column sm={12}>
+                Username
+              </Form.Label>
 
-              
+              <Form.Label column sm={12}>
+                Email
+              </Form.Label>
 
+              <Form.Label column sm={12}>
+                Role
+              </Form.Label>
+            </Col>
 
-                <Form.Label column sm={12} >
-                  Username
-                </Form.Label>
-
-        
-
-
-                <Form.Label column sm={12}>
-                  Email
-                </Form.Label>
-
-            
-
-
-
-                <Form.Label column sm={12}>
-                  Role
-                </Form.Label>
-                </Col>
-
-<Col  lg={6} >
-
-
-           {/* name feild */}
-   <Form.Group as={Row} controlId="fullName" className="mb-2">
-                
-                  <Form.Control
-                    disabled={isDisabled}
-                    type="text"
-                    placeholder=""
-                    name="fullName"
-                    value={formData.fullName}
-                    onChange={handleChange}
-                    required
-                  />
-                
+            <Col lg={6}>
+              <Form.Group as={Row} controlId="fullName" className="mb-2">
+                <Form.Control
+                  disabled={isDisabled}
+                  type="text"
+                  placeholder=""
+                  name="fullName"
+                  value={formData.fullName}
+                  onChange={handleChange}
+                  required
+                />
               </Form.Group>
-
-
-               {/* user feild  */}
               <Form.Group as={Row} controlId="userName" className="mb-2">
-              
-                  <Form.Control
-                    disabled={isDisabled}
-                    type="text"
-                    placeholder=""
-                    name="userName"
-                    value={formData.userName}
-                    onChange={handleChange}
-                    required
-                  />
-               
+                <Form.Control
+                  disabled={isDisabled}
+                  type="text"
+                  placeholder=""
+                  name="userName"
+                  value={formData.userName}
+                  onChange={handleChange}
+                  required
+                />
               </Form.Group>
-
-              {/* email feild  */}
               <Form.Group as={Row} controlId="email" className="mb-2">
-               
-                  <Form.Control
-                    disabled={isDisabled}
-                    type="email"
-                    placeholder=""
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                  />
-                
+                <Form.Control
+                  disabled={isDisabled}
+                  type="email"
+                  placeholder=""
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
               </Form.Group>
-
-                 {/* role feild */}
               <Form.Group as={Row} controlId="userRole" className="mb-2 role">
-                
-                  <Form.Select
-                    disabled={isDisabled}
-                    value={formData.userRole}
-                    name="userRole"
-                    onChange={handleChange}
-                    required
-                  >
-                    <option value="" disabled>
-                      Select Role
-                    </option>
-                    <option value="admin">Admin</option>
-                    <option value="manager">Manager</option>
-                    <option value="agent">Agent</option>
-                  </Form.Select>
-                
+                <Form.Select
+                  disabled={isDisabled}
+                  value={formData.userRole}
+                  name="userRole"
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="" disabled>
+                    Select Role
+                  </option>
+                  <option value="admin">Admin</option>
+                  <option value="manager">Manager</option>
+                  <option value="agent">Agent</option>
+                </Form.Select>
               </Form.Group>
-
-
-
-              <Form.Group as={Row} className="mb-2  " >
+              <Form.Group as={Row} className="mb-2  ">
                 {isDisabled && (
                   <Button
-                  className="mb-2 mr-2 edit_user_btn "
+                    className="mb-2 mr-2 edit_user_btn "
                     variant="secondary"
                     type="button"
                     onClick={handleEdit}
-                    >
+                  >
                     Edit
                   </Button>
                 )}
-                <Button className="mb-2 mr-2 update_user_btn " variant="secondary" type="submit">
+                <Button
+                  className="mb-2 mr-2 update_user_btn "
+                  variant="secondary"
+                  type="submit"
+                >
                   Update
                 </Button>
               </Form.Group>
-                </Col>
-            
+            </Col>
           </Row>
         </Form>
       </div>

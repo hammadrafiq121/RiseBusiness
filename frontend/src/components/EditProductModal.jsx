@@ -3,7 +3,6 @@ import { useDispatch } from "react-redux";
 import { Button, Modal } from "react-bootstrap";
 import { PencilSquare } from "react-bootstrap-icons";
 import { Form, Row, Col } from "react-bootstrap";
-// import productApi from "../services/productApi";
 import { updateProduct } from "../app/reducers/productSlice.js";
 
 const EditProductModal = ({ product }) => {
@@ -31,7 +30,6 @@ const EditProductModal = ({ product }) => {
 
   const handleUpdate = async (event) => {
     event.preventDefault();
-    // await productApi.updateProduct(formData._id, formData);
     await dispatch(
       updateProduct({ id: formData._id, updatedProduct: formData.product })
     );

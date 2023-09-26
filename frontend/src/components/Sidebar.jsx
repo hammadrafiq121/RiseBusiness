@@ -115,16 +115,6 @@ const Sidebar = ({ isDarkMode, toggleDarkMode }) => {
                 </div>
               )}
 
-            {/* Upload link (for admin only) */}
-            {/* {(user && user.userRole === "admin") && (
-                <li className="nav-link">
-                  <Link to="/customers/upload" title="Click to Upload File" >
-                    <i className="bx bxs-file-doc icon"></i>{" "}
-                    <span className="text nav-text">Upload File</span>
-                  </Link>
-                </li>
-              )} */}
-
             {/* Admin-specific menu items */}
             {/* {(user && user.userRole === "admin") && ( */}
             {user && user.userRole === "admin" && (
@@ -169,7 +159,7 @@ const Sidebar = ({ isDarkMode, toggleDarkMode }) => {
                 </li>
                 <li className="nav-link">
                   <Link to="/product" title="Stutus list">
-                  <i className="bx bxl-product-hunt icon"></i>
+                    <i className="bx bxl-product-hunt icon"></i>
                     <span className="text nav-text">Products</span>
                   </Link>
                 </li>
@@ -180,13 +170,6 @@ const Sidebar = ({ isDarkMode, toggleDarkMode }) => {
 
         {/* Logout and Dark Mode */}
         <div className="bottom-content">
-          {/* <li className="nav-link">
-            <Link to="/Viewprofile" title="Click to view Profile">
-              <i className="bx bxs-user-account icon"></i>{" "}
-              <span className="text nav-text">Profile</span>
-            </Link>
-          </li> */}
-
           <Link to="/login" title="Click to Logout">
             <Logout />
           </Link>
@@ -195,10 +178,6 @@ const Sidebar = ({ isDarkMode, toggleDarkMode }) => {
             <div className="sun-moon">
               <i className={`bx ${isDarkMode ? "bx-moon" : "bx-sun"} icon`}></i>
             </div>
-            {/* <span className="mode-text text">
-                {isDarkMode ? "Light mode" : "Dark mode"}
-              </span> */}
-
             <div className="toggle-switch">
               <span className={`switch ${isDarkMode ? "dark" : ""}`}></span>
             </div>

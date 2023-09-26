@@ -32,7 +32,6 @@ function Sample() {
     const nonEmptyComments = comments.filter(
       (comment) => comment.trim() !== ""
     );
-    // Handle form submission with comments array (send to the server or perform other actions)
     await addStatus(nonEmptyComments);
   };
 

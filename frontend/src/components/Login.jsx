@@ -66,15 +66,6 @@ const Login = () => {
     <section className="login-sec">
       <Container className="login-container">
         <Form onSubmit={handleSubmit}>
-          {/* <Form.Group controlId="userName">
-        <Form.Label>User Name</Form.Label>
-        <Form.Control
-          type="text"
-          name="userName"
-          value={formData.userName}
-          onChange={handleChange}
-        />
-      </Form.Group> */}
           <h1>LOGIN</h1>
           <Form.Group controlId="email">
             <Form.Label></Form.Label>

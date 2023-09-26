@@ -68,7 +68,6 @@ const Users = () => {
     const keyword = searchKeyword.toLowerCase();
     const role = selectedRole.toLowerCase(); // Convert selectedRole to lowercase
 
-    // Filter by keyword and role if role is selected
     return (
       (user.fullName.toLowerCase().includes(keyword) ||
         user.userName.toLowerCase().includes(keyword) ||
@@ -143,13 +142,6 @@ const Users = () => {
                     </Button>
                   </Link>
                 </Form.Group>
-                {/* <Form.Group className="mb-2">
-                  <Link to="/customers/upload">
-                    <Button className="mr-5" variant="secondary" type="submit">
-                      Upload
-                    </Button>
-                  </Link>
-                </Form.Group> */}
               </Col>
             </Row>
           </Form>

@@ -5,12 +5,13 @@ const LogViewer = () => {
   const [logs, setLogs] = useState([]);
 
   useEffect(() => {
-    axios.get('/api/logs')
-      .then(response => {
+    axios
+      .get("/api/logs")
+      .then((response) => {
         setLogs(response.data);
       })
-      .catch(error => {
-        console.error('Error fetching logs:', error);
+      .catch((error) => {
+        console.error("Error fetching logs:", error);
       });
   }, []);
 
@@ -26,7 +27,6 @@ const LogViewer = () => {
       </ul>
     </div>
   );
-}
-
+};
 
 export default LogViewer;

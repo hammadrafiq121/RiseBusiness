@@ -22,10 +22,6 @@ const Signup = () => {
     (state) => state.auth
   );
 
-  // useEffect(() => {
-  //   dispatch(reset());
-  // }, []);
-
   useEffect(() => {
     if (isLoading) {
       toast.dismiss();
