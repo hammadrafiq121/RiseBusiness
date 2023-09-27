@@ -115,7 +115,6 @@ export const uploadCustomers = async (request, response) => {
   try {
     const filePath = request.file.path;
     const user = request.body.user;
-    // const status = "65006c1260470819587c9f76";
     const results = [];
     await new Promise((resolve, reject) => {
       fs.createReadStream(filePath)
@@ -137,7 +136,6 @@ export const uploadCustomers = async (request, response) => {
 
           // Create a new object with the modified products array
           const newData = { ...data, user };
-          // Push the modified data to the results array
           results.push(newData);
         })
         .on("end", () => resolve());

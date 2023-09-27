@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button, Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { login, reset } from "../app/reducers/authSlice";
-import Spinner from "./Spinner";
-import logApi from "../services/logApi";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -13,17 +10,15 @@ const Login = () => {
     password: "",
   });
 
-  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { user, isLoading, isSuccess, isError, message } = useSelector(
+  const { user, isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.auth
   );
 
   useEffect(() => {
-    dispatch(reset());
-  }, []);
-
-  useEffect(() => {
+    if (!user) {
+      dispatch(reset());
+    }
     if (isLoading) {
       toast.dismiss();
       toast.loading(message);
@@ -32,19 +27,11 @@ const Login = () => {
       toast.dismiss();
       toast.error(message);
     }
-
     if (isSuccess) {
       toast.dismiss();
       toast.success(message);
     }
-    if (user) {
-      const a = async () => {
-        await logApi.logUserLogin(user.userName);
-        navigate("/");
-      };
-      a();
-    }
-  }, [user, isSuccess, isError, message, isLoading]);
+  }, [isLoading, isError, isSuccess]);
 
   const handleChange = (e) => {
     setFormData({
@@ -53,14 +40,10 @@ const Login = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(login(formData));
+    await dispatch(login(formData));
   };
-
-  if (isLoading) {
-    return <Spinner />;
-  }
 
   return (
     <section className="login-sec">

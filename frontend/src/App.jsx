@@ -4,30 +4,38 @@ import "./style.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
-import EditCustomer from "./components/EditCustomer";
-import AddCustomer from "./components/AddCustomer";
-import Customers from "./components/Customers";
-import Login from "./components/Login";
-import Signup from "./components/Signup";
+
+// Import components
 import Navbar from "./components/Navbar";
-import UploadCSV from "./components/UploadCSV";
-import Users from "./components/Users";
-import EditUser from "./components/EditUser";
 import Sidebar from "./components/Sidebar";
+
+// Import routes
 import Dashboard from "./components/Dashboard";
-import NotFound from "./components/NotFound";
-import LogViewer from "./components/LogViewer";
-import PermissionDenied from "./components/PermissionDenied";
-import Viewprofile from "./components/Viewprofile";
 import Status from "./components/Status";
 import Product from "./components/Product";
 import Sample from "./components/Sample";
+import LogViewer from "./components/LogViewer";
+import NotFound from "./components/NotFound";
+import PermissionDenied from "./components/PermissionDenied";
 
-// import Test from "./components/Test";
+// Auth routes
+import Login from "./components/Login";
+import Signup from "./components/Signup";
+
+// Customer routes
+import Customers from "./components/Customers";
+import AddCustomer from "./components/AddCustomer";
+import EditCustomer from "./components/EditCustomer";
+import UploadCSV from "./components/UploadCSV";
+import Viewprofile from "./components/Viewprofile";
+
+// User routes
+import Users from "./components/Users";
+import EditUser from "./components/EditUser";
 
 function App() {
   const { user } = useSelector((state) => state.auth);
-  const [isDarkMode, setIsDarkMode] = useState(false); // State for dark mode
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode);
@@ -38,18 +46,23 @@ function App() {
     <div className={`app ${isDarkMode ? "dark" : ""}`}>
       <BrowserRouter>
         {user && (
-          <Sidebar isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
-        )}
-        {user && (
-          <Navbar isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
+          <>
+            <Sidebar isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
+            <Navbar isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
+          </>
         )}
 
         <Routes>
-          {/* If the user is logged in */}
           {user ? (
             <>
+              {/* Dashboard */}
+              <Route path="/" element={<Dashboard isDarkMode={isDarkMode} />} />
+
+              {/* Status and Product */}
               <Route path="/status" element={<Status />} />
               <Route path="/product" element={<Product />} />
+
+              {/* Sample */}
               <Route path="/sample" element={<Sample />} />
 
               {/* Auth Routes */}
@@ -74,7 +87,6 @@ function App() {
               />
 
               {/* User Routes */}
-              <Route path="/" element={<Dashboard isDarkMode={isDarkMode} />} />
               <Route
                 path="/users"
                 element={isUserAdmin ? <Users /> : <Navigate to="/403" />}
@@ -85,12 +97,16 @@ function App() {
             </>
           ) : (
             <>
+              {/* Login */}
               <Route path="/login" element={<Login />} />
+
+              {/* Default Redirect */}
               <Route path="/*" element={<Navigate to="/login" />} />
             </>
           )}
         </Routes>
 
+        {/* Toast Notifications */}
         <ToastContainer />
       </BrowserRouter>
     </div>

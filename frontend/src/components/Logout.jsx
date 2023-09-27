@@ -1,13 +1,14 @@
 import React, { useEffect } from "react";
-import { logout } from "../app/reducers/authSlice";
-import { reset } from "../app/reducers/customerSlice";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { BoxArrowInLeft } from "react-bootstrap-icons";
 import { toast } from "react-toastify";
+import { reset as resetCustomer } from "../app/reducers/customerSlice.js";
+import { reset as resetStatus } from "../app/reducers/statusSlice.js";
+import { reset as resetProduct } from "../app/reducers/productSlice.js";
+import { reset as resetUsers } from "../app/reducers/userSlice.js";
+import { logout } from "../app/reducers/authSlice.js";
 
 const Logout = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { isLoading, isSuccess, isError, message } = useSelector(
     (state) => state.auth
@@ -27,15 +28,18 @@ const Logout = () => {
       toast.dismiss();
       toast.success(message);
     }
-  }, [isSuccess, isError, message, isLoading]);
+  }, [isSuccess, isError, isLoading]);
 
   const handleLogout = async () => {
     await dispatch(logout());
     if (isSuccess) {
-      await dispatch(reset());
+      await dispatch(resetCustomer());
+      await dispatch(resetProduct());
+      await dispatch(resetStatus());
+      await dispatch(resetUsers());
     }
-    navigate("/login");
   };
+
   return (
     <span onClick={handleLogout}>
       <li className="nav-link ">

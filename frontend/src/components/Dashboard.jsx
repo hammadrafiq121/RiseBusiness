@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
+
 import {
   ResponsiveContainer,
   LineChart,
@@ -15,6 +17,12 @@ import {
 } from "recharts";
 import { Table, Form, Container, Row, Col, Button } from "react-bootstrap";
 import { BarChart, Bar, Cell } from "recharts";
+
+import { reset as resetCustomer } from "../app/reducers/customerSlice.js";
+import { reset as resetStatus } from "../app/reducers/statusSlice.js";
+import { reset as resetProduct } from "../app/reducers/productSlice.js";
+import { reset as resetUsers } from "../app/reducers/userSlice.js";
+
 const colors = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "red", "pink"];
 
 // line chart data
@@ -110,6 +118,18 @@ const TriangleBar = (props) => {
 };
 
 const dashboard = ({ isDarkMode, toggleDarkMode }) => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const resetData = async () => {
+      await dispatch(resetUsers());
+      await dispatch(resetCustomer());
+      await dispatch(resetStatus());
+      await dispatch(resetProduct());
+    };
+    resetData();
+  }, []);
+
   return (
     <>
       <div>
@@ -152,130 +172,132 @@ const dashboard = ({ isDarkMode, toggleDarkMode }) => {
                   </Row>
                 </Col>
               </Row>
-            
 
-            {/* two chart line & pie chart  */}
-            <Row className="line_chart">
-              {/* line chart  */}
+              {/* two chart line & pie chart  */}
+              <Row className="line_chart">
+                {/* line chart  */}
 
-              <Col lg={6} md={12}>
-              <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={data}>
-                    <CartesianGrid />
-                    <XAxis
-                      dataKey="name"
-                      interval={"preserveStartEnd"}
-                      tickFormatter={(value) => value + " ECT"}
-                    />
-                    <YAxis className="yaxis" />
-                    <Legend />
-                    <Tooltip contentStyle={{ backgroundClip: "blue" }} />
-
-                    <Line
-                      type="monotone"
-                      dataKey="student"
-                      stroke="red"
-                      activeDot={{ r: 18 }}
-                    ></Line>
-                    <Line
-                      dataKey="fees"
-                      stroke="orange"
-                      activeDot={{ r: 8 }}
-                    ></Line>
-                  </LineChart>
-                </ResponsiveContainer>
-              </Col>
-
-              {/* composed chart  */}
-
-              <Col lg={5} md={12}>
-              <ResponsiveContainer width="100%" height={300}>
-          <ComposedChart data={data}>
-                    <XAxis
-                      dataKey="name"
-                      interval={"preserveStartEnd"}
-                      tickFormatter={(value) => value + " ECT"}
-                    />
-                   
-                    <Legend />
-                    <CartesianGrid stroke="#f5f5f5" />
-                    <Area
-                      type="monotone"
-                      dataKey="name"
-                      fill="#8884d8"
-                      stroke="#8884d8"
-                    />
-                    <Bar dataKey="student" barSize={20} fill="#413ea0" />
-                    <Line type="monotone" dataKey="fees" stroke="#ff7300" />
-                  </ComposedChart>
-                </ResponsiveContainer>
-              </Col>
-            </Row>
-            <Row className="line_chart">
-              {/* line chart  */}
-
-              <Col lg={6} md={12}>
-              <ResponsiveContainer width="100%" height={300}>
-          <PieChart>
-                    <Pie
-                      data={dataa}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      label={renderCustomizedLabel}
-                      outerRadius={120}
-                      fill="#8884d8"
-                      dataKey="value"
-                    >
-                      {data.map((entry, index) => (
-                        <Cell
-                          key={`cell-${index}`}
-                          fill={COLORS[index % COLORS.length]}
-                        />
-                      ))}
+                <Col lg={6} md={12}>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <LineChart data={data}>
+                      <CartesianGrid />
+                      <XAxis
+                        dataKey="name"
+                        interval={"preserveStartEnd"}
+                        tickFormatter={(value) => value + " ECT"}
+                      />
                       <YAxis className="yaxis" />
+                      <Legend />
                       <Tooltip contentStyle={{ backgroundClip: "blue" }} />
-                    </Pie>
-                  </PieChart>
-                </ResponsiveContainer>
-              </Col>
 
-              {/* composed chart  */}
+                      <Line
+                        type="monotone"
+                        dataKey="student"
+                        stroke="red"
+                        activeDot={{ r: 18 }}
+                      ></Line>
+                      <Line
+                        dataKey="fees"
+                        stroke="orange"
+                        activeDot={{ r: 8 }}
+                      ></Line>
+                    </LineChart>
+                  </ResponsiveContainer>
+                </Col>
 
-              <Col lg={5} md={12}>
-              <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={data}
-                    width="80%"
-                    height="100%"
-                    
-                    margin={{
-                      top: 20,
-                      right: 30,
-                      left: 20,
-                      bottom: 5,
-                    }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip contentStyle={{ backgroundClip: "blue" }} />
-                    <Bar
-                      dataKey="student"
-                      fill="#8884d8"
-                      shape={<TriangleBar />}
-                      label={{ position: "top" }}
+                {/* composed chart  */}
+
+                <Col lg={5} md={12}>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <ComposedChart data={data}>
+                      <XAxis
+                        dataKey="name"
+                        interval={"preserveStartEnd"}
+                        tickFormatter={(value) => value + " ECT"}
+                      />
+
+                      <Legend />
+                      <CartesianGrid stroke="#f5f5f5" />
+                      <Area
+                        type="monotone"
+                        dataKey="name"
+                        fill="#8884d8"
+                        stroke="#8884d8"
+                      />
+                      <Bar dataKey="student" barSize={20} fill="#413ea0" />
+                      <Line type="monotone" dataKey="fees" stroke="#ff7300" />
+                    </ComposedChart>
+                  </ResponsiveContainer>
+                </Col>
+              </Row>
+              <Row className="line_chart">
+                {/* line chart  */}
+
+                <Col lg={6} md={12}>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                      <Pie
+                        data={dataa}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        label={renderCustomizedLabel}
+                        outerRadius={120}
+                        fill="#8884d8"
+                        dataKey="value"
+                      >
+                        {data.map((entry, index) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={COLORS[index % COLORS.length]}
+                          />
+                        ))}
+                        <YAxis className="yaxis" />
+                        <Tooltip contentStyle={{ backgroundClip: "blue" }} />
+                      </Pie>
+                    </PieChart>
+                  </ResponsiveContainer>
+                </Col>
+
+                {/* composed chart  */}
+
+                <Col lg={5} md={12}>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart
+                      data={data}
+                      width="80%"
+                      height="100%"
+                      margin={{
+                        top: 20,
+                        right: 30,
+                        left: 20,
+                        bottom: 5,
+                      }}
                     >
-                      {data.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={colors[index % 20]} />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </Col>
-            </Row>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" />
+                      <YAxis />
+                      <Tooltip contentStyle={{ backgroundClip: "blue" }} />
+                      <Bar
+                        dataKey="student"
+                        fill="#8884d8"
+                        shape={<TriangleBar />}
+                        label={{ position: "top" }}
+                      >
+                        {data.map((entry, index) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={colors[index % 20]}
+                          />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </Col>
+              </Row>
 
-            {/* SECOND ROW  */}
-          </div>
+              {/* SECOND ROW  */}
+            </div>
           </div>
         </div>
       </div>

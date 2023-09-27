@@ -5,22 +5,27 @@ import { Link } from "react-router-dom";
 // import ViewCustomerModal from "./ViewCustomerModal";
 import DeleteCustomer from "./DeleteCustomer";
 import { PencilSquare } from "react-bootstrap-icons";
-import { getCustomers } from "../app/reducers/customerSlice.js";
-// import { toast } from "react-toastify";
 import { getUsers } from "../app/reducers/userSlice.js";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { parseISO, isBefore, startOfDay, endOfDay } from "date-fns";
-import { getAllStatus } from "../app/reducers/statusSlice.js";
-import { getProducts } from "../app/reducers/productSlice.js";
+import {
+  getCustomers,
+  reset as resetCustomer,
+} from "../app/reducers/customerSlice.js";
+import {
+  getAllStatus,
+  reset as resetStatus,
+} from "../app/reducers/statusSlice.js";
+import {
+  getProducts,
+  reset as resetProduct,
+} from "../app/reducers/productSlice.js";
 
 const Customers = () => {
   const dispatch = useDispatch();
-
   const { user } = useSelector((state) => state.auth);
-  const { customers, isLoading, isError, message, isSuccess } = useSelector(
-    (state) => state.customers
-  );
+  const { customers, isLoading } = useSelector((state) => state.customers);
   const { statuses } = useSelector((state) => state.statuses);
   const { products } = useSelector((state) => state.products);
   const { users } = useSelector((state) => state.users);
@@ -31,6 +36,7 @@ const Customers = () => {
   const [selectedUser, setSelectedUser] = useState("");
   const [selectedStartDate, setSelectedStartDate] = useState(null);
   const [selectedEndDate, setSelectedEndDate] = useState(null);
+
   const admin = user && user.userRole === "admin";
 
   useEffect(() => {
@@ -39,19 +45,22 @@ const Customers = () => {
         await dispatch(getUsers());
       }
       if (user) {
+        await dispatch(resetCustomer());
+        await dispatch(resetStatus());
+        await dispatch(resetProduct());
+
         await dispatch(getAllStatus());
         await dispatch(getProducts());
         await dispatch(getCustomers());
       }
     };
     fetchData();
-  }, [dispatch]);
+  }, []);
 
   const handleSearchChange = (event) => {
     setSearchKeyword(event.target.value);
     setCurrentPage(1);
   };
-
   const handleStatusChange = (event) => {
     setSelectedStatus(event.target.value);
     setCurrentPage(1);
@@ -60,12 +69,10 @@ const Customers = () => {
     setSelectedUser(event.target.value);
     setCurrentPage(1);
   };
-
   const handleStartDateChange = (date) => {
     setSelectedStartDate(date);
     setCurrentPage(1);
   };
-
   const handleEndDateChange = (date) => {
     setSelectedEndDate(date);
     setCurrentPage(1);

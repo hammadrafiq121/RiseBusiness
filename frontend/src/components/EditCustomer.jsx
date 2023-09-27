@@ -8,16 +8,23 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { MultiSelect } from "react-multi-select-component";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  updateCustomer,
-  getCustomer,
-  reset,
-} from "../app/reducers/customerSlice.js";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Spinner from "./Spinner";
-import { getAllStatus } from "../app/reducers/statusSlice.js";
-import { getProducts } from "../app/reducers/productSlice.js";
+import {
+  updateCustomer,
+  getCustomer,
+  reset as resetCustomer,
+} from "../app/reducers/customerSlice.js";
+import {
+  getAllStatus,
+  reset as resetStatus,
+} from "../app/reducers/statusSlice.js";
+import {
+  getProducts,
+  reset as resetProduct,
+} from "../app/reducers/productSlice.js";
+import { reset as resetUsers } from "../app/reducers/userSlice.js";
 
 const EditCustomer = () => {
   const [isDisabled, setIsDisabled] = useState(true);
@@ -45,15 +52,17 @@ const EditCustomer = () => {
   const { user } = useSelector((state) => state.auth);
   const { statuses } = useSelector((state) => state.statuses);
   const { products } = useSelector((state) => state.products);
-  const { isLoading, isSuccess, isError, message } = useSelector(
-    (state) => state.customers
-  );
+  const { isLoading } = useSelector((state) => state.customers);
   const newCommentInputRef = useRef(null);
 
   useEffect(() => {
     const fetchData = async () => {
       if (user) {
-        await dispatch(reset());
+        await dispatch(resetUsers());
+        await dispatch(resetCustomer());
+        await dispatch(resetStatus());
+        await dispatch(resetProduct());
+
         await dispatch(getAllStatus());
         await dispatch(getProducts());
 
@@ -66,7 +75,6 @@ const EditCustomer = () => {
           value: product.slug,
           _id: product._id,
         }));
-
         setFormData({
           ...payload,
           products: mappedProducts,
@@ -75,7 +83,7 @@ const EditCustomer = () => {
       }
     };
     fetchData();
-  }, [user]);
+  }, []);
 
   const productNames = products.map((product) => ({
     label: product.product,

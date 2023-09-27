@@ -2,15 +2,28 @@ import React, { useState, useEffect, useRef } from "react";
 import { Col, Form, Row, Container } from "react-bootstrap";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-import { MultiSelect } from "react-multi-select-component";
-import { connect, useSelector } from "react-redux";
-import { addCustomer, reset } from "../app/reducers/customerSlice";
-import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { getAllStatus } from "../app/reducers/statusSlice.js";
+import { MultiSelect } from "react-multi-select-component";
+import { useSelector } from "react-redux";
+import {
+  addCustomer,
+  reset as resetCustomer,
+} from "../app/reducers/customerSlice.js";
+import {
+  getAllStatus,
+  reset as resetStatus,
+} from "../app/reducers/statusSlice.js";
+import {
+  getProducts,
+  reset as resetProduct,
+} from "../app/reducers/productSlice.js";
+
+import { reset as resetUsers } from "../app/reducers/userSlice.js";
 
 const AddCustomer = () => {
   const dispatch = useDispatch();
+  const newCommentInputRef = useRef(null);
+
   const blankForm = {
     companyName: "",
     companyPhone: "",
@@ -27,47 +40,26 @@ const AddCustomer = () => {
     status: "",
     products: [],
   };
-
   const [formData, setFormData] = useState(blankForm);
-  const newCommentInputRef = useRef(null);
 
-  const { isLoading, isSuccess, isError, message } = useSelector(
-    (state) => state.customers
-  );
   const { statuses } = useSelector((state) => state.statuses);
   const { products } = useSelector((state) => state.products);
+  const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    dispatch(reset());
+    const fetchData = async () => {
+      if (user) {
+        await dispatch(resetUsers());
+        await dispatch(resetCustomer());
+        await dispatch(resetStatus());
+        await dispatch(resetProduct());
+
+        await dispatch(getAllStatus());
+        await dispatch(getProducts());
+      }
+    };
+    fetchData();
   }, []);
-
-  useEffect(() => {
-    async function fetchStatuses() {
-      await dispatch(getAllStatus());
-    }
-    fetchStatuses();
-
-    async function fetchProducts() {
-      await dispatch(getAllStatus());
-    }
-    fetchProducts();
-  }, []);
-
-  useEffect(() => {
-    if (isLoading) {
-      toast.dismiss();
-      toast.loading(message);
-    }
-    if (isSuccess) {
-      toast.dismiss();
-      toast.success(message);
-      setFormData(blankForm);
-    }
-    if (isError) {
-      toast.dismiss();
-      toast.error(message);
-    }
-  }, [isError, isLoading, isSuccess, message]);
 
   const productNames = products.map((product) => ({
     label: product.product,
@@ -78,9 +70,6 @@ const AddCustomer = () => {
   const handleCommentChange = (index, value) => {
     const newComments = [...formData.comments];
     newComments[index] = value;
-    // const nonEmptyComments = newComments.filter(
-    //   (comment) => comment.trim() !== ""
-    // );
     setFormData((formData) => ({
       ...formData,
       comments: newComments,
@@ -120,7 +109,13 @@ const AddCustomer = () => {
       (comment) => comment.trim() !== ""
     );
 
-    await dispatch(addCustomer({ ...formData, comments: nonEmptyComments })); // Dispatch the addCustomer action
+    const result = await dispatch(
+      addCustomer({ ...formData, comments: nonEmptyComments })
+    );
+    if (result.meta.requestStatus === "fulfilled");
+    {
+      await setFormData(blankForm);
+    }
   };
 
   return (
@@ -387,4 +382,4 @@ const AddCustomer = () => {
   );
 };
 
-export default connect(null)(AddCustomer);
+export default AddCustomer;

@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { Button, Col, Form, Row, Container } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
-import { updateUser, getUser } from "../app/reducers/userSlice.js";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Spinner from "./Spinner";
+import { reset as resetCustomer } from "../app/reducers/customerSlice.js";
+import { reset as resetStatus } from "../app/reducers/statusSlice.js";
+import { reset as resetProduct } from "../app/reducers/productSlice.js";
+import {
+  updateUser,
+  getUser,
+  reset as resetUsers,
+} from "../app/reducers/userSlice.js";
 
 const EditUser = () => {
   const [isDisabled, setIsDisabled] = useState(true);
@@ -16,7 +23,6 @@ const EditUser = () => {
     password: "",
     userRole: "",
   });
-
   const navigate = useNavigate();
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -25,17 +31,19 @@ const EditUser = () => {
   const { isError, message, isSuccess } = useSelector((state) => state.users);
 
   useEffect(() => {
-    const fetch = async () => {
-      if (isError) {
-        toast.error(message);
-      }
+    const fetchData = async () => {
       if (user) {
-        const fetcheduser = await dispatch(getUser(id));
-        setFormData(fetcheduser.payload);
+        await dispatch(resetUsers());
+        await dispatch(resetCustomer());
+        await dispatch(resetStatus());
+        await dispatch(resetProduct());
+
+        const { payload } = await dispatch(getUser(id));
+        setFormData(payload);
       }
     };
-    fetch();
-  }, [user, dispatch, id, isError]);
+    fetchData();
+  }, []);
 
   const handleEdit = () => {
     setIsDisabled(!isDisabled);
