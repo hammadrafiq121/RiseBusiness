@@ -33,7 +33,7 @@ const EditCustomer = () => {
     personName: "",
     personPhone: "",
     personEmail: "",
-    comments: [""],
+    comments: [],
     newComment: "",
     status: "",
     products: [],
@@ -70,6 +70,7 @@ const EditCustomer = () => {
         setFormData({
           ...payload,
           products: mappedProducts,
+          newComment: "",
         });
       }
     };

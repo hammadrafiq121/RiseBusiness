@@ -26,7 +26,7 @@ const Customers = () => {
   const { users } = useSelector((state) => state.users);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 12;
   const [selectedStatus, setSelectedStatus] = useState("");
   const [selectedUser, setSelectedUser] = useState("");
   const [selectedStartDate, setSelectedStartDate] = useState(null);
@@ -35,13 +35,13 @@ const Customers = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      if (admin) {
+        await dispatch(getUsers());
+      }
       if (user) {
         await dispatch(getAllStatus());
         await dispatch(getProducts());
         await dispatch(getCustomers());
-      }
-      if (admin) {
-        await dispatch(getUsers());
       }
     };
     fetchData();
@@ -230,7 +230,10 @@ const Customers = () => {
                         className="form-control date_picker start"
                       />
                     </Form.Group>
-                    <Form.Group controlId="endDateFilter" className="mb-2 end_date ">
+                    <Form.Group
+                      controlId="endDateFilter"
+                      className="mb-2 end_date "
+                    >
                       <DatePicker
                         selected={selectedEndDate}
                         onChange={handleEndDateChange}
@@ -243,7 +246,7 @@ const Customers = () => {
                 </Row>
               </Col>
               <Col className="btn_col" lg={3}>
-                <Row className="btn_row" >
+                <Row className="btn_row">
                   <Col lg={10}>
                     <Form.Group className="mb-2   ">
                       <Link to="/addCustomers">
