@@ -1,17 +1,17 @@
-import mongoose from "mongoose";
+// import mongoose from "mongoose";
 
-const sampleSchema = new mongoose.Schema(
-  {
-    comments: {
-      type: [String],
-    },
-    check: {
-      type: [String],
-    },
-  },
-  { timestamps: false }
-);
+// const sampleSchema = new mongoose.Schema(
+//   {
+//     comments: {
+//       type: [String],
+//     },
+//     check: {
+//       type: [String],
+//     },
+//   },
+//   { timestamps: false }
+// );
 
-const Sample = mongoose.model("Sample", sampleSchema);
+// const Sample = mongoose.model("Sample", sampleSchema);
 
-export default Sample;
+// export default Sample;

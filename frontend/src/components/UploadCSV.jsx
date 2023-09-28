@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { uploadCustomers } from "../app/reducers/customerSlice.js";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { getUsers } from "../app/reducers/userSlice.js";
 import Spinner from "./Spinner";
+import {
+  uploadCustomers,
+  reset as resetCustomer,
+} from "../app/reducers/customerSlice.js";
+import { getUsers, reset as resetUsers } from "../app/reducers/userSlice.js";
+import { reset as resetStatus } from "../app/reducers/statusSlice.js";
+import { reset as resetProduct } from "../app/reducers/productSlice.js";
 
 const UploadCSV = () => {
   const dispatch = useDispatch();
@@ -18,14 +23,16 @@ const UploadCSV = () => {
   const [selectedAgent, setSelectedAgent] = useState("");
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      if (isError) {
-        console.log(message);
-      }
+    const fetchData = async () => {
+      await dispatch(resetCustomer());
+      await dispatch(resetUsers());
+      await dispatch(resetProduct());
+      await dispatch(resetStatus());
+
       await dispatch(getUsers());
     };
-    fetchUsers();
-  }, [dispatch]);
+    fetchData();
+  }, []);
 
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);

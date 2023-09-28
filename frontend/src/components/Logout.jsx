@@ -31,8 +31,8 @@ const Logout = () => {
   }, [isSuccess, isError, isLoading]);
 
   const handleLogout = async () => {
-    await dispatch(logout());
-    if (isSuccess) {
+    const result = await dispatch(logout());
+    if (result.meta.requestStatus === "fulfilled") {
       await dispatch(resetCustomer());
       await dispatch(resetProduct());
       await dispatch(resetStatus());

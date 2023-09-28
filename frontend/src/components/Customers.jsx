@@ -175,10 +175,10 @@ const Customers = () => {
         <Container className="customer-container">
           <Form>
             <Row className="customer-row">
-              <Col className="search_col" lg={9}>
+              <Col lg={10}>
                 <Row>
-                  <Col Lg={4}>
-                    <Form.Group controlId="companyName" className="mb-2 ">
+                  <Col lg={4}>
+                    <Form.Group controlId="companyName" className="mb-2">
                       <Form.Control
                         type="text"
                         value={searchKeyword}
@@ -188,7 +188,7 @@ const Customers = () => {
                     </Form.Group>
                   </Col>
                   <Col lg={2}>
-                    <Form.Group controlId="statusFilter" className="mb-2  ">
+                    <Form.Group controlId="statusFilter" className="mb-2">
                       <Form.Control
                         className="col_7 Select-status"
                         as="select"
@@ -206,7 +206,7 @@ const Customers = () => {
                   </Col>
                   {admin && (
                     <Col lg={2}>
-                      <Form.Group controlId="userFilter" className="mb-2  ">
+                      <Form.Group controlId="userFilter" className="mb-2">
                         <Form.Control
                           className="col_7 Select-status"
                           as="select"
@@ -223,12 +223,8 @@ const Customers = () => {
                       </Form.Group>
                     </Col>
                   )}
-
-                  <Col className="date_filter" lg={5}>
-                    <Form.Group
-                      controlId="startDateFilter"
-                      className="mb-2 date"
-                    >
+                  <Col lg={2}>
+                    <Form.Group controlId="startDateFilter" className="mb-2">
                       <DatePicker
                         selected={selectedStartDate}
                         onChange={handleStartDateChange}
@@ -237,6 +233,8 @@ const Customers = () => {
                         className="form-control date_picker start"
                       />
                     </Form.Group>
+                  </Col>
+                  <Col lg={2}>
                     <Form.Group
                       controlId="endDateFilter"
                       className="mb-2 end_date "
@@ -252,28 +250,20 @@ const Customers = () => {
                   </Col>
                 </Row>
               </Col>
-              <Col className="btn_col" lg={3}>
-                <Row className="btn_row">
-                  <Col lg={10}>
-                    <Form.Group className="mb-2   ">
+              <Col lg={2}>
+                <Row>
+                  <Col lg={12}>
+                    <Form.Group className="mb-1">
                       <Link to="/addCustomers">
-                        <Button
-                          className="Create"
-                          variant="secondary"
-                          type="submit"
-                        >
+                        <Button variant="secondary" type="submit">
                           Create Customer
                         </Button>
                       </Link>
                     </Form.Group>
-                    <Form.Group className="mb-2  ">
+                    <Form.Group className="mb-1">
                       <Link to="/customers/upload">
-                        <Button
-                          className=" mr-2 upload1"
-                          variant="secondary"
-                          type="submit"
-                        >
-                          Upload{" "}
+                        <Button variant="secondary" type="submit">
+                          Upload
                         </Button>
                       </Link>
                     </Form.Group>

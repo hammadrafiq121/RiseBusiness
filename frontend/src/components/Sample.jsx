@@ -1,57 +1,56 @@
-import React, { useState } from "react";
-import axios from "axios";
+// import React, { useState } from "react";
+// import axios from "axios";
 
-function Sample() {
-  const addStatus = async (comments) => {
-    try {
-      const response = await axios.post(
-        `http://localhost:3000/api/samples/add`,
-        { comments }
-      );
-      return response.data;
-    } catch (error) {
-      console.log(`Error while calling add sample api ${error}`);
-      return error;
-    }
-  };
+// function Sample() {
+//   const addStatus = async (comments) => {
+//     try {
+//       const response = await axios.post(
+//         `http://localhost:3000/api/samples/add`,
+//         { comments }
+//       );
+//       return response.data;
+//     } catch (error) {
+//       console.log(`Error while calling add sample api ${error}`);
+//       return error;
+//     }
+//   };
 
-  const [comments, setComments] = useState([""]); // Initialize with one empty comment field
-  const addCommentField = () => {
-    if (comments[comments.length - 1].trim() !== "") {
-      setComments([...comments, ""]); // Add a new empty comment field
-    }
-  };
-  const handleCommentChange = (index, value) => {
-    const newComments = [...comments];
-    newComments[index] = value;
-    setComments(newComments);
-  };
+//   return <div>Hello</div>;
+// }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const nonEmptyComments = comments.filter(
-      (comment) => comment.trim() !== ""
-    );
-    await addStatus(nonEmptyComments);
-  };
+// export default Sample;
 
+import React from "react";
+import "../check.css";
+
+const Sample = () => {
   return (
-    <form onSubmit={handleSubmit}>
-      {comments.map((comment, index) => (
-        <div key={index}>
-          <textarea
-            value={comment}
-            onChange={(e) => handleCommentChange(index, e.target.value)}
-            placeholder="Enter your comment"
-          />
+    <figure className="notification">
+      <div className="notification__body">
+        <div className="notification__description">
+          <div className="icon__wrapper">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              strokeWidth="2"
+              stroke="currentColor"
+              fill="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+              <path d="M5 12l5 5l10 -10"></path>
+            </svg>
+          </div>
+          Report is saved!
         </div>
-      ))}
-      <button type="button" onClick={addCommentField}>
-        Add Comment
-      </button>
-      <button type="submit">Submit</button>
-    </form>
+        <button className="notification__button">Edit report</button>
+      </div>
+      <div className="notification__progress"></div>
+    </figure>
   );
-}
+};
 
 export default Sample;

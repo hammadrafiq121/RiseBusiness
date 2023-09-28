@@ -1,8 +1,8 @@
-import express from "express";
-import { addSample } from "../controller/sampleController.js";
+// import express from "express";
+// import { addSample } from "../controller/sampleController.js";
 
-const sampleRoutes = express.Router();
+// const sampleRoutes = express.Router();
 
-sampleRoutes.post("/api/samples/add", addSample);
+// sampleRoutes.post("/api/samples/add", addSample);
 
-export default sampleRoutes;
+// export default sampleRoutes;

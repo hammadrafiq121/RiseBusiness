@@ -2,19 +2,30 @@ import React, { useEffect } from "react";
 import { Table, Container } from "react-bootstrap";
 import EditProductModal from "./EditProductModal";
 import { useSelector, useDispatch } from "react-redux";
-import { getProducts } from "../app/reducers/productSlice.js";
 import AddProductModal from "./AddProductModal";
-import DeleteProduct from "./DeleteProduct";
+// import DeleteProduct from "./DeleteProduct";
+import {
+  getProducts,
+  reset as resetProduct,
+} from "../app/reducers/productSlice.js";
+import { reset as resetCustomer } from "../app/reducers/customerSlice.js";
+import { reset as resetStatus } from "../app/reducers/statusSlice.js";
+import { reset as resetUsers } from "../app/reducers/userSlice.js";
 
 const Product = () => {
   const { products } = useSelector((state) => state.products);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    async function fetchProducts() {
+    const fetchData = async () => {
+      await dispatch(resetCustomer());
+      await dispatch(resetUsers());
+      await dispatch(resetProduct());
+      await dispatch(resetStatus());
+
       await dispatch(getProducts());
-    }
-    fetchProducts();
+    };
+    fetchData();
   }, []);
 
   const allProduct = products.map((product) => (

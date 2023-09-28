@@ -4,7 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { signup } from "../app/reducers/authSlice";
-// import Spinner from "./Spinner";
+import Spinner from "./Spinner";
+import { reset as resetCustomer } from "../app/reducers/customerSlice.js";
+import { reset as resetStatus } from "../app/reducers/statusSlice.js";
+import { reset as resetProduct } from "../app/reducers/productSlice.js";
+import { reset as resetUsers } from "../app/reducers/userSlice.js";
 
 const Signup = () => {
   const blankForm = {
@@ -23,21 +27,24 @@ const Signup = () => {
   );
 
   useEffect(() => {
-    if (isLoading) {
-      toast.dismiss();
-      toast.loading(message);
-    }
+    const clearData = async () => {
+      await dispatch(resetUsers());
+      await dispatch(resetCustomer());
+      await dispatch(resetStatus());
+      await dispatch(resetProduct());
+    };
+    clearData();
+
     if (isError) {
       toast.dismiss();
       toast.error(message);
     }
-
     if (isSuccess) {
       toast.dismiss();
       toast.success(message);
       setFormData(blankForm);
     }
-  }, [isSuccess, isError, message, isLoading]);
+  }, []);
 
   const handleChange = (e) => {
     setFormData({
@@ -51,9 +58,9 @@ const Signup = () => {
     await dispatch(signup(formData));
   };
 
-  // if (isLoading) {
-  //   return <Spinner />;
-  // }
+  if (isLoading) {
+    return <Spinner />;
+  }
 
   return (
     <section className="signup_tab">
@@ -100,8 +107,8 @@ const Signup = () => {
           <Form.Group className="signup_group" controlId="password">
             <Form.Label></Form.Label>
             <Form.Control
-                className="signup_name pl"
-                placeholder="Password"
+              className="signup_name pl"
+              placeholder="Password"
               type="password"
               name="password"
               value={formData.password}

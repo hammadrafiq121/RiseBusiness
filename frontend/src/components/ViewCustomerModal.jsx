@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button, Modal, ListGroup } from "react-bootstrap";
 import { EyeFill } from "react-bootstrap-icons";
 
-const ViewCustomerModal = ({ customer, statusData, productsData }) => {
+const ViewCustomerModal = ({ customer }) => {
   const [showModal, setShowModal] = useState(false);
   const handleCloseModal = () => setShowModal(false);
   const handleShowModal = () => setShowModal(true);
@@ -45,22 +45,30 @@ const ViewCustomerModal = ({ customer, statusData, productsData }) => {
           <strong>Person Email:</strong> {customer.personEmail}
           <br />
           <strong>Comments:</strong>
-          <ListGroup>
-            {customer.comments?.map((comment, index) => (
-              <ListGroup.Item key={index}>{comment}</ListGroup.Item>
-            )) || "Unknown"}
-          </ListGroup>
+          {customer.comments.length === 0 ? (
+            " not yet set"
+          ) : (
+            <ListGroup>
+              {customer.comments?.map((comment, index) => (
+                <ListGroup.Item key={index}>{comment}</ListGroup.Item>
+              ))}
+            </ListGroup>
+          )}
           <br />
-          <strong>Status:</strong> {customer.status || "Unknown"}
+          <strong>Status:</strong> {customer.status || "not yet set"}
           <br />
           <strong>Products:</strong>
-          <ListGroup>
-            {customer.products?.map((product) => (
-              <ListGroup.Item key={product._id}>
-                {product.product}
-              </ListGroup.Item>
-            )) || "Unknown"}
-          </ListGroup>
+          {customer.products.length === 0 ? (
+            " not yet set"
+          ) : (
+            <ListGroup>
+              {customer.products?.map((product) => (
+                <ListGroup.Item key={product._id}>
+                  {product.product}
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
+          )}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>

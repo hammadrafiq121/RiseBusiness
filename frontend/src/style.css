@@ -4,8 +4,8 @@
 }
 
 .plus-check {
-float: right;    
-position: relative;
+    float: right;    
+    position: relative;
     right: 10px; /* Adjust this value as needed */
     background-color: #fff; /* Background color for the button */
     color: #424242; /* Text color for the button */
@@ -63,12 +63,6 @@ body{
     padding-top: 15px;
     border-radius: 0px !important;
 }
-    
-    
-
-    
-
-
 
 .agent_col{
     background-image: url(./assets/IMAGE.png) !important;
@@ -76,7 +70,6 @@ body{
    background-position: center;
    background-repeat: no-repeat;
    background-size: cover;
-  
 
 }
 
@@ -131,9 +124,9 @@ body{
     margin-right: 10px !important;
 
 }
-.Create{
+/* .Create{
     margin-right: 3px;
-}
+} */
 
 .img, svg {
     font-size: 14px;
@@ -213,11 +206,11 @@ body{
 .Select-status{
     background-color: #e9ecef !important;
 }
-.date{
+/* .date{
 
     float: left  !important;
 
-}
+} */
 
 input.form-control, textareainput_serach, #state, #city, #country {
     background-color:#e9ecef !important;
@@ -493,9 +486,9 @@ color: white;
     .end_date{
         margin-left: -1.5rem;
     }
-    .date_filter{
+    /* .date_filter{
         width: 42% !important;
-    }
+    } */
 
     
 
@@ -536,10 +529,10 @@ color: white;
     border-radius: 5px;
     margin-right: -7px;
   }
-  .search_col{
+  /* .search_col{
     margin-left: 9px;
 
-}
+} */
   .rmsc * {
     box-sizing: border-box;
     transition: all .2s ease;
@@ -548,7 +541,7 @@ color: white;
 .fade, .modal, .show{
     width: 100% !important;
 }
-.row>* {
+.row >* {
     flex-shrink: 0;
     width: 100%;
     max-width: 100%;
@@ -556,58 +549,6 @@ color: white;
     padding-left: calc(var(--bs-gutter-x) * .5);
     margin-top: var(--bs-gutter-y);
 }
-
-/* 
-  .PhoneInput {
-    display: flex;
-    width: 100%;
-    align-items: center;
-}
-.PhoneInputCountry {
-    position: relative;
-    align-self: stretch;
-    display: flex;
-    align-items: center;
-    margin-right: 0.35em;
-}
-.PhoneInputCountrySelect {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    z-index: 1;
-    border: 0;
-    opacity: 0;
-    cursor: pointer;
-}
-.PhoneInputInput {
-    flex: 1;
-}
-
-.PhoneInputCountryIcon--border {
-    background-color: rgba(0,0,0,0.1);
-    box-shadow: 0 0 0 0.5px rgba(0,0,0,0.5), inset 0 0 0 0.5px rgba(0,0,0,0.5);
-}
-.PhoneInputCountryIcon {
-    width: calc(1em * 2);
-    height: 1em;
-}
-.PhoneInputCountrySelectArrow {
-    display: block;
-    content: '';
-    width: 0.3em;
-    height: 0.3em;
-    margin-left: 0.35em;
-    border-style: solid;
-    border-color: currentColor;
-    border-top-width: 0;
-    border-bottom-width: 1px;
-    border-left-width: 0;
-    border-right-width: 1px;
-    transform: rotate(45deg);
-    opacity: 0.45;
-} */
 
 .symbol-button {
     color: black !important; /* or any desired color */
@@ -664,17 +605,17 @@ color: white;
             align-items: center;
       
     }
-    .upload1{
+    /* .upload1{
         margin-left: 1rem;
         
-      }
+      } */
       .customer-row {
         justify-content: space-between;
       }
-    .btn_col{
+    /* .btn_col{
         width: 21% !important;
         margin-left: 26px;
-    }
+    } */
     .Select{
         /* display: none !important; */
         margin-top: 55px;
@@ -767,12 +708,12 @@ color: white;
    
             }
            }
-       @media only screen and (max-width: 1489px) {
+       /* @media only screen and (max-width: 1489px) {
             .search_col{
                width: 80% !important;
    
             }
-           }
+           } */
            @media only screen and (max-width: 988px) {
             .row{
               

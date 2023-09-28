@@ -4,10 +4,13 @@ import { Table, Form, Container, Row, Col, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { PencilSquare } from "react-bootstrap-icons";
 import "../style.css";
-import { getUsers } from "../app/reducers/userSlice.js";
 import Spinner from "./Spinner";
 import { toast } from "react-toastify";
-import DeleteUser from "./DeleteUser";
+// import DeleteUser from "./DeleteUser";
+import { reset as resetCustomer } from "../app/reducers/customerSlice.js";
+import { getUsers, reset as resetUsers } from "../app/reducers/userSlice.js";
+import { reset as resetStatus } from "../app/reducers/statusSlice.js";
+import { reset as resetProduct } from "../app/reducers/productSlice.js";
 
 const Users = () => {
   const dispatch = useDispatch();
@@ -22,12 +25,17 @@ const Users = () => {
   const [selectedRole, setSelectedRole] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-
   useEffect(() => {
-    if (user) {
-      dispatch(getUsers());
-    }
-  }, [user, dispatch]);
+    const fetchData = async () => {
+      await dispatch(resetCustomer());
+      await dispatch(resetUsers());
+      await dispatch(resetProduct());
+      await dispatch(resetStatus());
+
+      await dispatch(getUsers());
+    };
+    fetchData();
+  }, []);
 
   useEffect(() => {
     if (isLoading) {

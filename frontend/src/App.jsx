@@ -14,7 +14,6 @@ import Dashboard from "./components/Dashboard";
 import Status from "./components/Status";
 import Product from "./components/Product";
 import Sample from "./components/Sample";
-import LogViewer from "./components/LogViewer";
 import NotFound from "./components/NotFound";
 import PermissionDenied from "./components/PermissionDenied";
 
@@ -75,7 +74,6 @@ function App() {
               {/* Customer Routes */}
               <Route path="/customers" element={<Customers />} />
               <Route path="/addCustomers" element={<AddCustomer />} />
-              <Route path="/logViewer" element={<LogViewer />} />
               <Route path="/viewprofile" element={<Viewprofile />} />
               <Route
                 path="/customers/editCustomer/:id"

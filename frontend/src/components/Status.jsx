@@ -1,20 +1,31 @@
 import React, { useEffect, useState } from "react";
 import { Table, Container } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
-import { getAllStatus } from "../app/reducers/statusSlice.js";
 import EditStatusModal from "./EditStatusModal";
 import AddStatusModal from "./AddStatusModal";
-import DeleteStatus from "./DeleteStatus";
+// import DeleteStatus from "./DeleteStatus";
+import {
+  getAllStatus,
+  reset as resetStatus,
+} from "../app/reducers/statusSlice.js";
+import { reset as resetProduct } from "../app/reducers/productSlice.js";
+import { reset as resetCustomer } from "../app/reducers/customerSlice.js";
+import { reset as resetUsers } from "../app/reducers/userSlice.js";
 
 const Status = () => {
   const dispatch = useDispatch();
   const { statuses } = useSelector((state) => state.statuses);
 
   useEffect(() => {
-    async function fetchStatuses() {
+    const fetchData = async () => {
+      await dispatch(resetCustomer());
+      await dispatch(resetUsers());
+      await dispatch(resetProduct());
+      await dispatch(resetStatus());
+
       await dispatch(getAllStatus());
-    }
-    fetchStatuses();
+    };
+    fetchData();
   }, []);
 
   const allStatus = statuses.map((status) => (

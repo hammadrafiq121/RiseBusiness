@@ -4,12 +4,10 @@ import cors from "cors";
 import Connection from "./database/dbConfig.js";
 import customerRoutes from "./routes/customerRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
-import logRoutes from "./routes/logRoutes.js";
 import statusRoutes from "./routes/statusRoutes.js";
 import { errorHandler } from "./middleware/errorHandler.js";
-import LogEntry from "./model/logSchema.js";
 import productRoutes from "./routes/productRoutes.js";
-import sampleRoutes from "./routes/sampleRoutes.js";
+// import sampleRoutes from "./routes/sampleRoutes.js";
 
 dotenv.config();
 const PORT = process.env.PORT;
@@ -32,25 +30,12 @@ app.use((request, response, next) => {
 app.use("/", userRoutes);
 // Customer Routes
 app.use("/", customerRoutes);
-//Log Route
-app.use("/", logRoutes);
 //Status Route
 app.use("/", statusRoutes);
 //Product Route
 app.use("/", productRoutes);
 //Test Route
-app.use("/", sampleRoutes);
-
-// Routes
-app.get("/api/logs", async (req, res) => {
-  try {
-    const logs = await LogEntry.find().sort({ timestamp: -1 }).limit(100);
-    res.status(200).json(logs);
-  } catch (error) {
-    console.error("Error fetching logs:", error);
-    res.status(500).json({ message: "Error fetching logs" });
-  }
-});
+// app.use("/", sampleRoutes);
 
 app.use(errorHandler);
 app.listen(PORT, () => {
