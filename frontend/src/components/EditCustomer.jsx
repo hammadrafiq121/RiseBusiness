@@ -218,7 +218,7 @@ const EditCustomer = () => {
                     name="companyFax"
                     value={formData.companyFax}
                     onChange={handleChange}
-                    required
+                    // required
                   />
                 </Col>
               </Form.Group>
@@ -234,7 +234,7 @@ const EditCustomer = () => {
                     name="companyAddress"
                     value={formData.companyAddress}
                     onChange={handleChange}
-                    required
+                    // required
                   />
                 </Col>
               </Form.Group>
@@ -249,7 +249,7 @@ const EditCustomer = () => {
                     name="country"
                     value={formData.country}
                     onChange={handleChange}
-                    required
+                    // required
                   >
                     <option value={formData.country} key={formData.country}>
                       {formData.country}
@@ -281,17 +281,27 @@ const EditCustomer = () => {
                 <Col sm={3}>
                   <Form.Group as={Col} controlId="city" className="mb-2">
                     <Form.Label>City</Form.Label>
-                    <Form.Control
-                      disabled
+                    {/* <Form.Control
+                      disabled={isDisabled}
                       as="select"
                       name="city"
                       value={formData.city}
                       onChange={handleChange}
                     >
+
                       <option value={formData.city} key={formData.city}>
                         {formData.city}
                       </option>
-                    </Form.Control>
+                    </Form.Control> */}
+                    <Form.Control
+                      disabled={isDisabled}
+                      type="text"
+                      placeholder=""
+                      name="city"
+                      value={formData.city}
+                      onChange={handleChange}
+                      // required
+                    />
                   </Form.Group>
                 </Col>
 
@@ -305,7 +315,7 @@ const EditCustomer = () => {
                       name="zipCode"
                       value={formData.zipCode}
                       onChange={handleChange}
-                      required
+                      // required
                     />
                   </Form.Group>
                 </Col>
@@ -324,7 +334,7 @@ const EditCustomer = () => {
                     name="personName"
                     value={formData.personName}
                     onChange={handleChange}
-                    required
+                    // required
                   />
                 </Col>
               </Form.Group>
@@ -355,7 +365,7 @@ const EditCustomer = () => {
                     name="personEmail"
                     value={formData.personEmail}
                     onChange={handleChange}
-                    required
+                    // required
                   />
                 </Col>
               </Form.Group>
@@ -422,13 +432,15 @@ const EditCustomer = () => {
                       Edit
                     </Button>
                   )}
-                  <Button
-                    className="mb-2 mr-2 btn_f "
-                    variant="secondary"
-                    type="submit"
-                  >
-                    Update
-                  </Button>
+                  {!isDisabled && (
+                    <Button
+                      className="mb-2 mr-2 btn_f "
+                      variant="secondary"
+                      type="submit"
+                    >
+                      Update
+                    </Button>
+                  )}
                 </Form.Group>
                 <Form.Group as={Row} className="mb-2">
                   <Col sm={12}>

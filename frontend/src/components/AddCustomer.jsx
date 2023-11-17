@@ -166,7 +166,7 @@ const AddCustomer = () => {
                     name="companyFax"
                     value={formData.companyFax}
                     onChange={handleChange}
-                    required
+                    // required
                   />
                 </Col>
               </Form.Group>
@@ -182,7 +182,7 @@ const AddCustomer = () => {
                     name="companyAddress"
                     value={formData.companyAddress}
                     onChange={handleChange}
-                    required
+                    // required
                   />
                 </Col>
               </Form.Group>
@@ -198,7 +198,7 @@ const AddCustomer = () => {
                     name="country"
                     value={formData.country}
                     onChange={handleChange}
-                    required
+                    // required
                   />
                 </Col>
               </Form.Group>
@@ -214,7 +214,7 @@ const AddCustomer = () => {
                       name="state"
                       value={formData.state}
                       onChange={handleChange}
-                      required
+                      // required
                     />
                   </Form.Group>
                 </Col>
@@ -229,7 +229,7 @@ const AddCustomer = () => {
                       name="city"
                       value={formData.city}
                       onChange={handleChange}
-                      required
+                      // required
                     />
                   </Form.Group>
                 </Col>
@@ -244,7 +244,7 @@ const AddCustomer = () => {
                       name="zipCode"
                       value={formData.zipCode}
                       onChange={handleChange}
-                      required
+                      // required
                     />
                   </Form.Group>
                 </Col>
@@ -262,7 +262,7 @@ const AddCustomer = () => {
                     name="personName"
                     value={formData.personName}
                     onChange={handleChange}
-                    required
+                    // required
                   />
                 </Col>
               </Form.Group>
@@ -292,7 +292,7 @@ const AddCustomer = () => {
                     name="personEmail"
                     value={formData.personEmail}
                     onChange={handleChange}
-                    required
+                    // required
                   />
                 </Col>
               </Form.Group>
