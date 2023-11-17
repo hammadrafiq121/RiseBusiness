@@ -34,6 +34,28 @@ export const getAllCustomers = async (request, response) => {
   }
 };
 
+// export const getSingleCustomer = async (request, response) => {
+//   try {
+//     const customerId = request.params.id;
+//     const customer = await Customer.findById(customerId);
+//     if (!customer) {
+//       return response.status(400).json({ error: "Customer not found" });
+//     }
+//     const user = await User.findById(request.user._id);
+//     if (!user) {
+//       return response.status(400).json({ error: "User not found" });
+//     }
+//     const customerUserId = customer.user; // MongoDB ObjectID from customer document
+//     const loggedInUserId = user._id; // MongoDB ObjectID from user document
+//     // Make sure the logged-in user matches the customer user
+//     if (!customerUserId.equals(loggedInUserId)) {
+//       return response.status(401).json({ error: "User not authorized" });
+//     }
+//     return response.status(200).json(customer);
+//   } catch (error) {
+//     return response.status(500).json({ error: "Failed to get customer" });
+//   }
+// };
 export const getSingleCustomer = async (request, response) => {
   try {
     const customerId = request.params.id;
@@ -47,15 +69,51 @@ export const getSingleCustomer = async (request, response) => {
     }
     const customerUserId = customer.user; // MongoDB ObjectID from customer document
     const loggedInUserId = user._id; // MongoDB ObjectID from user document
-    // Make sure the logged-in user matches the customer user
-    if (!customerUserId.equals(loggedInUserId)) {
+    // Check if the logged-in user is either the customer owner or an admin
+    if (
+      customerUserId.equals(loggedInUserId) ||
+      request.user.userRole === "admin"
+    ) {
+      return response.status(200).json(customer);
+    } else {
       return response.status(401).json({ error: "User not authorized" });
     }
-    return response.status(200).json(customer);
   } catch (error) {
     return response.status(500).json({ error: "Failed to get customer" });
   }
 };
+
+// export const updateCustomer = async (request, response) => {
+//   try {
+//     const customerId = request.params.id;
+//     const customer = await Customer.findById(request.params.id);
+//     const user = await User.findById(request.user._id);
+//     // Check for user
+//     if (!user) {
+//       return response.status(401).json({ error: "User not found" });
+//     }
+//     const customerUserId = customer.user; // MongoDB ObjectID from customer document
+//     const loggedInUserId = user._id; // MongoDB ObjectID from user document
+//     // Make sure the logged in user matches the customer user
+//     if (!customerUserId.equals(loggedInUserId)) {
+//       return response.status(401).json({ error: "User not authorized" });
+//     }
+//     const updatedCustomer = await Customer.findOneAndUpdate(
+//       { _id: customerId },
+//       request.body,
+//       {
+//         new: true,
+//       }
+//     );
+//     if (updatedCustomer) {
+//       return response.status(200).json(updatedCustomer);
+//     } else {
+//       return response.status(404).json({ error: "Customer not updated" });
+//     }
+//   } catch (error) {
+//     return response.status(500).json({ error: "Failed to update customer" });
+//   }
+// };
 
 export const updateCustomer = async (request, response) => {
   try {
@@ -68,27 +126,30 @@ export const updateCustomer = async (request, response) => {
     }
     const customerUserId = customer.user; // MongoDB ObjectID from customer document
     const loggedInUserId = user._id; // MongoDB ObjectID from user document
-    // Make sure the logged in user matches the customer user
-    if (!customerUserId.equals(loggedInUserId)) {
-      return response.status(401).json({ error: "User not authorized" });
-    }
-    const updatedCustomer = await Customer.findOneAndUpdate(
-      { _id: customerId },
-      request.body,
-      {
-        new: true,
+    // Check if the logged-in user is either the customer owner or an admin
+    if (
+      customerUserId.equals(loggedInUserId) ||
+      request.user.userRole === "admin"
+    ) {
+      const updatedCustomer = await Customer.findOneAndUpdate(
+        { _id: customerId },
+        request.body,
+        {
+          new: true,
+        }
+      );
+      if (updatedCustomer) {
+        return response.status(200).json(updatedCustomer);
+      } else {
+        return response.status(404).json({ error: "Customer not updated" });
       }
-    );
-    if (updatedCustomer) {
-      return response.status(200).json(updatedCustomer);
     } else {
-      return response.status(404).json({ error: "Customer not updated" });
+      return response.status(401).json({ error: "User not authorized" });
     }
   } catch (error) {
     return response.status(500).json({ error: "Failed to update customer" });
   }
 };
-
 export const deleteCustomer = async (request, response) => {
   try {
     const customerId = request.params.id;
