@@ -32,7 +32,8 @@ export const loginUser = async (request, response) => {
 };
 
 export const signupUser = async (request, response) => {
-  const { fullName, userName, email, password, userRole } = request.body;
+  const { fullName, userName, email, password, userRole, manager } =
+    request.body;
   try {
     //validations
     if (!fullName || !userName || !email || !password || !userRole) {
@@ -67,6 +68,7 @@ export const signupUser = async (request, response) => {
       email,
       password: hashedPassword,
       userRole,
+      manager,
     });
     // const token = createToken(user._id);
     // return response.status(200).json({ email, token });
@@ -78,12 +80,21 @@ export const signupUser = async (request, response) => {
 
 export const getAllUsers = async (request, response) => {
   try {
-    const users = await User.find()
-      .select("fullName userName email userRole")
-      .sort({
-        createdAt: -1,
-      });
-    return response.status(200).json(users);
+    if (request.user.userRole === "admin") {
+      const users = await User.find()
+        .select("fullName userName email userRole manager")
+        .sort({
+          createdAt: -1,
+        });
+      return response.status(200).json(users);
+    } else if (request.user.userRole === "manager") {
+      const users = await User.find({ manager: request.user._id })
+        .select("fullName userName email userRole manager")
+        .sort({
+          createdAt: -1,
+        });
+      return response.status(200).json(users);
+    }
   } catch (error) {
     return response.status(500).json({ error: "Failed to get Users" });
   }
@@ -94,7 +105,7 @@ export const getSingleUser = async (request, response) => {
     // Assuming the authenticated user's information is available in the request.user object
     const userId = request.params.id;
     const user = await User.findById(userId).select(
-      "fullName userName email userRole"
+      "fullName userName email userRole manager"
     );
     if (!user) {
       return response.status(404).json({ error: "User not found" });
@@ -104,72 +115,6 @@ export const getSingleUser = async (request, response) => {
     return response.status(500).json({ error: "Failed to get user" });
   }
 };
-
-// export const updateUser = async (request, response) => {
-//   try {
-//     const { id: userId } = request.params;
-//     const { password, userRole, email, userName } = request.body;
-//     const user = await User.findById(userId);
-//     if (!user) {
-//       return response.status(401).json({ error: "User not found" });
-//     }
-//     if (!["admin", "manager", "agent"].includes(userRole)) {
-//       return response.status(404).json({ error: "Invalid user role" });
-//     }
-//     if (password && !validator.isStrongPassword(password)) {
-//       return response.status(404).json({ error: "Use a strong password" });
-//     }
-
-//     const update = password
-//       ? {
-//           ...request.body,
-//           password: await bcrypt.hash(password, await bcrypt.genSalt(10)),
-//         }
-//       : request.body;
-//     const updatedUser = await User.findOneAndUpdate({ _id: userId }, update, {
-//       new: true,
-//     });
-//     if (updatedUser) {
-//       return response.status(200).json(updatedUser);
-//     } else {
-//       return response.status(404).json({ error: "User not found" });
-//     }
-//     // if (password) {
-//     //   const salt = await bcrypt.genSalt(10);
-//     //   const hash = await bcrypt.hash(password, salt);
-//     //   const updatedUser = await User.findOneAndUpdate(
-//     //     { _id: userId },
-//     //     {
-//     //       ...request.body,
-//     //       password: hash,
-//     //     },
-//     //     {
-//     //       new: true,
-//     //     }
-//     //   );
-//     //   if (updatedUser) {
-//     //     return response.status(200).json(updatedUser);
-//     //   } else {
-//     //     return response.status(404).json({ error: "User not found" });
-//     //   }
-//     // } else {
-//     //   const updatedUser = await User.findOneAndUpdate(
-//     //     { _id: userId },
-//     //     request.body,
-//     //     {
-//     //       new: true,
-//     //     }
-//     //   );
-//     //   if (updatedUser) {
-//     //     return response.status(200).json(updatedUser);
-//     //   } else {
-//     //     return response.status(404).json({ error: "User not found" });
-//     //   }
-//     // }
-//   } catch (error) {
-//     return response.status(500).json({ error: error.message });
-//   }
-// };
 
 export const updateUser = async (request, response) => {
   try {
@@ -182,7 +127,9 @@ export const updateUser = async (request, response) => {
       const decoded = JWT.verify(token, process.env.JWT_SECRET);
       userId = decoded._id;
     }
-    const { password, userRole, email, userName, fullName } = request.body;
+    const { password, userRole, email, userName, fullName, manager } =
+      request.body;
+
     const user = await User.findById(userId);
     if (!user) {
       return response.status(401).json({ error: "User not found" });
@@ -191,7 +138,8 @@ export const updateUser = async (request, response) => {
       userRole === user.userRole &&
       email === user.email &&
       userName === user.userName &&
-      fullName === user.fullName
+      fullName === user.fullName &&
+      manager === user.manager
     ) {
       return response.status(401).json({ error: "No changes made" });
     }
@@ -216,6 +164,9 @@ export const updateUser = async (request, response) => {
       update.userRole = userRole;
     }
 
+    if (manager === null) {
+      update.manager = manager;
+    }
     // Check if the request includes a new email and check for duplicates
     if (email) {
       // Check if the new email is different from the existing one
@@ -260,6 +211,7 @@ export const updateUser = async (request, response) => {
     return response.status(500).json({ error: error.message });
   }
 };
+
 export const deleteUser = async (request, response) => {
   try {
     const userId = request.params.id;
