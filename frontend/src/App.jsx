@@ -4,6 +4,7 @@ import "./style.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
+import Task from "./components/Task";
 
 // Import components
 import Navbar from "./components/Navbar";
@@ -40,6 +41,7 @@ function App() {
     setIsDarkMode(!isDarkMode);
   };
   const isUserAdmin = user && user.userRole === "admin";
+  const isUserManager = user && user.userRole === "manager";
 
   return (
     <div className={`app ${isDarkMode ? "dark" : ""}`}>
@@ -68,7 +70,13 @@ function App() {
               <Route path="/login" element={<Navigate to="/" />} />
               <Route
                 path="/signup"
-                element={isUserAdmin ? <Signup /> : <Navigate to="/403" />}
+                element={
+                  isUserAdmin || isUserManager ? (
+                    <Signup />
+                  ) : (
+                    <Navigate to="/403" />
+                  )
+                }
               />
 
               {/* Customer Routes */}
@@ -87,9 +95,22 @@ function App() {
               {/* User Routes */}
               <Route
                 path="/users"
-                element={isUserAdmin ? <Users /> : <Navigate to="/403" />}
+                element={
+                  isUserAdmin || isUserManager ? (
+                    <Users />
+                  ) : (
+                    <Navigate to="/403" />
+                  )
+                }
               />
               <Route path="/users/editUser/:id" element={<EditUser />} />
+
+              {/* Task Routes */}
+              <Route
+                path="/task"
+                element={isUserAdmin ? <Task /> : <Navigate to="/403" />}
+              />
+
               <Route path="/403" element={<PermissionDenied />} />
               <Route path="/*" element={<NotFound />} />
             </>
