@@ -10,6 +10,7 @@ import { reset as resetProduct } from "../app/reducers/productSlice.js";
 import {
   updateUser,
   getUser,
+  getUsers,
   reset as resetUsers,
 } from "../app/reducers/userSlice.js";
 
@@ -20,15 +21,15 @@ const EditUser = () => {
     fullName: "",
     userName: "",
     email: "",
-    password: "",
     userRole: "",
+    manager: null,
   });
   const navigate = useNavigate();
   const { id } = useParams();
   const dispatch = useDispatch();
 
-  const { user, isLoading } = useSelector((state) => state.auth);
-  const { isError, message, isSuccess } = useSelector((state) => state.users);
+  const { user } = useSelector((state) => state.auth);
+  const { users, isLoading } = useSelector((state) => state.users);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,12 +39,17 @@ const EditUser = () => {
         await dispatch(resetStatus());
         await dispatch(resetProduct());
 
-        const { payload } = await dispatch(getUser(id));
-        setFormData(payload);
+        const { payload: users } = await dispatch(getUsers());
+        const selectedUser = await users.find((user) => user._id === id);
+        setFormData({ ...selectedUser, manager: selectedUser.manager || null });
       }
     };
     fetchData();
   }, []);
+
+  const managers = users
+    .filter((item) => item.userRole === "manager" && item._id !== id)
+    .map((manager) => ({ _id: manager._id, fullName: manager.fullName }));
 
   const handleEdit = () => {
     setIsDisabled(!isDisabled);
@@ -57,7 +63,18 @@ const EditUser = () => {
 
   const handleUpdate = async (event) => {
     event.preventDefault();
-    await dispatch(updateUser({ id: formData._id, user: formData }));
+
+    if (formData.userRole === "manager" || formData.userRole === "admin") {
+      dispatch(
+        updateUser({
+          id: formData._id,
+          user: { ...formData, manager: null },
+        })
+      );
+      console.log(formData);
+    } else {
+      await dispatch(updateUser({ id: formData._id, user: formData }));
+    }
     navigate("/users/");
   };
 
@@ -86,6 +103,11 @@ const EditUser = () => {
               <Form.Label column sm={12}>
                 Role
               </Form.Label>
+              {formData.userRole === "agent" && (
+                <Form.Label column sm={12}>
+                  Manager
+                </Form.Label>
+              )}
             </Col>
 
             <Col lg={6}>
@@ -138,6 +160,26 @@ const EditUser = () => {
                   <option value="agent">Agent</option>
                 </Form.Select>
               </Form.Group>
+              {formData.userRole === "agent" && (
+                <Form.Group as={Row} controlId="manager" className="mb-2 role">
+                  <Form.Select
+                    disabled={isDisabled}
+                    value={formData.manager}
+                    name="manager"
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="" disabled>
+                      Select Manager
+                    </option>
+                    {managers.map((manager) => (
+                      <option key={manager._id} value={manager._id}>
+                        {manager.fullName}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </Form.Group>
+              )}
               <Form.Group as={Row} className="mb-2  ">
                 {isDisabled && (
                   <Button

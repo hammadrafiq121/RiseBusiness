@@ -38,10 +38,11 @@ const Customers = () => {
   const [selectedEndDate, setSelectedEndDate] = useState(null);
 
   const admin = user && user.userRole === "admin";
-
+  const manager = user && user.userRole === "manager";
+  // const agentsOfManger =
   useEffect(() => {
     const fetchData = async () => {
-      if (admin) {
+      if (admin || manager) {
         await dispatch(getUsers());
       }
       if (user) {
@@ -129,6 +130,7 @@ const Customers = () => {
         <td className="td">{customer.state}</td>
         <td className="td">{customer.city}</td>
         {admin && <td className="td">{customer.user}</td>}
+        {manager && <td className="td">{customer.user}</td>}
         <td className="td">{customer.status}</td>
         <td className="td">
           {new Date(customer.createdAt).toLocaleDateString()}
@@ -280,6 +282,7 @@ const Customers = () => {
                 <th className="custoner-col-name">State</th>
                 <th className="custoner-col-name">City</th>
                 {admin && <th className="custoner-col-name">User</th>}
+                {manager && <th className="custoner-col-name">User</th>}
                 <th className="custoner-col-name">Status</th>
                 <th className="custoner-col-name">Date</th>
                 <th className="custoner-col-name">Action</th>
@@ -287,7 +290,6 @@ const Customers = () => {
             </thead>
             <tbody className="tbody">{renderCustomers}</tbody>
           </Table>
-
           <div className="pagination-controls">
             <Button
               className="pagination-btn previous_btn"

@@ -138,7 +138,7 @@ body{
 
 
 
-.Addcustomer_main{
+.Addcustomer_main, .AddTask_main{
     display: flex;
     align-items: center;
     justify-content: center;
@@ -283,7 +283,7 @@ flex-wrap: wrap !important;
     align-items: center;
     justify-content: center;
 }
-.Addcustomer-container{
+.Addcustomer-container, .AddTask-container{
     background-color: transparent  !important;
     padding: 30px !important ;
     margin-top: 20px;
@@ -294,7 +294,7 @@ flex-wrap: wrap !important;
     border: 1px solid white;
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.2)
 }
-.label{
+.labe, .Task-label{
     color:#070707 !important;
     font-weight: 400 !important;
 }
@@ -688,7 +688,7 @@ color: white;
         
     }
     @media only screen and (max-width: 1010px) {
-        .Addcustomer-container {
+        .Addcustomer-container, .AddTask-container {
             width: 95% !important;
         }
         .submit{
@@ -703,7 +703,7 @@ color: white;
          }
         }
         @media only screen and (max-width: 940px) {
-            .Addcustomer_row{
+            .Addcustomer_row, .AddTask_row{
                width: 100% !important;
    
             }
@@ -1465,7 +1465,7 @@ div.dark .home .text{
 }
 .submt{
     justify-content: flex-end;
-    margin-right: -1px !important;
+    margin-right: 0.7rem !important;
 }
 
 
@@ -1551,9 +1551,30 @@ div.dark .home .text{
     background-color:#6c757d  !important;
     color: white !important;
   }
-  
-
-  
 
 
- 
+  /* //////task css/// */
+
+  .Multiple-selector{
+    display: flex;
+    margin-left: 1.5rem;
+    margin-right: -0.5rem;
+  }
+  .Multiple-option{
+    flex: 1;
+    margin-right: 10px;
+  }
+  .Priority{
+    margin-top: 1rem;
+  }
+  .check-list{
+    margin-inline-start: 1.5rem !important;
+    width: 100% !important;
+    margin-top: 0.8rem !important;
+}
+  .Task-field{
+    background-color:#e9ecef !important ;
+  }
+  .Create-task{
+    padding-left: 0 !important;
+  }

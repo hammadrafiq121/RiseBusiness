@@ -8,7 +8,7 @@ import Spinner from "./Spinner";
 import { reset as resetCustomer } from "../app/reducers/customerSlice.js";
 import { reset as resetStatus } from "../app/reducers/statusSlice.js";
 import { reset as resetProduct } from "../app/reducers/productSlice.js";
-import { reset as resetUsers } from "../app/reducers/userSlice.js";
+import { getUsers, reset as resetUsers } from "../app/reducers/userSlice.js";
 
 const Signup = () => {
   const blankForm = {
@@ -17,6 +17,7 @@ const Signup = () => {
     email: "",
     password: "",
     userRole: "",
+    manager: null,
   };
   const [formData, setFormData] = useState(blankForm);
 
@@ -25,6 +26,10 @@ const Signup = () => {
   const { user, isLoading, isSuccess, isError, message } = useSelector(
     (state) => state.auth
   );
+  const { users } = useSelector((state) => state.users);
+  const managers = users
+    .filter((user) => user.userRole === "manager")
+    .map((manager) => ({ _id: manager._id, fullName: manager.fullName }));
 
   useEffect(() => {
     const clearData = async () => {
@@ -32,9 +37,13 @@ const Signup = () => {
       await dispatch(resetCustomer());
       await dispatch(resetStatus());
       await dispatch(resetProduct());
+
+      await dispatch(getUsers());
     };
     clearData();
+  }, []);
 
+  useEffect(() => {
     if (isError) {
       toast.dismiss();
       toast.error(message);
@@ -44,7 +53,7 @@ const Signup = () => {
       toast.success(message);
       setFormData(blankForm);
     }
-  }, []);
+  }, [isSuccess, isError]);
 
   const handleChange = (e) => {
     setFormData({
@@ -136,6 +145,28 @@ const Signup = () => {
             </Form.Control>
           </Form.Group>
 
+          {formData.userRole === "agent" && (
+            <Form.Group className="signup_group" controlId="manager">
+              <Form.Label></Form.Label>
+              <Form.Control
+                className="signup_name pl"
+                as="select"
+                name="manager"
+                value={formData.manager}
+                onChange={handleChange}
+                required
+              >
+                <option value="" disabled>
+                  Select Manager
+                </option>
+                {managers.map((manager) => (
+                  <option key={manager._id} value={manager._id}>
+                    {manager.fullName}
+                  </option>
+                ))}
+              </Form.Control>
+            </Form.Group>
+          )}
           <Button
             className="mb-2 mt-2 signup_btn"
             variant="secondary"
