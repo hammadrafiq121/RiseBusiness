@@ -2,6 +2,7 @@ import User from "../model/userSchema.js";
 import JWT from "jsonwebtoken";
 import validator from "validator";
 import bcrypt from "bcrypt";
+import mongoose from "mongoose";
 
 const createToken = (_id) => {
   return JWT.sign({ _id: _id }, process.env.JWT_SECRET, { expiresIn: "1d" });
@@ -25,7 +26,7 @@ export const loginUser = async (request, response) => {
     const token = createToken(_id);
     return response
       .status(200)
-      .json({ email, fullName, userName, userRole, token });
+      .json({ _id, email, fullName, userName, userRole, token });
   } catch (error) {
     return response.status(400).json({ error: "Login Failed" });
   }
@@ -93,6 +94,10 @@ export const getAllUsers = async (request, response) => {
         .sort({
           createdAt: -1,
         });
+      const { _id, fullName, userName, email, userRole, manager } =
+        request.user;
+      const user = { _id, fullName, userName, email, userRole, manager };
+      users.push(user);
       return response.status(200).json(users);
     }
   } catch (error) {
@@ -164,7 +169,7 @@ export const updateUser = async (request, response) => {
       update.userRole = userRole;
     }
 
-    if (manager === null) {
+    if (manager.length === 0) {
       update.manager = manager;
     }
     // Check if the request includes a new email and check for duplicates
@@ -224,5 +229,30 @@ export const deleteUser = async (request, response) => {
     return response.status(200).json(deletedUser);
   } catch (error) {
     return response.status(500).json({ error: error.message });
+  }
+};
+export const assignUsers = async (req, res) => {
+  try {
+    const { _id, users } = req.body;
+
+    const promises = users.map(async (userID) => {
+      const user = await User.findById(userID);
+      if (user) {
+        // user.manager = [];
+        if (!user.manager.includes(_id)) {
+          user.manager.push(_id);
+        }
+        return user.save();
+      } else {
+        console.log(`User with ID ${userID} not found.`);
+      }
+    });
+
+    // Wait for all update operations to complete
+    const result = await Promise.all(promises);
+
+    return res.status(200).json(result);
+  } catch (error) {
+    return res.status(500).json({ error: "Internal server error" });
   }
 };
