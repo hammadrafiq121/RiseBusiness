@@ -19,27 +19,30 @@ export const addCustomer = async (request, response) => {
 export const getAllCustomers = async (request, response) => {
   try {
     if (request.user.userRole === "admin") {
-      const customers = await Customer.find().sort({
-        createdAt: -1,
-      });
+      const customers = await Customer.find();
+      // .sort({
+      //   createdAt: -1,
+      // });
       return response.status(200).json(customers);
     } else if (request.user.userRole === "manager") {
-      const agentsOfManager = await User.find({ manager: request.user._id })
-        .select("_id")
-        .sort({
-          createdAt: -1,
-        });
-      agentsOfManager.push(request.user._id);
+      const usersOfManager = await User.find({
+        manager: { $in: request.user._id },
+      }).select("_id");
+      // .sort({
+      //   createdAt: -1,
+      // });
+      usersOfManager.push(request.user._id);
       const customers = await Customer.find({
-        user: { $in: agentsOfManager },
+        user: { $in: usersOfManager },
       }).sort({
         createdAt: -1,
       });
       return response.status(200).json(customers);
     } else {
-      const customers = await Customer.find({ user: request.user._id }).sort({
-        createdAt: -1,
-      });
+      const customers = await Customer.find({ user: request.user._id });
+      // .sort({
+      //   createdAt: -1,
+      // });
       return response.status(200).json(customers);
     }
   } catch (error) {
@@ -123,11 +126,16 @@ export const deleteCustomer = async (request, response) => {
     const customerUserId = customer.user; // MongoDB ObjectID from customer document
     const loggedInUserId = user._id; // MongoDB ObjectID from user document
     // Make sure the logged in user matches the customer user
-    if (!customerUserId.equals(loggedInUserId)) {
+    if (
+      customerUserId.equals(loggedInUserId) ||
+      request.user.userRole === "admin" ||
+      request.user.userRole === "manager"
+    ) {
+      const deletedCustomer = await Customer.findByIdAndDelete(customerId);
+      return response.status(200).json(deletedCustomer);
+    } else if (!customerUserId.equals(loggedInUserId)) {
       return response.status(401).json({ error: "User not authorized" });
     }
-    const deletedCustomer = await Customer.findByIdAndDelete(customerId);
-    return response.status(200).json(deletedCustomer);
   } catch (error) {
     return response.status(500).json(error.message);
   }
@@ -135,47 +143,53 @@ export const deleteCustomer = async (request, response) => {
 
 export const uploadCustomers = async (request, response) => {
   try {
-    const filePath = request.file.path;
-    const user = request.body.user;
-    const results = [];
-    await new Promise((resolve, reject) => {
-      fs.createReadStream(filePath)
-        .pipe(csv())
-        .on("data", (data) => {
-          // const productValues = data.products.split("|");
-          // const products = productValues.map((product) => {
-          //   const trimmedProduct = product.trim();
-          //   const lowercaseProduct = trimmedProduct.toLowerCase();
-          //   const wordsInProduct = lowercaseProduct.split(" ");
-          //   const capitalizedProduct = wordsInProduct
-          //     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-          //     .join(" ");
-          //   return {
-          //     label: capitalizedProduct,
-          //     value: lowercaseProduct.replace(/\s+/g, "-"),
-          //   };
-          // });
+    if (
+      request.user.userRole === "admin" ||
+      request.user.userRole === "manager"
+    ) {
+      console.log(request.user._id);
+      const filePath = request.file.path;
+      const user = request.body.user;
+      const results = [];
+      await new Promise((resolve, reject) => {
+        fs.createReadStream(filePath)
+          .pipe(csv())
+          .on("data", (data) => {
+            // const productValues = data.products.split("|");
+            // const products = productValues.map((product) => {
+            //   const trimmedProduct = product.trim();
+            //   const lowercaseProduct = trimmedProduct.toLowerCase();
+            //   const wordsInProduct = lowercaseProduct.split(" ");
+            //   const capitalizedProduct = wordsInProduct
+            //     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+            //     .join(" ");
+            //   return {
+            //     label: capitalizedProduct,
+            //     value: lowercaseProduct.replace(/\s+/g, "-"),
+            //   };
+            // });
 
-          // Create a new object with the modified products array
-          const newData = { ...data, user };
-          results.push(newData);
-        })
-        .on("end", () => resolve());
-    });
-
-    const docs = await Customer.insertMany(results);
-    await new Promise((resolve, reject) => {
-      fs.unlink(filePath, (err) => {
-        if (err) {
-          console.error(err);
-          reject(err);
-        } else {
-          console.log("File deleted successfully");
-          resolve();
-        }
+            // Create a new object with the modified products array
+            const newData = { ...data, user };
+            results.push(newData);
+          })
+          .on("end", () => resolve());
       });
-    });
-    return response.status(200).json(docs);
+
+      const docs = await Customer.insertMany(results);
+      await new Promise((resolve, reject) => {
+        fs.unlink(filePath, (err) => {
+          if (err) {
+            console.error(err);
+            reject(err);
+          } else {
+            console.log("File deleted successfully");
+            resolve();
+          }
+        });
+      });
+      return response.status(200).json(docs);
+    }
   } catch (error) {
     return response.status(500).json({ message: "Failed to upload customers" });
   }
