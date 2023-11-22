@@ -27,10 +27,12 @@ const userSchema = new mongoose.Schema(
       required: true,
       enum: ["admin", "manager", "agent"],
     },
-    manager: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
+    manager: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
   },
   { timestamps: true }
 );

@@ -24,7 +24,7 @@ customerRoutes.delete("/api/customers/:id", protect, deleteCustomer);
 customerRoutes.post(
   "/api/customers/upload",
   protect,
-  roleMiddleware(["admin"]),
+  roleMiddleware(["admin", "manager"]),
   upload.single("csvFile"),
   uploadCustomers
 );
