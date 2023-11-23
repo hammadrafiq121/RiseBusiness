@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import "./style.css";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import Toast from "./components/Toast";
 import { useSelector } from "react-redux";
 import Task from "./components/Task";
 
@@ -14,7 +13,6 @@ import Sidebar from "./components/Sidebar";
 import Dashboard from "./components/Dashboard";
 import Status from "./components/Status";
 import Product from "./components/Product";
-import Sample from "./components/Sample";
 import NotFound from "./components/NotFound";
 import PermissionDenied from "./components/PermissionDenied";
 
@@ -24,13 +22,15 @@ import Signup from "./components/Signup";
 
 // Customer routes
 import Customers from "./components/Customers";
+import Leads from "./components/Leads";
 import AddCustomer from "./components/AddCustomer";
 import EditCustomer from "./components/EditCustomer";
 import UploadCSV from "./components/UploadCSV";
 import Viewprofile from "./components/Viewprofile";
 
 // User routes
-import Users from "./components/Users";
+import Agents from "./components/Agents";
+import Managers from "./components/Managers";
 import EditUser from "./components/EditUser";
 
 function App() {
@@ -60,11 +60,14 @@ function App() {
               <Route path="/" element={<Dashboard isDarkMode={isDarkMode} />} />
 
               {/* Status and Product */}
-              <Route path="/status" element={<Status />} />
-              <Route path="/product" element={<Product />} />
-
-              {/* Sample */}
-              <Route path="/sample" element={<Sample />} />
+              <Route
+                path="/status"
+                element={isUserAdmin ? <Status /> : <Navigate to="/403" />}
+              />
+              <Route
+                path="/product"
+                element={isUserAdmin ? <Product /> : <Navigate to="/403" />}
+              />
 
               {/* Auth Routes */}
               <Route path="/login" element={<Navigate to="/" />} />
@@ -81,6 +84,7 @@ function App() {
 
               {/* Customer Routes */}
               <Route path="/customers" element={<Customers />} />
+              <Route path="/leads" element={<Leads />} />
               <Route path="/addCustomers" element={<AddCustomer />} />
               <Route path="/viewprofile" element={<Viewprofile />} />
               <Route
@@ -89,21 +93,38 @@ function App() {
               />
               <Route
                 path="/customers/upload"
-                element={isUserAdmin ? <UploadCSV /> : <Navigate to="/403" />}
+                element={
+                  isUserAdmin || isUserManager ? (
+                    <UploadCSV />
+                  ) : (
+                    <Navigate to="/403" />
+                  )
+                }
               />
 
               {/* User Routes */}
               <Route
-                path="/users"
+                path="/agents"
                 element={
                   isUserAdmin || isUserManager ? (
-                    <Users />
+                    <Agents />
                   ) : (
                     <Navigate to="/403" />
                   )
                 }
               />
               <Route path="/users/editUser/:id" element={<EditUser />} />
+
+              <Route
+                path="/managers"
+                element={
+                  isUserAdmin || isUserManager ? (
+                    <Managers />
+                  ) : (
+                    <Navigate to="/403" />
+                  )
+                }
+              />
 
               {/* Task Routes */}
               <Route
@@ -124,9 +145,6 @@ function App() {
             </>
           )}
         </Routes>
-
-        {/* Toast Notifications */}
-        <ToastContainer />
       </BrowserRouter>
     </div>
   );

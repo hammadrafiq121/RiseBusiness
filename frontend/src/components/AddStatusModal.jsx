@@ -22,6 +22,7 @@ const EditStatusModal = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     await dispatch(addStatus(formData));
+    setFormData({ status: "" });
     handleCloseModal();
   };
 

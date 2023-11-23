@@ -21,10 +21,9 @@ import {
   reset as resetProduct,
 } from "../app/reducers/productSlice.js";
 import Pagination from "./Pagination";
-import { MultiSelect } from "react-multi-select-component";
 import DeleteCustomer from "./DeleteCustomer";
 
-const Customers = () => {
+const Leads = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { customers, isLoading } = useSelector((state) => state.customers);
@@ -32,7 +31,6 @@ const Customers = () => {
   const { products } = useSelector((state) => state.products);
   const { users } = useSelector((state) => state.users);
   const [searchKeyword, setSearchKeyword] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState([]);
   const [selectedUser, setSelectedUser] = useState("");
   const [selectedStartDate, setSelectedStartDate] = useState(null);
   const [selectedEndDate, setSelectedEndDate] = useState(null);
@@ -89,17 +87,18 @@ const Customers = () => {
     setSortOrders(newSortOrders);
   };
 
-  const onGoingCustomers = customers.filter((customer) => customer.status);
-  const sortedCustomers = onGoingCustomers.slice().sort((a, b) => {
+  const freshLeads = customers.filter(
+    (customer) => !customer.status || customer.status === ""
+  );
+
+  const sortedCustomers = freshLeads.slice().sort((a, b) => {
     if (Object.values(sortOrders).every((value) => value === "none")) {
-      // Sort by date in descending order by default
       return parseISO(b.createdAt) - parseISO(a.createdAt);
     }
 
     for (const field in sortOrders) {
       if (sortOrders[field] !== "none") {
         if (field === "date") {
-          // Sort the "Date" field based on actual date values
           const dateA = parseISO(a.createdAt);
           const dateB = parseISO(b.createdAt);
 
@@ -125,9 +124,7 @@ const Customers = () => {
 
   const filteredCustomers = sortedCustomers.filter((customer) => {
     const keyword = searchKeyword.toLowerCase();
-    const isStatusMatch =
-      selectedStatus.length === 0 ||
-      selectedStatus.some((status) => status.value === customer.status);
+
     const isUserMatch = selectedUser === "" || customer.user === selectedUser;
     const creationDate = parseISO(customer.createdAt);
     const startOfSelectedStartDate = startOfDay(selectedStartDate);
@@ -141,7 +138,6 @@ const Customers = () => {
       (customer.companyName.toLowerCase().includes(keyword) ||
         customer.state.toLowerCase().includes(keyword) ||
         customer.city.toLowerCase().includes(keyword)) &&
-      isStatusMatch &&
       isUserMatch &&
       isStartDateMatch &&
       isEndDateMatch
@@ -214,11 +210,6 @@ const Customers = () => {
     indexOfLastCustomer
   );
 
-  const listOfStatus = statuses.map((status) => ({
-    label: status.status,
-    value: status._id,
-  }));
-
   return (
     <div className="customer_div">
       <section className="customer-sec">
@@ -237,17 +228,7 @@ const Customers = () => {
                       />
                     </Form.Group>
                   </Col>
-                  <Col lg={2}>
-                    <Form.Group controlId="statusFilter" className="mb-2">
-                      <MultiSelect
-                        name="statusFilter" // Use a unique identifier for name
-                        options={listOfStatus}
-                        value={selectedStatus}
-                        onChange={(selected) => setSelectedStatus(selected)}
-                        labelledBy="Status"
-                      />
-                    </Form.Group>
-                  </Col>
+
                   {(admin || manager) && (
                     <Col lg={2}>
                       <Form.Group controlId="userFilter" className="mb-2">
@@ -425,4 +406,4 @@ const Customers = () => {
   );
 };
 
-export default Customers;
+export default Leads;

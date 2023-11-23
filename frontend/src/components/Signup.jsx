@@ -2,13 +2,15 @@ import React, { useEffect, useState } from "react";
 import { Form, Button, Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { signup } from "../app/reducers/authSlice";
 import Spinner from "./Spinner";
+import { reset } from "../app/reducers/authSlice.js";
 import { reset as resetCustomer } from "../app/reducers/customerSlice.js";
 import { reset as resetStatus } from "../app/reducers/statusSlice.js";
 import { reset as resetProduct } from "../app/reducers/productSlice.js";
 import { getUsers, reset as resetUsers } from "../app/reducers/userSlice.js";
+import Toast from "./Toast";
+import { MultiSelect } from "react-multi-select-component";
 
 const Signup = () => {
   const blankForm = {
@@ -17,7 +19,7 @@ const Signup = () => {
     email: "",
     password: "",
     userRole: "",
-    manager: null,
+    manager: [],
   };
   const [formData, setFormData] = useState(blankForm);
 
@@ -27,12 +29,19 @@ const Signup = () => {
     (state) => state.auth
   );
   const { users } = useSelector((state) => state.users);
+  const admin = user && user.userRole === "admin";
+
   const managers = users
     .filter((user) => user.userRole === "manager")
-    .map((manager) => ({ _id: manager._id, fullName: manager.fullName }));
+    .map((user) => ({
+      _id: user._id,
+      value: user.userName,
+      label: user.fullName,
+    }));
 
   useEffect(() => {
     const clearData = async () => {
+      await dispatch(reset());
       await dispatch(resetUsers());
       await dispatch(resetCustomer());
       await dispatch(resetStatus());
@@ -44,16 +53,10 @@ const Signup = () => {
   }, []);
 
   useEffect(() => {
-    if (isError) {
-      toast.dismiss();
-      toast.error(message);
-    }
     if (isSuccess) {
-      toast.dismiss();
-      toast.success(message);
       setFormData(blankForm);
     }
-  }, [isSuccess, isError]);
+  }, [isSuccess]);
 
   const handleChange = (e) => {
     setFormData({
@@ -62,14 +65,26 @@ const Signup = () => {
     });
   };
 
+  const handleInputChange = (name, value) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await dispatch(signup(formData));
+    if (user.userRole === "manager") {
+      const updatedForm = {
+        ...formData,
+        manager: [user._id],
+        userRole: "agent",
+      };
+      await dispatch(signup(updatedForm));
+    } else {
+      const ids = formData.manager.map((user) => user._id);
+      await dispatch(signup({ ...formData, manager: ids }));
+    }
   };
-
-  if (isLoading) {
-    return <Spinner />;
-  }
 
   return (
     <section className="signup_tab">
@@ -126,45 +141,41 @@ const Signup = () => {
             />
           </Form.Group>
 
-          <Form.Group className="signup_group" controlId="userRole">
-            <Form.Label></Form.Label>
-            <Form.Control
-              className="signup_name pl"
-              as="select"
-              name="userRole"
-              value={formData.userRole}
-              onChange={handleChange}
-              required
-            >
-              <option value="" disabled>
-                Select Role
-              </option>
-              <option value="admin">Admin</option>
-              <option value="manager">Manager</option>
-              <option value="agent">Agent</option>
-            </Form.Control>
-          </Form.Group>
-
-          {formData.userRole === "agent" && (
-            <Form.Group className="signup_group" controlId="manager">
+          {admin && (
+            <Form.Group className="signup_group" controlId="userRole">
               <Form.Label></Form.Label>
               <Form.Control
                 className="signup_name pl"
                 as="select"
-                name="manager"
-                value={formData.manager}
+                name="userRole"
+                value={formData.userRole}
                 onChange={handleChange}
                 required
               >
                 <option value="" disabled>
-                  Select Manager
+                  Select Role
                 </option>
-                {managers.map((manager) => (
-                  <option key={manager._id} value={manager._id}>
-                    {manager.fullName}
-                  </option>
-                ))}
+                <option value="admin">Admin</option>
+                <option value="manager">Manager</option>
+                <option value="agent">Agent</option>
               </Form.Control>
+            </Form.Group>
+          )}
+          {formData.userRole === "agent" && admin && (
+            <Form.Group className="" controlId="manager">
+              <Form.Label></Form.Label>
+
+              <Form.Group controlId="manager" className="role">
+                <MultiSelect
+                  name="manager"
+                  options={managers}
+                  value={formData.manager}
+                  onChange={(selected) =>
+                    handleInputChange("manager", selected)
+                  }
+                  labelledBy="Select"
+                />
+              </Form.Group>
             </Form.Group>
           )}
           <Button
@@ -175,6 +186,9 @@ const Signup = () => {
             Signup
           </Button>
         </Form>
+        {isLoading && <Spinner />}
+        {isSuccess && <Toast isSuccess={isSuccess} message={message} />}
+        {isError && <Toast isError={isError} message={message} />}
       </Container>
     </section>
   );

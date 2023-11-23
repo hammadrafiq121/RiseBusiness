@@ -31,6 +31,7 @@ const AddProductModal = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     await dispatch(addProduct(formData));
+    setFormData({ product: "", slug: "" });
     handleCloseModal();
   };
 

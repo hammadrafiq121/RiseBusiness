@@ -19,6 +19,8 @@ import {
 } from "../app/reducers/productSlice.js";
 
 import { reset as resetUsers } from "../app/reducers/userSlice.js";
+import Toast from "./Toast";
+import Spinner from "./Spinner";
 
 const AddCustomer = () => {
   const dispatch = useDispatch();
@@ -41,7 +43,9 @@ const AddCustomer = () => {
     products: [],
   };
   const [formData, setFormData] = useState(blankForm);
-
+  const { isLoading, isSuccess, isError, message } = useSelector(
+    (state) => state.customers
+  );
   const { statuses } = useSelector((state) => state.statuses);
   const { products } = useSelector((state) => state.products);
   const { user } = useSelector((state) => state.auth);
@@ -60,6 +64,12 @@ const AddCustomer = () => {
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (isSuccess) {
+      setFormData(blankForm);
+    }
+  }, [isSuccess]);
 
   const productNames = products.map((product) => ({
     label: product.product,
@@ -108,14 +118,7 @@ const AddCustomer = () => {
     const nonEmptyComments = await formData.comments.filter(
       (comment) => comment.trim() !== ""
     );
-
-    const result = await dispatch(
-      addCustomer({ ...formData, comments: nonEmptyComments })
-    );
-    if (result.meta.requestStatus === "fulfilled");
-    {
-      await setFormData(blankForm);
-    }
+    await dispatch(addCustomer({ ...formData, comments: nonEmptyComments }));
   };
 
   return (
@@ -312,10 +315,6 @@ const AddCustomer = () => {
                       onChange={(e) =>
                         handleCommentChange(index, e.target.value)
                       }
-                      // required
-                      // name="comments"
-                      // value={formData.comments}
-                      // onChange={handleChange}
                     />
                   ))}
                   <button
@@ -377,6 +376,9 @@ const AddCustomer = () => {
             </Col>
           </Row>
         </Form>
+        {isLoading && <Spinner />}
+        {isSuccess && <Toast isSuccess={isSuccess} message={message} />}
+        {isError && <Toast isError={isError} message={message} />}
       </Container>
     </main>
   );

@@ -13,6 +13,7 @@ const Sidebar = ({ isDarkMode, toggleDarkMode }) => {
 
   const admin = user && user.userRole === "admin";
   const manager = user && user.userRole === "manager";
+  const agent = user && user.userRole === "agent";
 
   const handleToggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -64,7 +65,7 @@ const Sidebar = ({ isDarkMode, toggleDarkMode }) => {
             </li>
 
             {/* Customers dropdown */}
-            {user && (
+            {(agent || manager || admin) && (
               <div className="nav-dropdown">
                 <div
                   className="nav-link-with-dropdown nav-link1  "
@@ -92,12 +93,18 @@ const Sidebar = ({ isDarkMode, toggleDarkMode }) => {
                     </Link>
                   </li>
                   <li>
+                    <Link to="/leads" title="Click to View Leads">
+                      <i className="bx bx-user icon"></i>
+                      <span className="text nav-text">Leads</span>
+                    </Link>
+                  </li>
+                  <li>
                     <Link to="/addcustomers " title="Click to Add Customers">
                       <i className="bx bx-store icon"></i>
                       <span className="text nav-text">Add</span>
                     </Link>
                   </li>
-                  {admin && (
+                  {user && user.userRole === "admin" && (
                     <li className="nav-link">
                       <Link to="/customers/upload" title="Click to Upload File">
                         <i className="bx bxs-file-doc icon"></i>{" "}
@@ -110,55 +117,65 @@ const Sidebar = ({ isDarkMode, toggleDarkMode }) => {
             )}
 
             {/* Admin-specific menu items */}
-            {admin ||
-              (manager && (
-                <div className="nav-dropdowna">
-                  <div
-                    className="nav-link-with-dropdown nav-link1"
-                    onClick={handleToggleCustomerDropdown}
-                  >
-                    <i className="bx bxs-user icon"></i>
-                    <span className="text nav-text txt">User </span>
-                    <i
-                      className={`bx ${
-                        isCustomerDropdownOpen
-                          ? "bx-chevron-up"
-                          : "bx-chevron-down"
-                      }`}
-                    ></i>
-                  </div>
-                  <ul
-                    className={`dropdown-list ${
-                      isCustomerDropdownOpen ? "open" : ""
-                    } ${isSidebarOpen ? "" : "dropdown-ul-closed"}`}
-                  >
-                    <li>
-                      <Link to="/signup" title="Click to Add User">
-                        <i className="bx bx-user icon"></i>
-                        <span className="text nav-text">Add </span>
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="/users" title="Click to view user list">
-                        <i className="bx bx-store icon"></i>
-                        <span className="text nav-text">Users</span>
-                      </Link>
-                    </li>
-                  </ul>
-                  <li className="nav-link">
-                    <Link to="/status" title="Stutus list">
-                      <i className="bx bx-analyse icon"></i>
-                      <span className="text nav-text">Status</span>
-                    </Link>
-                  </li>
-                  <li className="nav-link">
-                    <Link to="/product" title="Stutus list">
-                      <i className="bx bxl-product-hunt icon"></i>
-                      <span className="text nav-text">Products</span>
-                    </Link>
-                  </li>
+            {/* {(user && user.userRole === "admin") && ( */}
+            {(manager || admin) && (
+              <div className="nav-dropdowna">
+                <div
+                  className="nav-link-with-dropdown nav-link1"
+                  onClick={handleToggleCustomerDropdown}
+                >
+                  <i className="bx bxs-user icon"></i>
+                  <span className="text nav-text txt">User </span>
+                  <i
+                    className={`bx ${
+                      isCustomerDropdownOpen
+                        ? "bx-chevron-up"
+                        : "bx-chevron-down"
+                    }`}
+                  ></i>
                 </div>
-              ))}
+                <ul
+                  className={`dropdown-list ${
+                    isCustomerDropdownOpen ? "open" : ""
+                  } ${isSidebarOpen ? "" : "dropdown-ul-closed"}`}
+                >
+                  <li>
+                    <Link to="/signup" title="Click to Add User">
+                      <i className="bx bx-user icon"></i>
+                      <span className="text nav-text">Add </span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/agents" title="Click to view user list">
+                      <i className="bx bx-store icon"></i>
+                      <span className="text nav-text">Agents</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/managers" title="Click to view user list">
+                      <i className="bx bx-store icon"></i>
+                      <span className="text nav-text">Managers</span>
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            )}
+            {admin && (
+              <div className="nav-dropdowna">
+                <li className="nav-link">
+                  <Link to="/status" title="Stutus list">
+                    <i className="bx bx-analyse icon"></i>
+                    <span className="text nav-text">Status</span>
+                  </Link>
+                </li>
+                <li className="nav-link">
+                  <Link to="/product" title="Stutus list">
+                    <i className="bx bxl-product-hunt icon"></i>
+                    <span className="text nav-text">Products</span>
+                  </Link>
+                </li>
+              </div>
+            )}
           </ul>
         </div>
 

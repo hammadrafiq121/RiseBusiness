@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Form, Button, Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { login, reset } from "../app/reducers/authSlice";
-import { toast } from "react-toastify";
+import Toast from "./Toast";
+import Spinner from "./Spinner";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -11,27 +12,16 @@ const Login = () => {
   });
 
   const dispatch = useDispatch();
-  const { user, isLoading, isError, isSuccess, message } = useSelector(
+  const { isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.auth
   );
 
   useEffect(() => {
-    if (!user) {
+    const timeoutId = setTimeout(() => {
       dispatch(reset());
-    }
-    if (isLoading) {
-      toast.dismiss();
-      toast.loading(message);
-    }
-    if (isError) {
-      toast.dismiss();
-      toast.error(message);
-    }
-    if (isSuccess) {
-      toast.dismiss();
-      toast.success(message);
-    }
-  }, [isLoading, isError, isSuccess]);
+    }, 3000);
+    return () => clearTimeout(timeoutId);
+  }, []);
 
   const handleChange = (e) => {
     setFormData({
@@ -80,6 +70,9 @@ const Login = () => {
             Login
           </Button>
         </Form>
+        {isLoading && <Spinner />}
+        {isSuccess && <Toast isSuccess={isSuccess} message={message} />}
+        {isError && <Toast isError={isError} message={message} />}
       </Container>
     </section>
   );

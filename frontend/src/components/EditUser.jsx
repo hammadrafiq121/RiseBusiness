@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Button, Col, Form, Row, Container } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
 import Spinner from "./Spinner";
 import { reset as resetCustomer } from "../app/reducers/customerSlice.js";
 import { reset as resetStatus } from "../app/reducers/statusSlice.js";
@@ -16,21 +15,21 @@ import {
 
 const EditUser = () => {
   const [isDisabled, setIsDisabled] = useState(true);
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+  const admin = user && user.userRole === "admin";
+  const manager = user && user.userRole === "manager";
+  const { users, isLoading } = useSelector((state) => state.users);
 
   const [formData, setFormData] = useState({
     fullName: "",
     userName: "",
     email: "",
     userRole: "",
-    manager: null,
+    manager: [],
   });
-  const navigate = useNavigate();
-  const { id } = useParams();
-  const dispatch = useDispatch();
-
-  const { user } = useSelector((state) => state.auth);
-  const { users, isLoading } = useSelector((state) => state.users);
-
   useEffect(() => {
     const fetchData = async () => {
       if (user) {
@@ -41,46 +40,43 @@ const EditUser = () => {
 
         const { payload: users } = await dispatch(getUsers());
         const selectedUser = await users.find((user) => user._id === id);
-        setFormData({ ...selectedUser, manager: selectedUser.manager || null });
+        setFormData(selectedUser);
       }
     };
     fetchData();
   }, []);
 
-  const managers = users
-    .filter((item) => item.userRole === "manager" && item._id !== id)
-    .map((manager) => ({ _id: manager._id, fullName: manager.fullName }));
+  // const managers = users
+  //   .filter((item) => item.userRole === "manager" && item._id !== id)
+  //   .map((manager) => ({ _id: manager._id, fullName: manager.fullName }));
 
   const handleEdit = () => {
     setIsDisabled(!isDisabled);
   };
+
   const handleChange = (event) => {
     setFormData((formData) => ({
       ...formData,
       [event.target.name]: event.target.value,
     }));
+    console.log(formData);
   };
 
   const handleUpdate = async (event) => {
     event.preventDefault();
-
-    if (formData.userRole === "manager" || formData.userRole === "admin") {
-      dispatch(
+    if (admin || manager) {
+      await dispatch(
         updateUser({
           id: formData._id,
-          user: { ...formData, manager: null },
+          user: formData,
         })
       );
-      console.log(formData);
-    } else {
-      await dispatch(updateUser({ id: formData._id, user: formData }));
+      navigate("/agents/");
     }
-    navigate("/users/");
+    // else {
+    //   await dispatch(updateUser({ id: formData._id, user: formData }));
+    // }
   };
-
-  if (isLoading) {
-    return <Spinner />;
-  }
 
   return (
     <main className="user_main">
@@ -99,15 +95,6 @@ const EditUser = () => {
               <Form.Label column sm={12}>
                 Email
               </Form.Label>
-
-              <Form.Label column sm={12}>
-                Role
-              </Form.Label>
-              {formData.userRole === "agent" && (
-                <Form.Label column sm={12}>
-                  Manager
-                </Form.Label>
-              )}
             </Col>
 
             <Col lg={6}>
@@ -144,42 +131,7 @@ const EditUser = () => {
                   required
                 />
               </Form.Group>
-              <Form.Group as={Row} controlId="userRole" className="mb-2 role">
-                <Form.Select
-                  disabled={isDisabled}
-                  value={formData.userRole}
-                  name="userRole"
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="" disabled>
-                    Select Role
-                  </option>
-                  <option value="admin">Admin</option>
-                  <option value="manager">Manager</option>
-                  <option value="agent">Agent</option>
-                </Form.Select>
-              </Form.Group>
-              {formData.userRole === "agent" && (
-                <Form.Group as={Row} controlId="manager" className="mb-2 role">
-                  <Form.Select
-                    disabled={isDisabled}
-                    value={formData.manager}
-                    name="manager"
-                    onChange={handleChange}
-                    required
-                  >
-                    <option value="" disabled>
-                      Select Manager
-                    </option>
-                    {managers.map((manager) => (
-                      <option key={manager._id} value={manager._id}>
-                        {manager.fullName}
-                      </option>
-                    ))}
-                  </Form.Select>
-                </Form.Group>
-              )}
+
               <Form.Group as={Row} className="mb-2  ">
                 {isDisabled && (
                   <Button
@@ -202,6 +154,7 @@ const EditUser = () => {
             </Col>
           </Row>
         </Form>
+        {isLoading && <Spinner />}
       </div>
     </main>
   );

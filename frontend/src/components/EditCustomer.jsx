@@ -9,7 +9,6 @@ import "react-phone-input-2/lib/style.css";
 import { MultiSelect } from "react-multi-select-component";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
 import Spinner from "./Spinner";
 import {
   updateCustomer,
@@ -164,10 +163,6 @@ const EditCustomer = () => {
     );
     navigate("/customers/");
   };
-
-  if (isLoading) {
-    return <Spinner />;
-  }
 
   return (
     <main className=" editcustomer-div">
@@ -484,6 +479,7 @@ const EditCustomer = () => {
             </Col>
           </Row>
         </Form>
+        {isLoading && <Spinner />}
       </Container>
     </main>
   );
