@@ -81,6 +81,27 @@ const Leads = () => {
     setSelectedEndDate(date);
   };
 
+  const [selectAll, setSelectAll] = useState(false);
+  const [selectedItems, setSelectedItems] = useState([]);
+
+  const handleCheckboxChange = (customerId) => {
+    if (selectedItems.includes(customerId)) {
+      setSelectedItems(selectedItems.filter((id) => id !== customerId));
+    } else {
+      setSelectedItems([...selectedItems, customerId]);
+    }
+  };
+
+  const handleDeleteSelected = () => {
+    // Perform the deletion action for the selected items
+    selectedItems.forEach((customerId) => {
+      // Delete customer with ID customerId
+      // Implement your deleteCustomer logic here
+    });
+
+    // Clear the selection
+    setSelectedItems([]);
+  };
   const toggleSortOrder = (field) => {
     let newSortOrders = { ...blackSortOrder };
     newSortOrders[field] = sortOrders[field] === "asc" ? "desc" : "asc";
@@ -158,6 +179,13 @@ const Leads = () => {
 
     return (
       <tr key={customer._id} className="atim">
+        <td>
+          <input
+            type="checkbox"
+            checked={selectedItems.includes(customer._id)}
+            onChange={() => handleCheckboxChange(customer._id)}
+          />
+        </td>
         <td className="td">{customer.companyName}</td>
         <td className="td">{customer.state}</td>
         <td className="td">{customer.city}</td>
@@ -209,6 +237,19 @@ const Leads = () => {
     indexOfFirstCustomer,
     indexOfLastCustomer
   );
+  const toggleSelectAll = () => {
+    if (selectAll) {
+      setSelectedItems([]);
+    } else {
+      const allCustomerIds = renderCustomers.map((customer) => customer._id);
+      setSelectedItems(allCustomerIds);
+    }
+    setSelectAll(!selectAll);
+  };
+  const printSelectedCustomerIds = () => {
+    event.preventDefault();
+    console.log("Selected Customer IDs:", selectedItems);
+  };
 
   return (
     <div className="customer_div">
@@ -294,6 +335,17 @@ const Leads = () => {
                         </Link>
                       </Form.Group>
                     )}
+
+                    {/* ye add */}
+                    <Form.Group className="mb-1">
+                      <Button
+                        variant="secondary"
+                        type="submit"
+                        onClick={printSelectedCustomerIds} // Add this onClick event
+                      >
+                        Print Selected IDs
+                      </Button>
+                    </Form.Group>
                   </Col>
                 </Row>
               </Col>
@@ -302,6 +354,13 @@ const Leads = () => {
           <Table className="customers_table">
             <thead>
               <tr>
+                <th>
+                  <input
+                    type="checkbox"
+                    checked={selectAll}
+                    onChange={toggleSelectAll}
+                  />
+                </th>
                 <th className="custoner-col-name">
                   Business Name
                   <span
