@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { Form, Col, Button, Modal, Row } from "react-bootstrap";
 import { MultiSelect } from "react-multi-select-component";
-import { assignUsers } from "../services/userApi";
+// import { assignUsers } from "../services/userApi";
+import { assignUsers } from "../app/reducers/userSlice.js";
+import { useDispatch } from "react-redux";
 
 const AssignUsers = ({ _id, fullName, users }) => {
   const [showModal, setShowModal] = useState(false);
   const handleCloseModal = () => setShowModal(false);
   const handleShowModal = () => setShowModal(true);
+  const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({
     users: [],
@@ -29,7 +32,8 @@ const AssignUsers = ({ _id, fullName, users }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const users = await formData.users.map((user) => user._id);
-    await assignUsers(_id, users);
+    console.log(_id, users);
+    await dispatch(assignUsers({ _id, users }));
     setFormData({
       users: [],
     });

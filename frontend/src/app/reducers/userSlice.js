@@ -55,6 +55,20 @@ export const updateUser = createAsyncThunk(
     }
   }
 );
+export const assignUsers = createAsyncThunk(
+  "users/assignUsers",
+  async ({ _id, users }, thunkAPI) => {
+    try {
+      console.log(_id, users);
+      const token = thunkAPI.getState().auth.user.token;
+      const response = await userApi.assignUsers(token, _id, users);
+      return response.data;
+    } catch (error) {
+      const message = error?.response?.data?.error;
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 
 export const deleteUser = createAsyncThunk(
   "users/deleteUser",
@@ -163,6 +177,24 @@ const userSlice = createSlice({
         state.isError = true;
         state.isSuccess = false;
         state.message = action.payload;
+      })
+      .addCase(assignUsers.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+        state.isSuccess = false;
+        state.message = "Assigning users...";
+      })
+      .addCase(assignUsers.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.message = "Users successfully Assigned.";
+      })
+      .addCase(assignUsers.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.payload || "Error Assigning Users";
       });
   },
 });
