@@ -1,5 +1,5 @@
 import React from "react";
-import "../check.css";
+import "../toast.css";
 
 const Toast = ({ message, isSuccess, isError }) => {
   return (
