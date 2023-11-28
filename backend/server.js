@@ -7,6 +7,7 @@ import userRoutes from "./routes/userRoutes.js";
 import statusRoutes from "./routes/statusRoutes.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import productRoutes from "./routes/productRoutes.js";
+import taskRoutes from "./routes/taskRoutes.js";
 // import sampleRoutes from "./routes/sampleRoutes.js";
 
 dotenv.config();
@@ -34,6 +35,8 @@ app.use("/", customerRoutes);
 app.use("/", statusRoutes);
 //Product Route
 app.use("/", productRoutes);
+//Task Route
+app.use("/", taskRoutes);
 //Test Route
 // app.use("/", sampleRoutes);
 
