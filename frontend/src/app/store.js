@@ -4,6 +4,7 @@ import customerReducer from "./reducers/customerSlice.js";
 import userReducer from "./reducers/userSlice.js";
 import statusReducer from "./reducers/statusSlice.js";
 import productReducer from "./reducers/productSlice.js";
+import taskReducer from "./reducers/taskSlice.js";
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     customers: customerReducer,
     statuses: statusReducer,
     products: productReducer,
+    tasks: taskReducer,
   },
   devTools: true,
 });
