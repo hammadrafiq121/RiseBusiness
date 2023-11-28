@@ -128,7 +128,7 @@ function App() {
 
               {/* Task Routes */}
               <Route
-                path="/task"
+                path="/addtask"
                 element={isUserAdmin ? <Task /> : <Navigate to="/403" />}
               />
 

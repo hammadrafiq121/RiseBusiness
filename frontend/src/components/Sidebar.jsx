@@ -9,7 +9,8 @@ const Sidebar = ({ isDarkMode, toggleDarkMode }) => {
   const { user } = useSelector((state) => state.auth);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isCustomersDropdownOpen, setIsCustomersDropdownOpen] = useState(false);
-  const [isCustomerDropdownOpen, setIsCustomerDropdownOpen] = useState(false);
+  const [isUsersDropdownOpen, setIsUsersDropdownOpen] = useState(false);
+  const [isTasksDropdownOpen, setIsTasksDropdownOpen] = useState(false);
 
   const admin = user && user.userRole === "admin";
   const manager = user && user.userRole === "manager";
@@ -20,13 +21,6 @@ const Sidebar = ({ isDarkMode, toggleDarkMode }) => {
     if (!isSidebarOpen) {
       setIsCustomersDropdownOpen(false);
     }
-  };
-
-  const handleToggleCustomersDropdown = () => {
-    setIsCustomersDropdownOpen(!isCustomersDropdownOpen);
-  };
-  const handleToggleCustomerDropdown = () => {
-    setIsCustomerDropdownOpen(!isCustomerDropdownOpen);
   };
 
   return (
@@ -69,7 +63,9 @@ const Sidebar = ({ isDarkMode, toggleDarkMode }) => {
               <div className="nav-dropdown">
                 <div
                   className="nav-link-with-dropdown nav-link1  "
-                  onClick={handleToggleCustomersDropdown}
+                  onClick={() =>
+                    setIsCustomersDropdownOpen(!isCustomersDropdownOpen)
+                  }
                 >
                   <i className="bx bx-bar-chart-alt-2 icon"></i>
                   <span className="text nav-text txt">Customers</span>
@@ -122,21 +118,19 @@ const Sidebar = ({ isDarkMode, toggleDarkMode }) => {
               <div className="nav-dropdowna">
                 <div
                   className="nav-link-with-dropdown nav-link1"
-                  onClick={handleToggleCustomerDropdown}
+                  onClick={() => setIsUsersDropdownOpen(!isUsersDropdownOpen)}
                 >
                   <i className="bx bxs-user icon"></i>
                   <span className="text nav-text txt">User </span>
                   <i
                     className={`bx ${
-                      isCustomerDropdownOpen
-                        ? "bx-chevron-up"
-                        : "bx-chevron-down"
+                      isUsersDropdownOpen ? "bx-chevron-up" : "bx-chevron-down"
                     }`}
                   ></i>
                 </div>
                 <ul
                   className={`dropdown-list ${
-                    isCustomerDropdownOpen ? "open" : ""
+                    isUsersDropdownOpen ? "open" : ""
                   } ${isSidebarOpen ? "" : "dropdown-ul-closed"}`}
                 >
                   <li>
@@ -155,6 +149,41 @@ const Sidebar = ({ isDarkMode, toggleDarkMode }) => {
                     <Link to="/managers" title="Click to view user list">
                       <i className="bx bx-store icon"></i>
                       <span className="text nav-text">Managers</span>
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            )}
+
+            {admin && (
+              <div className="nav-dropdowna">
+                <div
+                  className="nav-link-with-dropdown nav-link1"
+                  onClick={() => setIsTasksDropdownOpen(!isTasksDropdownOpen)}
+                >
+                  <i className="bx bxs-user icon"></i>
+                  <span className="text nav-text txt">Tasks </span>
+                  <i
+                    className={`bx ${
+                      isTasksDropdownOpen ? "bx-chevron-up" : "bx-chevron-down"
+                    }`}
+                  ></i>
+                </div>
+                <ul
+                  className={`dropdown-list ${
+                    isTasksDropdownOpen ? "open" : ""
+                  } ${isSidebarOpen ? "" : "dropdown-ul-closed"}`}
+                >
+                  <li>
+                    <Link to="/addtask" title="Click to Add Task">
+                      <i className="bx bx-user icon"></i>
+                      <span className="text nav-text">Add </span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/tasks" title="Click to view Tasks">
+                      <i className="bx bx-store icon"></i>
+                      <span className="text nav-text">Tasks</span>
                     </Link>
                   </li>
                 </ul>
