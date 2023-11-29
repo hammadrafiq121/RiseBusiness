@@ -1,5 +1,6 @@
 import axios from "axios";
 
+// const backendUrl = "https://seal-app-u57xr.ondigitalocean.app";
 const backendUrl = "http://localhost:3000";
 
 export const getUsers = async (token) => {
@@ -54,10 +55,31 @@ export const deleteUser = async (token, id) => {
   }
 };
 
+export const assignUsers = async (token, _id, users) => {
+  try {
+    return await axios.put(
+      `${backendUrl}/api/users/asignUsers`,
+      {
+        _id,
+        users,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  } catch (error) {
+    console.log(`Error while calling asignUsers api ${error}`);
+    throw error;
+  }
+};
+
 const userApi = {
   getUsers,
   getUser,
   updateUser,
   deleteUser,
+  assignUsers,
 };
 export default userApi;
