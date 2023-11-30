@@ -14,7 +14,7 @@ export const createTask = async (token, taskData) => {
         Authorization: `Bearer ${token}`,
       },
     };
-    const response = await api.post("/api/tasks", taskData, config);
+    const response = await api.post("/tasks/add", taskData, config);
     return response.data;
   } catch (error) {
     throw error;
