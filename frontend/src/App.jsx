@@ -3,7 +3,8 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import "./style.css";
 import Toast from "./components/Toast";
 import { useSelector } from "react-redux";
-import Task from "./components/Task";
+import AddTask from "./components/AddTask";
+import Tasks from "./components/Tasks";
 
 // Import components
 import Navbar from "./components/Navbar";
@@ -129,7 +130,11 @@ function App() {
               {/* Task Routes */}
               <Route
                 path="/addtask"
-                element={isUserAdmin ? <Task /> : <Navigate to="/403" />}
+                element={isUserAdmin ? <AddTask /> : <Navigate to="/403" />}
+              />
+              <Route
+                path="/tasks"
+                element={isUserAdmin ? <Tasks /> : <Navigate to="/403" />}
               />
 
               <Route path="/403" element={<PermissionDenied />} />

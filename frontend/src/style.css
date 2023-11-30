@@ -294,7 +294,7 @@ flex-wrap: wrap !important;
     border: 1px solid white;
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.2)
 }
-.labe, .Task-label{
+.label, .Task-label{
     color:#070707 !important;
     font-weight: 400 !important;
 }
