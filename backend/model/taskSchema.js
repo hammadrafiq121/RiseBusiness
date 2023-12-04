@@ -3,13 +3,14 @@ import mongoose from "mongoose";
 const checklistItemSchema = new mongoose.Schema(
   {
     text: String,
-    statuses: [
-      {
-        userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-        status: String,
-      },
-      { _id: false },
-    ],
+    status: String,
+    //   statuses: [
+    //     {
+    //       userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    //       status: String,
+    //     },
+    //     { _id: false },
+    //   ],
   },
   { _id: false }
 );
@@ -22,8 +23,13 @@ const taskSchema = new mongoose.Schema(
     startDate: Date,
     endDate: Date,
     comment: String,
-    taskCategory: String,
-    assignees: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    // taskCategory:String,
+    taskCategory: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "TaskCategory",
+    },
+    assignee: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    // assignee: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     priority: String,
     checklist: [checklistItemSchema],
     isExpired: {
