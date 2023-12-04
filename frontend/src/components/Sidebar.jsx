@@ -203,6 +203,12 @@ const Sidebar = ({ isDarkMode, toggleDarkMode }) => {
                     <span className="text nav-text">Products</span>
                   </Link>
                 </li>
+                <li className="nav-link">
+                  <Link to="/taskCategory" title="Stutus list">
+                    <i className="bx bx-analyse icon"></i>
+                    <span className="text nav-text">Task Category</span>
+                  </Link>
+                </li>
               </div>
             )}
           </ul>

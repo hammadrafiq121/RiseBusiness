@@ -13,6 +13,7 @@ import Sidebar from "./components/Sidebar";
 // Import routes
 import Dashboard from "./components/Dashboard";
 import Status from "./components/Status";
+import TaskCategory from "./components/TaskCategory";
 import Product from "./components/Product";
 import NotFound from "./components/NotFound";
 import PermissionDenied from "./components/PermissionDenied";
@@ -60,10 +61,16 @@ function App() {
               {/* Dashboard */}
               <Route path="/" element={<Dashboard isDarkMode={isDarkMode} />} />
 
-              {/* Status and Product */}
+              {/* Status , taskCategory and Product */}
               <Route
                 path="/status"
                 element={isUserAdmin ? <Status /> : <Navigate to="/403" />}
+              />
+              <Route
+                path="/taskCategory"
+                element={
+                  isUserAdmin ? <TaskCategory /> : <Navigate to="/403" />
+                }
               />
               <Route
                 path="/product"
