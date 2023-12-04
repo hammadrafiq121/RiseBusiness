@@ -9,6 +9,10 @@ import { reset as resetCustomer } from "../app/reducers/customerSlice.js";
 import { reset as resetStatus } from "../app/reducers/statusSlice.js";
 import { reset as resetProduct } from "../app/reducers/productSlice.js";
 import { getUsers } from "../app/reducers/userSlice.js";
+import {
+  getTaskCategories,
+  reset as resetTaskCategory,
+} from "../app/reducers/taskCategorySlice.js";
 
 const AddTask = () => {
   const blankForm = {
@@ -19,17 +23,12 @@ const AddTask = () => {
     endDate: "",
     comment: "",
     taskCategory: "",
-    assignees: [],
+    assignee: "",
     priority: "",
     checklist: [
       {
         text: "",
-        statuses: [
-          {
-            userId: "",
-            status: "",
-          },
-        ],
+        status: "",
       },
     ],
     isExpired: false,
@@ -37,6 +36,7 @@ const AddTask = () => {
 
   const dispatch = useDispatch();
   const [formData, setFormData] = useState(blankForm);
+  const { taskCategories } = useSelector((state) => state.taskCategories);
 
   const [taskChecklist, setTaskChecklist] = useState([]);
   const [inputValue, setInputValue] = useState("");
@@ -52,9 +52,12 @@ const AddTask = () => {
         await dispatch(getUsers());
       }
       if (user) {
+        await dispatch(resetTaskCategory());
         await dispatch(resetCustomer());
         await dispatch(resetStatus());
         await dispatch(resetProduct());
+
+        await dispatch(getTaskCategories());
       }
     };
     fetchData();
@@ -73,41 +76,53 @@ const AddTask = () => {
     );
   };
 
-  const assigneesList = users
-    .filter(
-      (item) =>
-        item.userRole !== "admin" &&
-        item.userRole !== "manager" &&
-        item._id !== user._id
-    )
-    .map((user) => ({
-      _id: user._id,
-      value: user.userName,
-      label: user.fullName,
-    }));
+  // const assigneesList = users
+  //   .filter(
+  //     (item) =>
+  //       item.userRole !== "admin" &&
+  //       item.userRole !== "manager" &&
+  //       item._id !== user._id
+  //   )
+  //   .map((user) => ({
+  //     _id: user._id,
+  //     value: user.userName,
+  //     label: user.fullName,
+  //   }));
+
+  const assigneesList = users.filter(
+    (item) =>
+      item.userRole !== "admin" &&
+      item.userRole !== "manager" &&
+      item._id !== user._id
+  );
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Extract assignee IDs from the selected assignees
-    const assignees = await formData.assignees.map((assignee) => assignee._id);
+    // const assignees = await formData.assignees.map((assignee) => assignee._id);
 
     // Prepare checklist based on the new structure
+    // const checklist = await taskChecklist.map((item) => ({
+    //   text: item,
+    //   statuses: assignees.map((assigneeId) => ({
+    //     userId: assigneeId,
+    //     status: "",
+    //   })),
+    // }));
+
     const checklist = await taskChecklist.map((item) => ({
       text: item,
-      statuses: assignees.map((assigneeId) => ({
-        userId: assigneeId,
-        status: "",
-      })),
+      status: "",
     }));
 
     await dispatch(
       createTask({
         ...formData,
-        assignees: assignees,
         checklist: checklist,
       })
     );
+    setFormData(blankForm);
   };
 
   const handleChange = (event) => {
@@ -204,6 +219,7 @@ const AddTask = () => {
                       onChange={(date) =>
                         handleSelectorChange("startDate", date)
                       }
+                      required
                       dateFormat="YYYY-MM-DD"
                       timeFormat="hh:mm A"
                       inputProps={{ step: 15 }}
@@ -223,6 +239,7 @@ const AddTask = () => {
                       onChange={(date) => handleSelectorChange("endDate", date)}
                       dateFormat="YYYY-MM-DD"
                       timeFormat="hh:mm A"
+                      required
                       inputProps={{ step: 15 }}
                     />
                   </Form.Group>
@@ -267,14 +284,16 @@ const AddTask = () => {
                       <option disabled value="">
                         Task Category
                       </option>
-                      <option value="web">web</option>
-                      <option value="sale">sale</option>
-                      <option value="lead">lead</option>
+                      {taskCategories?.map((option) => (
+                        <option key={option._id} value={option._id}>
+                          {option.taskCategory}
+                        </option>
+                      ))}
                     </Form.Select>
                   </Col>
                 </Form.Group>
               </div>
-              <Form.Group className="mb-2">
+              {/* <Form.Group className="mb-2">
                 <Col sm={12}>
                   <div className="Multiple-selector">
                     <div className="Multiple-option">
@@ -290,7 +309,28 @@ const AddTask = () => {
                     </div>
                   </div>
                 </Col>
-              </Form.Group>
+              </Form.Group> */}
+              <div className="drop-container">
+                <Form.Group className="mb-2 p-10">
+                  <Col sm={12}>
+                    <Form.Select
+                      className="input Priority"
+                      name="assignee"
+                      value={formData.assignee}
+                      required
+                      placeholder="Assignee"
+                      onChange={handleChange}
+                    >
+                      <option disabled value="">
+                        Assignee
+                      </option>
+                      {assigneesList?.map((item) => (
+                        <option value={item._id}>{item.fullName}</option>
+                      ))}
+                    </Form.Select>
+                  </Col>
+                </Form.Group>
+              </div>
               <div className="drop-container">
                 <Form.Group className="mb-2 p-10">
                   <Col sm={12}>
@@ -318,6 +358,7 @@ const AddTask = () => {
                     className="input check-list"
                     type="text"
                     value={inputValue}
+                    required={taskChecklist.length === 0}
                     onChange={(e) => setInputValue(e.target.value)}
                   />
                 </Col>

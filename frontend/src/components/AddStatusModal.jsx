@@ -4,7 +4,7 @@ import { Button, Modal } from "react-bootstrap";
 import { Form, Row, Col } from "react-bootstrap";
 import { addStatus } from "../app/reducers/statusSlice.js";
 
-const EditStatusModal = () => {
+const AddStatusModal = () => {
   const [showModal, setShowModal] = useState(false);
   const handleCloseModal = () => setShowModal(false);
   const handleShowModal = () => setShowModal(true);
@@ -79,4 +79,4 @@ const EditStatusModal = () => {
   );
 };
 
-export default EditStatusModal;
+export default AddStatusModal;
