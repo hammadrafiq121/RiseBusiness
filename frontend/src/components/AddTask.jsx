@@ -111,18 +111,23 @@ const AddTask = () => {
     //   })),
     // }));
 
-    const checklist = await taskChecklist.map((item) => ({
-      text: item,
-      status: "",
-    }));
+    if (taskChecklist.length === 0) {
+      alert("Add Task Check List");
+    } else {
+      const checklist = await taskChecklist.map((item) => ({
+        text: item,
+        status: "",
+      }));
 
-    await dispatch(
-      createTask({
-        ...formData,
-        checklist: checklist,
-      })
-    );
-    setFormData(blankForm);
+      await dispatch(
+        createTask({
+          ...formData,
+          checklist: checklist,
+        })
+      );
+      setFormData(blankForm);
+      setTaskChecklist([]);
+    }
   };
 
   const handleChange = (event) => {

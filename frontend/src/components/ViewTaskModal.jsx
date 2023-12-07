@@ -34,9 +34,30 @@
 
 // export default ViewTaskModal;
 import React from "react";
+import { Modal, Button } from "react-bootstrap";
 
-const ViewTaskModal = () => {
-  return <div>ViewTaskModal</div>;
-};
+function ViewTaskModal({ show, onHide, selectedTask }) {
+  return (
+    <Modal show={show} onHide={onHide}>
+      <Modal.Header closeButton>
+        <Modal.Title>View Task</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <p>Description: {selectedTask.description}</p>
+        <h5>Checklist:</h5>
+        {selectedTask.checklist.map((item, index) => (
+          <div key={index}>
+            {item.text} - {item.status || "Not started"}
+          </div>
+        ))}
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={onHide}>
+          Close
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+}
 
 export default ViewTaskModal;

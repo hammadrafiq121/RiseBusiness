@@ -342,9 +342,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Table, Form, Container, Row, Col, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { PencilSquare } from "react-bootstrap-icons";
 import "react-datepicker/dist/react-datepicker.css";
-import { parseISO, isBefore, startOfDay, endOfDay } from "date-fns";
 import Spinner from "./Spinner";
 import Pagination from "./Pagination";
 import { reset as resetCustomer } from "../app/reducers/customerSlice.js";
@@ -356,19 +354,38 @@ import {
   getTaskCategories,
   reset as resetTaskCat,
 } from "../app/reducers/taskCategorySlice.js";
+// import ViewTaskModal from "./ViewTaskModal";
+import { EyeFill, PencilSquare } from "react-bootstrap-icons";
+import DeleteTask from "./DeleteTask";
+import EditTaskModal from "./EditTaskModal";
 
 const Tasks = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { taskCategories } = useSelector((state) => state.taskCategories);
-  const { tasks } = useSelector((state) => state.tasks);
+  const { tasks, isLoading } = useSelector((state) => state.tasks);
   const { users } = useSelector((state) => state.users);
 
   const [searchKeyword, setSearchKeyword] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState([]);
-  const [selectedUser, setSelectedUser] = useState("");
-  const [selectedStartDate, setSelectedStartDate] = useState(null);
-  const [selectedEndDate, setSelectedEndDate] = useState(null);
+  const [selectedAssignee, setSelectedAssignee] = useState("");
+  const [selectedPriority, setSelectedPriority] = useState("");
+  const [selecteCategory, setSelectedCategory] = useState("");
+
+  const [showModal, setShowModal] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [modalType, setModalType] = useState("");
+
+  const openModal = (type, task) => {
+    setModalType(type);
+    setSelectedTask(task);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setModalType("");
+    setSelectedTask(null);
+    setShowModal(false);
+  };
 
   const admin = user && user.userRole === "admin";
   const manager = user && user.userRole === "manager";
@@ -385,7 +402,7 @@ const Tasks = () => {
       }
       if (admin || manager) {
         await dispatch(getUsers());
-        await dispatch(taskCategories());
+        await dispatch(getTaskCategories());
         await dispatch(getAllTasks());
       }
     };
@@ -394,64 +411,66 @@ const Tasks = () => {
 
   const filteredTasks = tasks.filter((task) => {
     const keyword = searchKeyword.toLowerCase();
-    // const isStatusMatch =
-    //   selectedStatus.length === 0 ||
-    //   selectedStatus.some((status) => status.value === customer.status);
-    // const isUserMatch = selectedUser === "" || customer.user === selectedUser;
-    // const creationDate = parseISO(customer.createdAt);
-    // const startOfSelectedStartDate = startOfDay(selectedStartDate);
-    // const endOfSelectedEndDate = endOfDay(selectedEndDate);
-    // const isStartDateMatch =
-    //   !selectedStartDate || isBefore(creationDate, endOfSelectedEndDate);
-    // const isEndDateMatch =
-    //   !selectedEndDate || isBefore(startOfSelectedStartDate, creationDate);
+    const isAssigneeMatch =
+      selectedAssignee === "" || task.assignee === selectedAssignee;
+    const isCategoryMatch =
+      selecteCategory === "" || task.taskCategory === selecteCategory;
+    const isPriorityMatch =
+      selectedPriority === "" ||
+      task.priority.toLowerCase() === selectedPriority.toLowerCase();
 
-    return task.title.toLowerCase().includes(keyword);
+    return (
+      task.title.toLowerCase().includes(keyword) &&
+      isAssigneeMatch &&
+      isCategoryMatch &&
+      isPriorityMatch
+    );
   });
-  //  (
-  //   (task.title.toLowerCase().includes(keyword) ||
-  //     customer.state.toLowerCase().includes(keyword) ||
-  //     customer.city.toLowerCase().includes(keyword)) &&
-  //   isStatusMatch &&
-  //   isUserMatch &&
-  //   isStartDateMatch &&
-  //   isEndDateMatch
-  // );
-  // });
 
-  const renderCustomers = filteredTasks.map((item) => {
+  const renderTasks = filteredTasks.map((item) => {
     const task = {
       ...item,
-      status:
-        statuses.find((status) => status._id === item.status)?.status ||
-        "Unknown",
-      user: users.find((user) => user._id === item.user)?.userName || "Unknown",
-      products: products.filter((product) =>
-        item.products.includes(product._id)
-      ),
+      taskCategory:
+        taskCategories.find(
+          (taskCategory) => taskCategory._id === item.taskCategory
+        )?.taskCategory || "Unknown",
+      assignee:
+        users.find((user) => user._id === item.assignee)?.userName || "Unknown",
     };
 
     return (
-      <tr key={customer._id} className="atim">
-        <td className="td">{customer.companyName}</td>
-        <td className="td">{customer.state}</td>
-        <td className="td">{customer.city}</td>
-        {(admin || manager) && <td className="td">{customer.user}</td>}
-        <td className="td">{customer.status}</td>
+      <tr key={task._id} className="atim">
+        <td className="td">{task.title}</td>
+        <td className="td">{task.assignee}</td>
+        <td className="td">{task.taskCategory}</td>
+        <td className="td">{task.priority}</td>
         <td className="td">
-          {new Date(customer.createdAt).toLocaleDateString()}
+          {new Date(task.startDate).toLocaleDateString()}
+          <br />
+          {new Date(task.startDate).toLocaleTimeString()}
         </td>
         <td className="td">
+          {new Date(task.endDate).toLocaleDateString()}
+          <br />
+          {new Date(task.endDate).toLocaleTimeString()}
+        </td>
+
+        <td className="td">
+          {/* <Button
+            variant="link"
+            className="symbol-button tdd"
+            onClick={() => openModal("view", task)}
+          >
+            <EyeFill />
+          </Button> */}
           <Button
             variant="link"
             className="symbol-button tdd"
-            as={Link}
-            to={{
-              pathname: `/customers/editCustomer/${customer._id}`,
-            }}
+            onClick={() => openModal("edit", task)}
           >
             <PencilSquare />
           </Button>
+          {admin && <DeleteTask className="tdd" task={task} />}
         </td>
       </tr>
     );
@@ -469,17 +488,9 @@ const Tasks = () => {
     setCurrentPage(1);
   };
 
-  const indexOfLastCustomer = currentPage * itemsPerPage;
-  const indexOfFirstCustomer = indexOfLastCustomer - itemsPerPage;
-  const currentCustomers = renderCustomers.slice(
-    indexOfFirstCustomer,
-    indexOfLastCustomer
-  );
-
-  const listOfStatus = statuses.map((status) => ({
-    label: status.status,
-    value: status._id,
-  }));
+  const indexOfLastTask = currentPage * itemsPerPage;
+  const indexOfFirstTask = indexOfLastTask - itemsPerPage;
+  const currentTasks = renderTasks.slice(indexOfFirstTask, indexOfLastTask);
 
   return (
     <div className="customer_div">
@@ -507,9 +518,9 @@ const Tasks = () => {
                       <Form.Control
                         className="col_7 Select-status"
                         as="select"
-                        value={selectedUser}
+                        value={selectedAssignee}
                         onChange={(event) =>
-                          setSelectedUser(event.target.value)
+                          setSelectedAssignee(event.target.value)
                         }
                       >
                         <option value="">Select Assignee</option>
@@ -526,13 +537,15 @@ const Tasks = () => {
                       <Form.Control
                         className="col_7 Select-status"
                         as="select"
-                        value={selectedUser}
-                        onChange=""
+                        value={selecteCategory}
+                        onChange={(event) =>
+                          setSelectedCategory(event.target.value)
+                        }
                       >
                         <option value="">Select Category</option>
-                        {users.map((user) => (
-                          <option key={user._id} value={user._id}>
-                            {user.userName}
+                        {taskCategories.map((category) => (
+                          <option key={category._id} value={category._id}>
+                            {category.taskCategory}
                           </option>
                         ))}
                       </Form.Control>
@@ -543,15 +556,15 @@ const Tasks = () => {
                       <Form.Control
                         className="col_7 Select-status"
                         as="select"
-                        value={selectedUser}
-                        onChange=""
+                        value={selectedPriority}
+                        onChange={(event) =>
+                          setSelectedPriority(event.target.value)
+                        }
                       >
                         <option value="">Select Priority</option>
-                        {users.map((user) => (
-                          <option key={user._id} value={user._id}>
-                            {user.userName}
-                          </option>
-                        ))}
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
                       </Form.Control>
                     </Form.Group>
                   </Col>
@@ -573,22 +586,37 @@ const Tasks = () => {
               <tr>
                 <th className="custoner-col-name">Title </th>
                 <th className="custoner-col-name">Assignee</th>
+                <th className="custoner-col-name">Category</th>
                 <th className="custoner-col-name">Priority</th>
-                <th className="custoner-col-name">Checklist</th>
                 <th className="custoner-col-name">Start Date</th>
                 <th className="custoner-col-name">Due Date</th>
                 <th className="custoner-col-name">Action</th>
               </tr>
             </thead>
             <tbody className="tbody">
-              {currentCustomers.length === 0
-                ? "No Customers"
-                : currentCustomers}
+              {currentTasks.length === 0 ? "No Tasks" : currentTasks}
             </tbody>
           </Table>
+
+          {/* {selectedTask && modalType === "view" && (
+            <ViewTaskModal
+              show={showModal}
+              onHide={closeModal}
+              selectedTask={selectedTask}
+            />
+          )} */}
+
+          {selectedTask && modalType === "edit" && (
+            <EditTaskModal
+              show={showModal}
+              onHide={closeModal}
+              selectedTask={selectedTask}
+            />
+          )}
+
           <Pagination
             currentPage={currentPage}
-            totalPages={Math.ceil(filteredCustomers.length / itemsPerPage)}
+            totalPages={Math.ceil(filteredTasks.length / itemsPerPage)}
             onPageChange={handlePageChange}
             itemsPerPage={itemsPerPage}
             onItemsPerPageChange={handleItemsPerPageChange}
