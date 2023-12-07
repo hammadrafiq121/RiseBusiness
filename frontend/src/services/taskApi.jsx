@@ -29,7 +29,7 @@ export const getAllTasks = async (token) => {
         Authorization: `Bearer ${token}`,
       },
     };
-    const response = await api.get("/api/tasks", config);
+    const response = await api.get("/tasks/all", config);
     return response.data;
   } catch (error) {
     throw error;
@@ -59,7 +59,7 @@ export const updateTask = async (token, taskId, taskData) => {
         Authorization: `Bearer ${token}`,
       },
     };
-    const response = await api.put(`/api/tasks/${taskId}`, taskData, config);
+    const response = await api.put(`/tasks/${taskId}`, taskData, config);
     return response.data;
   } catch (error) {
     throw error;
@@ -74,7 +74,7 @@ export const deleteTask = async (token, taskId) => {
         Authorization: `Bearer ${token}`,
       },
     };
-    const response = await api.delete(`/api/tasks/${taskId}`, config);
+    const response = await api.delete(`/tasks/${taskId}`, config);
     return response.data;
   } catch (error) {
     throw error;
