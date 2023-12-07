@@ -1,4 +1,5 @@
 import Task from "../model/taskSchema.js";
+import User from "../model/userSchema.js";
 
 export const createTask = async (req, res) => {
   try {
@@ -12,12 +13,31 @@ export const createTask = async (req, res) => {
 
 export const getAllTasks = async (req, res) => {
   try {
-    const tasks = await Task.find().sort({
-      createdAt: -1,
-    });
+    let tasks;
+    if (req.user.userRole === "admin") {
+      tasks = await Task.find().sort({ createdAt: -1 });
+    }
+    if (req.user.userRole === "manager") {
+      const agentIds = await User.find({
+        manager: { $in: req.user.id },
+      }).select("_id");
+      tasks = await Task.find({
+        $or: [{ assignee: { $in: agentIds } }, { assignee: req.user.id }],
+      }).sort({ createdAt: -1 });
+      // OR
+      // await agentIds.push({ _id: req.user.id });
+      // tasks = await Task.find({
+      //   assignee: { $in: agentIds },
+      // }).sort({ createdAt: -1 });
+    }
+    if (req.user.userRole === "agent") {
+      tasks = await Task.find({
+        assignee: req.user.id,
+      }).sort({ createdAt: -1 });
+    }
     res.status(200).json(tasks);
   } catch (error) {
-    res.status(500).json({ error: "Error fetching tasks" });
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -36,15 +56,23 @@ export const getTask = async (req, res) => {
 export const updateTask = async (request, response) => {
   try {
     const taskId = request.params.id;
-    const updatedTask = await Task.findOneAndUpdate(
-      { _id: taskId },
-      request.body,
-      {
-        new: true,
+    const { assignee, checklist } = request.body;
+    const userId = request.user._id;
+    if (
+      request.user.userRole === "admin" ||
+      request.user.userRole === "manager" ||
+      userId.equals(assignee)
+    ) {
+      const updatedTask = await Task.findOneAndUpdate(
+        { _id: taskId },
+        { checklist },
+        {
+          new: true,
+        }
+      );
+      if (updatedTask) {
+        return response.status(200).json(updatedTask);
       }
-    );
-    if (updatedTask) {
-      return response.status(200).json(updatedTask);
     } else {
       return response.status(404).json({ error: "Task not updated" });
     }

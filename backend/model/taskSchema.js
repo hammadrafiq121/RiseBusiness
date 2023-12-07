@@ -32,9 +32,16 @@ const taskSchema = new mongoose.Schema(
     // assignee: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     priority: String,
     checklist: [checklistItemSchema],
-    isExpired: {
-      type: Boolean,
-      default: false,
+    // isExpired: {
+    //   type: Boolean,
+    //   default: false,
+    // },
+    createdBy: {
+      name: String,
+      id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
     },
   },
   { timestamps: true }

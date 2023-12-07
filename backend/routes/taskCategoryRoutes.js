@@ -5,7 +5,8 @@ import {
   getTaskCategory,
   updateTaskCategory,
   deleteTaskCategory,
-} from "../controller/TaskCategoryController.js";
+} from "../controller/taskCategoryController.js";
+
 import { protect } from "../middleware/authMiddleware.js";
 
 const taskCategoryRoutes = express.Router();
