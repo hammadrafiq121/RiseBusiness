@@ -57,6 +57,7 @@ function EditTaskModal({ show, onHide, selectedTask }) {
       updateTask({
         taskId: selectedTask._id,
         taskData: {
+          assignee: selectedTask.assignee,
           checklist: editedChecklist,
         },
       })

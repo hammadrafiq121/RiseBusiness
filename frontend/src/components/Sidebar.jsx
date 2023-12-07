@@ -155,40 +155,40 @@ const Sidebar = ({ isDarkMode, toggleDarkMode }) => {
               </div>
             )}
 
-            {admin && (
-              <div className="nav-dropdowna">
-                <div
-                  className="nav-link-with-dropdown nav-link1"
-                  onClick={() => setIsTasksDropdownOpen(!isTasksDropdownOpen)}
-                >
-                  <i className="bx bxs-user icon"></i>
-                  <span className="text nav-text txt">Tasks </span>
-                  <i
-                    className={`bx ${
-                      isTasksDropdownOpen ? "bx-chevron-up" : "bx-chevron-down"
-                    }`}
-                  ></i>
-                </div>
-                <ul
-                  className={`dropdown-list ${
-                    isTasksDropdownOpen ? "open" : ""
-                  } ${isSidebarOpen ? "" : "dropdown-ul-closed"}`}
-                >
+            <div className="nav-dropdowna">
+              <div
+                className="nav-link-with-dropdown nav-link1"
+                onClick={() => setIsTasksDropdownOpen(!isTasksDropdownOpen)}
+              >
+                <i className="bx bxs-user icon"></i>
+                <span className="text nav-text txt">Tasks </span>
+                <i
+                  className={`bx ${
+                    isTasksDropdownOpen ? "bx-chevron-up" : "bx-chevron-down"
+                  }`}
+                ></i>
+              </div>
+              <ul
+                className={`dropdown-list ${
+                  isTasksDropdownOpen ? "open" : ""
+                } ${isSidebarOpen ? "" : "dropdown-ul-closed"}`}
+              >
+                {(admin || manager) && (
                   <li>
                     <Link to="/addtask" title="Click to Add Task">
                       <i className="bx bx-user icon"></i>
                       <span className="text nav-text">Add </span>
                     </Link>
                   </li>
-                  <li>
-                    <Link to="/tasks" title="Click to view Tasks">
-                      <i className="bx bx-store icon"></i>
-                      <span className="text nav-text">Tasks</span>
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            )}
+                )}
+                <li>
+                  <Link to="/tasks" title="Click to view Tasks">
+                    <i className="bx bx-store icon"></i>
+                    <span className="text nav-text">Tasks</span>
+                  </Link>
+                </li>
+              </ul>
+            </div>
             {admin && (
               <div className="nav-dropdowna">
                 <li className="nav-link">

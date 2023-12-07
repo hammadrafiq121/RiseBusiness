@@ -137,12 +137,15 @@ function App() {
               {/* Task Routes */}
               <Route
                 path="/addtask"
-                element={isUserAdmin ? <AddTask /> : <Navigate to="/403" />}
+                element={
+                  isUserAdmin || isUserManager ? (
+                    <AddTask />
+                  ) : (
+                    <Navigate to="/403" />
+                  )
+                }
               />
-              <Route
-                path="/tasks"
-                element={isUserAdmin ? <Tasks /> : <Navigate to="/403" />}
-              />
+              <Route path="/tasks" element={<Tasks />} />
 
               <Route path="/403" element={<PermissionDenied />} />
               <Route path="/*" element={<NotFound />} />

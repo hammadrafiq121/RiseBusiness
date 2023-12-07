@@ -389,6 +389,7 @@ const Tasks = () => {
 
   const admin = user && user.userRole === "admin";
   const manager = user && user.userRole === "manager";
+  const agent = user && user.userRole === "agent";
 
   useEffect(() => {
     const fetchData = async () => {
@@ -399,15 +400,16 @@ const Tasks = () => {
         await dispatch(resetUsers());
         await dispatch(resetTaskCat());
         await dispatch(resetTasks());
-      }
-      if (admin || manager) {
-        await dispatch(getUsers());
+
         await dispatch(getTaskCategories());
         await dispatch(getAllTasks());
       }
+      if (admin || manager) {
+        await dispatch(getUsers());
+      }
     };
     fetchData();
-  }, [user]);
+  }, [user, dispatch]);
 
   const filteredTasks = tasks.filter((task) => {
     const keyword = searchKeyword.toLowerCase();
@@ -435,15 +437,20 @@ const Tasks = () => {
           (taskCategory) => taskCategory._id === item.taskCategory
         )?.taskCategory || "Unknown",
       assignee:
-        users.find((user) => user._id === item.assignee)?.userName || "Unknown",
+        // users.find((user) => user._id === item.assignee)?.userName || "Unknown",
+        agent
+          ? user._id
+          : users.find((u) => u._id === item.assignee)?.userName || "Unknown",
     };
 
     return (
       <tr key={task._id} className="atim">
         <td className="td">{task.title}</td>
-        <td className="td">{task.assignee}</td>
         <td className="td">{task.taskCategory}</td>
-        <td className="td">{task.priority}</td>
+        {(admin || manager) && <td className="td">{task.assignee}</td>}
+        {(admin || manager || agent) && (
+          <td className="td">{task.createdBy.name}</td>
+        )}
         <td className="td">
           {new Date(task.startDate).toLocaleDateString()}
           <br />
@@ -513,25 +520,27 @@ const Tasks = () => {
                     </Form.Group>
                   </Col>
 
-                  <Col lg={2}>
-                    <Form.Group controlId="userFilter" className="mb-2">
-                      <Form.Control
-                        className="col_7 Select-status"
-                        as="select"
-                        value={selectedAssignee}
-                        onChange={(event) =>
-                          setSelectedAssignee(event.target.value)
-                        }
-                      >
-                        <option value="">Select Assignee</option>
-                        {users.map((user) => (
-                          <option key={user._id} value={user._id}>
-                            {user.userName}
-                          </option>
-                        ))}
-                      </Form.Control>
-                    </Form.Group>
-                  </Col>
+                  {(admin || manager) && (
+                    <Col lg={2}>
+                      <Form.Group controlId="userFilter" className="mb-2">
+                        <Form.Control
+                          className="col_7 Select-status"
+                          as="select"
+                          value={selectedAssignee}
+                          onChange={(event) =>
+                            setSelectedAssignee(event.target.value)
+                          }
+                        >
+                          <option value="">Select Assignee</option>
+                          {users.map((user) => (
+                            <option key={user._id} value={user._id}>
+                              {user.userName}
+                            </option>
+                          ))}
+                        </Form.Control>
+                      </Form.Group>
+                    </Col>
+                  )}
                   <Col lg={2}>
                     <Form.Group controlId="userFilter" className="mb-2">
                       <Form.Control
@@ -570,24 +579,30 @@ const Tasks = () => {
                   </Col>
                 </Row>
               </Col>
-              <Col lg={2}>
-                <Form.Group className="mb-1">
-                  <Link to="/addtask">
-                    <Button variant="secondary" type="submit">
-                      Create Task
-                    </Button>
-                  </Link>
-                </Form.Group>
-              </Col>
+              {(admin || manager) && (
+                <Col lg={2}>
+                  <Form.Group className="mb-1">
+                    <Link to="/addtask">
+                      <Button variant="secondary" type="submit">
+                        Create Task
+                      </Button>
+                    </Link>
+                  </Form.Group>
+                </Col>
+              )}
             </Row>
           </Form>
           <Table className="customers_table">
             <thead>
               <tr>
                 <th className="custoner-col-name">Title </th>
-                <th className="custoner-col-name">Assignee</th>
                 <th className="custoner-col-name">Category</th>
-                <th className="custoner-col-name">Priority</th>
+                {(admin || manager) && (
+                  <th className="custoner-col-name">Assignee</th>
+                )}
+                {(admin || manager || agent) && (
+                  <th className="custoner-col-name">Assigned By</th>
+                )}
                 <th className="custoner-col-name">Start Date</th>
                 <th className="custoner-col-name">Due Date</th>
                 <th className="custoner-col-name">Action</th>

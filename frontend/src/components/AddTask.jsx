@@ -31,7 +31,10 @@ const AddTask = () => {
         status: "",
       },
     ],
-    isExpired: false,
+    createdBy: {
+      name: "",
+      id: "",
+    },
   };
 
   const dispatch = useDispatch();
@@ -90,10 +93,7 @@ const AddTask = () => {
   //   }));
 
   const assigneesList = users.filter(
-    (item) =>
-      item.userRole !== "admin" &&
-      item.userRole !== "manager" &&
-      item._id !== user._id
+    (item) => item.userRole !== "admin" && item._id !== user._id
   );
 
   const handleSubmit = async (e) => {
@@ -123,6 +123,7 @@ const AddTask = () => {
         createTask({
           ...formData,
           checklist: checklist,
+          createdBy: { name: user.fullName, id: user._id },
         })
       );
       setFormData(blankForm);
@@ -363,6 +364,7 @@ const AddTask = () => {
                     className="input check-list"
                     type="text"
                     value={inputValue}
+                    placeholder="checklist"
                     required={taskChecklist.length === 0}
                     onChange={(e) => setInputValue(e.target.value)}
                   />
