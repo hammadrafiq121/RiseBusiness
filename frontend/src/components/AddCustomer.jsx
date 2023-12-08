@@ -303,7 +303,13 @@ const AddCustomer = () => {
                 <Form.Label className="label" column sm={3}>
                   Comments
                 </Form.Label>
-                <Col sm={9}>
+                <Col
+                  sm={9}
+                  style={{
+                    maxHeight: "200px",
+                    overflow: "auto",
+                  }}
+                >
                   {formData.comments.map((comment, index) => (
                     <Form.Control
                       ref={newCommentInputRef}

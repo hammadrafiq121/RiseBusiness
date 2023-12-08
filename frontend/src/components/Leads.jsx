@@ -21,9 +21,11 @@ import {
   reset as resetProduct,
 } from "../app/reducers/productSlice.js";
 import Pagination from "./Pagination";
+import { MultiSelect } from "react-multi-select-component";
 import DeleteCustomer from "./DeleteCustomer";
+import { Modal } from "react-bootstrap";
 
-const Leads = () => {
+const Customers = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { customers, isLoading } = useSelector((state) => state.customers);
@@ -31,11 +33,23 @@ const Leads = () => {
   const { products } = useSelector((state) => state.products);
   const { users } = useSelector((state) => state.users);
   const [searchKeyword, setSearchKeyword] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState([]);
   const [selectedUser, setSelectedUser] = useState("");
   const [selectedStartDate, setSelectedStartDate] = useState(null);
   const [selectedEndDate, setSelectedEndDate] = useState(null);
+
   const admin = user && user.userRole === "admin";
   const manager = user && user.userRole === "manager";
+  const allowedStatus = [
+    "64f0d410d68b21cc284cb560",
+    "654d018c7d63551734840912",
+  ];
+  const filteredStatuses = statuses.filter((status) =>
+    allowedStatus.includes(status._id)
+  );
+
+  const [selectedCustomers, setSelectedCustomers] = useState([]);
+  const [modalEmails, setModalEmails] = useState([]);
 
   const blackSortOrder = {
     companyName: "none",
@@ -81,45 +95,29 @@ const Leads = () => {
     setSelectedEndDate(date);
   };
 
-  const [selectAll, setSelectAll] = useState(false);
-  const [selectedItems, setSelectedItems] = useState([]);
-
-  const handleCheckboxChange = (customerId) => {
-    if (selectedItems.includes(customerId)) {
-      setSelectedItems(selectedItems.filter((id) => id !== customerId));
-    } else {
-      setSelectedItems([...selectedItems, customerId]);
-    }
-  };
-
-  const handleDeleteSelected = () => {
-    // Perform the deletion action for the selected items
-    selectedItems.forEach((customerId) => {
-      // Delete customer with ID customerId
-      // Implement your deleteCustomer logic here
-    });
-
-    // Clear the selection
-    setSelectedItems([]);
-  };
   const toggleSortOrder = (field) => {
     let newSortOrders = { ...blackSortOrder };
     newSortOrders[field] = sortOrders[field] === "asc" ? "desc" : "asc";
     setSortOrders(newSortOrders);
   };
 
-  const freshLeads = customers.filter(
-    (customer) => !customer.status || customer.status === ""
+  const leads = customers.filter(
+    (customer) =>
+      allowedStatus.includes(customer.status) ||
+      !customer.status ||
+      customer.status === ""
   );
 
-  const sortedCustomers = freshLeads.slice().sort((a, b) => {
+  const sortedCustomers = leads.slice().sort((a, b) => {
     if (Object.values(sortOrders).every((value) => value === "none")) {
+      // Sort by date in descending order by default
       return parseISO(b.createdAt) - parseISO(a.createdAt);
     }
 
     for (const field in sortOrders) {
       if (sortOrders[field] !== "none") {
         if (field === "date") {
+          // Sort the "Date" field based on actual date values
           const dateA = parseISO(a.createdAt);
           const dateB = parseISO(b.createdAt);
 
@@ -145,7 +143,9 @@ const Leads = () => {
 
   const filteredCustomers = sortedCustomers.filter((customer) => {
     const keyword = searchKeyword.toLowerCase();
-
+    const isStatusMatch =
+      selectedStatus.length === 0 ||
+      selectedStatus.some((status) => status.value === customer.status);
     const isUserMatch = selectedUser === "" || customer.user === selectedUser;
     const creationDate = parseISO(customer.createdAt);
     const startOfSelectedStartDate = startOfDay(selectedStartDate);
@@ -159,6 +159,7 @@ const Leads = () => {
       (customer.companyName.toLowerCase().includes(keyword) ||
         customer.state.toLowerCase().includes(keyword) ||
         customer.city.toLowerCase().includes(keyword)) &&
+      isStatusMatch &&
       isUserMatch &&
       isStartDateMatch &&
       isEndDateMatch
@@ -169,21 +170,20 @@ const Leads = () => {
     const customer = {
       ...item,
       status:
-        statuses.find((status) => status._id === item.status)?.status ||
+        filteredStatuses.find((status) => status._id === item.status)?.status ||
         "Unknown",
       user: users.find((user) => user._id === item.user)?.userName || "Unknown",
       products: products.filter((product) =>
         item.products.includes(product._id)
       ),
     };
-
     return (
       <tr key={customer._id} className="atim">
-        <td>
+        <td className="td">
           <input
             type="checkbox"
-            checked={selectedItems.includes(customer._id)}
-            onChange={() => handleCheckboxChange(customer._id)}
+            onChange={() => handleCustomerCheckboxChange(customer._id)}
+            checked={selectedCustomers.includes(customer._id)}
           />
         </td>
         <td className="td">{customer.companyName}</td>
@@ -237,19 +237,59 @@ const Leads = () => {
     indexOfFirstCustomer,
     indexOfLastCustomer
   );
-  const toggleSelectAll = () => {
-    if (selectAll) {
-      setSelectedItems([]);
+
+  const handleCustomerCheckboxChange = (customerId) => {
+    const isSelected = selectedCustomers.includes(customerId);
+    if (isSelected) {
+      setSelectedCustomers((prevSelected) =>
+        prevSelected.filter((id) => id !== customerId)
+      );
     } else {
-      const allCustomerIds = renderCustomers.map((customer) => customer._id);
-      setSelectedItems(allCustomerIds);
+      setSelectedCustomers((prevSelected) => [...prevSelected, customerId]);
     }
-    setSelectAll(!selectAll);
   };
-  const printSelectedCustomerIds = () => {
-    event.preventDefault();
-    console.log("Selected Customer IDs:", selectedItems);
+
+  // Function to handle "Check All" checkbox change
+  const handleCheckAllChange = () => {
+    // If all customers are already selected, unselect all. Otherwise, select all.
+    const allCustomerIds = filteredCustomers.map((customer) => customer._id);
+    const allSelected = allCustomerIds.every((id) =>
+      selectedCustomers.includes(id)
+    );
+
+    if (allSelected) {
+      setSelectedCustomers([]);
+    } else {
+      setSelectedCustomers(allCustomerIds);
+    }
   };
+  // Function to handle "get emails" button click
+  const handleGetEmailsClick = () => {
+    // Get the selected customers' emails and set them in the state
+    // const emails = selectedCustomers.map((customerId) => {
+    //   const customer = customers.find((c) => c._id === customerId);
+    //   return customer ? customer.personEmail : "";
+    // });
+    const emails = selectedCustomers
+      .map((customerId) => {
+        const customer = customers.find((c) => c._id === customerId);
+        return customer ? customer.personEmail : "";
+      })
+      .filter((email) => email !== "");
+
+    setModalEmails(emails);
+    // console.log("Selected Customers Emails:", emails.join("; "));
+    handleOpenModal();
+  };
+
+  const [showModal, setShowModal] = useState(false);
+  const handleCloseModal = () => setShowModal(false);
+  const handleOpenModal = () => setShowModal(true);
+
+  const listOfStatus = filteredStatuses.map((status) => ({
+    label: status.status,
+    value: status._id,
+  }));
 
   return (
     <div className="customer_div">
@@ -269,7 +309,17 @@ const Leads = () => {
                       />
                     </Form.Group>
                   </Col>
-
+                  <Col lg={2}>
+                    <Form.Group controlId="statusFilter" className="mb-2">
+                      <MultiSelect
+                        name="statusFilter" // Use a unique identifier for name
+                        options={listOfStatus}
+                        value={selectedStatus}
+                        onChange={(selected) => setSelectedStatus(selected)}
+                        labelledBy="Status"
+                      />
+                    </Form.Group>
+                  </Col>
                   {(admin || manager) && (
                     <Col lg={2}>
                       <Form.Group controlId="userFilter" className="mb-2">
@@ -335,17 +385,18 @@ const Leads = () => {
                         </Link>
                       </Form.Group>
                     )}
-
-                    {/* ye add */}
-                    <Form.Group className="mb-1">
-                      <Button
-                        variant="secondary"
-                        type="submit"
-                        onClick={printSelectedCustomerIds} // Add this onClick event
-                      >
-                        Print Selected IDs
-                      </Button>
-                    </Form.Group>
+                    {selectedCustomers && selectedCustomers.length > 0 && (
+                      <Form.Group className="mb-1">
+                        <Button
+                          variant="secondary"
+                          type="button"
+                          onClick={handleGetEmailsClick}
+                          disabled={selectedCustomers.length === 0}
+                        >
+                          Get Emails
+                        </Button>
+                      </Form.Group>
+                    )}
                   </Col>
                 </Row>
               </Col>
@@ -354,11 +405,14 @@ const Leads = () => {
           <Table className="customers_table">
             <thead>
               <tr>
-                <th>
+                <th className="custoner-col-name">
                   <input
                     type="checkbox"
-                    checked={selectAll}
-                    onChange={toggleSelectAll}
+                    onChange={handleCheckAllChange}
+                    checked={
+                      filteredCustomers.length > 0 &&
+                      selectedCustomers.length === filteredCustomers.length
+                    }
                   />
                 </th>
                 <th className="custoner-col-name">
@@ -460,9 +514,17 @@ const Leads = () => {
           )}
           {isLoading && <Spinner />}
         </Container>
+
+        {/* Modal to display emails */}
+        <Modal show={showModal} onHide={handleCloseModal}>
+          <Modal.Header closeButton>
+            <Modal.Title>Selected Customers Emails</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>{modalEmails.join("; ")}</Modal.Body>
+        </Modal>
       </section>
     </div>
   );
 };
 
-export default Leads;
+export default Customers;

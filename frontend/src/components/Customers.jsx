@@ -23,6 +23,7 @@ import {
 import Pagination from "./Pagination";
 import { MultiSelect } from "react-multi-select-component";
 import DeleteCustomer from "./DeleteCustomer";
+import { Modal } from "react-bootstrap";
 
 const Customers = () => {
   const dispatch = useDispatch();
@@ -36,8 +37,26 @@ const Customers = () => {
   const [selectedUser, setSelectedUser] = useState("");
   const [selectedStartDate, setSelectedStartDate] = useState(null);
   const [selectedEndDate, setSelectedEndDate] = useState(null);
+
   const admin = user && user.userRole === "admin";
   const manager = user && user.userRole === "manager";
+  const allowedStatus = [
+    "64f0d9ae39a2a90d92b3fc27",
+    "654d01a67d63551734840919",
+    "654d01ca7d6355173484091e",
+    "654d01d77d63551734840923",
+    "654d01e37d63551734840928",
+    "65006c1260470819587c9f76",
+    "651708e37c4cfe7278bf5598",
+    "652fda7c79548ee488bcd540",
+    "64f0d420d68b21cc284cb568",
+  ];
+  const filteredStatuses = statuses.filter((status) =>
+    allowedStatus.includes(status._id)
+  );
+
+  const [selectedCustomers, setSelectedCustomers] = useState([]);
+  const [modalEmails, setModalEmails] = useState([]);
 
   const blackSortOrder = {
     companyName: "none",
@@ -89,7 +108,10 @@ const Customers = () => {
     setSortOrders(newSortOrders);
   };
 
-  const onGoingCustomers = customers.filter((customer) => customer.status);
+  const onGoingCustomers = customers.filter((customer) =>
+    allowedStatus.includes(customer.status)
+  );
+
   const sortedCustomers = onGoingCustomers.slice().sort((a, b) => {
     if (Object.values(sortOrders).every((value) => value === "none")) {
       // Sort by date in descending order by default
@@ -152,16 +174,22 @@ const Customers = () => {
     const customer = {
       ...item,
       status:
-        statuses.find((status) => status._id === item.status)?.status ||
+        filteredStatuses.find((status) => status._id === item.status)?.status ||
         "Unknown",
       user: users.find((user) => user._id === item.user)?.userName || "Unknown",
       products: products.filter((product) =>
         item.products.includes(product._id)
       ),
     };
-
     return (
       <tr key={customer._id} className="atim">
+        <td className="td">
+          <input
+            type="checkbox"
+            onChange={() => handleCustomerCheckboxChange(customer._id)}
+            checked={selectedCustomers.includes(customer._id)}
+          />
+        </td>
         <td className="td">{customer.companyName}</td>
         <td className="td">{customer.state}</td>
         <td className="td">{customer.city}</td>
@@ -214,7 +242,55 @@ const Customers = () => {
     indexOfLastCustomer
   );
 
-  const listOfStatus = statuses.map((status) => ({
+  const handleCustomerCheckboxChange = (customerId) => {
+    const isSelected = selectedCustomers.includes(customerId);
+    if (isSelected) {
+      setSelectedCustomers((prevSelected) =>
+        prevSelected.filter((id) => id !== customerId)
+      );
+    } else {
+      setSelectedCustomers((prevSelected) => [...prevSelected, customerId]);
+    }
+  };
+
+  // Function to handle "Check All" checkbox change
+  const handleCheckAllChange = () => {
+    // If all customers are already selected, unselect all. Otherwise, select all.
+    const allCustomerIds = filteredCustomers.map((customer) => customer._id);
+    const allSelected = allCustomerIds.every((id) =>
+      selectedCustomers.includes(id)
+    );
+
+    if (allSelected) {
+      setSelectedCustomers([]);
+    } else {
+      setSelectedCustomers(allCustomerIds);
+    }
+  };
+  // Function to handle "get emails" button click
+  const handleGetEmailsClick = () => {
+    // Get the selected customers' emails and set them in the state
+    // const emails = selectedCustomers.map((customerId) => {
+    //   const customer = customers.find((c) => c._id === customerId);
+    //   return customer ? customer.personEmail : "";
+    // });
+    const emails = selectedCustomers
+      .map((customerId) => {
+        const customer = customers.find((c) => c._id === customerId);
+        return customer ? customer.personEmail : "";
+      })
+      .filter((email) => email !== "");
+
+    setModalEmails(emails);
+    // console.log("Selected Customers Emails:", emails.join("; "));
+    handleOpenModal();
+  };
+
+  const [showModal, setShowModal] = useState(false);
+  const handleCloseModal = () => setShowModal(false);
+  const handleOpenModal = () => setShowModal(true);
+
+  const listOfStatus = filteredStatuses.map((status) => ({
     label: status.status,
     value: status._id,
   }));
@@ -313,6 +389,18 @@ const Customers = () => {
                         </Link>
                       </Form.Group>
                     )}
+                    {selectedCustomers && selectedCustomers.length > 0 && (
+                      <Form.Group className="mb-1">
+                        <Button
+                          variant="secondary"
+                          type="button"
+                          onClick={handleGetEmailsClick}
+                          disabled={selectedCustomers.length === 0}
+                        >
+                          Get Emails
+                        </Button>
+                      </Form.Group>
+                    )}
                   </Col>
                 </Row>
               </Col>
@@ -321,6 +409,16 @@ const Customers = () => {
           <Table className="customers_table">
             <thead>
               <tr>
+                <th className="custoner-col-name">
+                  <input
+                    type="checkbox"
+                    onChange={handleCheckAllChange}
+                    checked={
+                      filteredCustomers.length > 0 &&
+                      selectedCustomers.length === filteredCustomers.length
+                    }
+                  />
+                </th>
                 <th className="custoner-col-name">
                   Business Name
                   <span
@@ -420,6 +518,14 @@ const Customers = () => {
           )}
           {isLoading && <Spinner />}
         </Container>
+
+        {/* Modal to display emails */}
+        <Modal show={showModal} onHide={handleCloseModal}>
+          <Modal.Header closeButton>
+            <Modal.Title>Selected Customers Emails</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>{modalEmails.join("; ")}</Modal.Body>
+        </Modal>
       </section>
     </div>
   );
