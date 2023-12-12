@@ -77,7 +77,7 @@ const EditCustomer = () => {
         setFormData({
           ...payload,
           products: mappedProducts,
-          newComment: "",
+          newComment: { text: "", time: new Date() },
         });
       }
     };
@@ -196,10 +196,19 @@ const EditCustomer = () => {
   const handleUpdate = async (event) => {
     event.preventDefault();
 
-    if (formData.newComment.text.trim() !== "") {
-      const newComments = [...formData.comments, formData.newComment];
-      formData.comments = newComments;
-      formData.newComment = { text: "", time: new Date() };
+    const newCommentText = formData.newComment.text.trim();
+
+    if (newCommentText !== "") {
+      const newComments = [
+        ...formData.comments,
+        { text: newCommentText, time: new Date() },
+      ];
+
+      setFormData((formData) => ({
+        ...formData,
+        comments: newComments,
+        newComment: { text: "", time: new Date() },
+      }));
     }
 
     await dispatch(
@@ -520,6 +529,7 @@ const EditCustomer = () => {
 
                   <Form.Control
                     ref={newCommentInputRef}
+                    disabled={isDisabled}
                     className="input"
                     as="textarea"
                     placeholder=""
