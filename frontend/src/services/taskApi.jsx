@@ -44,7 +44,7 @@ export const getTask = async (token, taskId) => {
         Authorization: `Bearer ${token}`,
       },
     };
-    const response = await api.get(`/api/tasks/${taskId}`, config);
+    const response = await api.get(`tasks/${taskId}`, config);
     return response.data;
   } catch (error) {
     throw error;

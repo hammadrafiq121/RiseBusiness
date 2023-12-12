@@ -15,6 +15,21 @@ const checklistItemSchema = new mongoose.Schema(
   { _id: false }
 );
 
+const commentSchema = new mongoose.Schema(
+  {
+    text: {
+      type: String,
+    },
+    time: {
+      type: Date,
+      default: new Date(),
+    },
+  },
+  {
+    _id: false, // Disable automatic creation of _id for each comment
+  }
+);
+
 const taskSchema = new mongoose.Schema(
   {
     title: String,
@@ -22,7 +37,7 @@ const taskSchema = new mongoose.Schema(
     estimatedTime: Number,
     startDate: Date,
     endDate: Date,
-    comment: String,
+    comments: [commentSchema],
     // taskCategory:String,
     taskCategory: {
       type: mongoose.Schema.Types.ObjectId,

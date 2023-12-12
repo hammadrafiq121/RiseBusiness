@@ -43,7 +43,8 @@ export const getAllTasks = async (req, res) => {
 
 export const getTask = async (req, res) => {
   try {
-    const task = await Task.findById(req.params.taskId);
+    const taskId = req.params.id;
+    const task = await Task.findById(taskId);
     if (!task) {
       return res.status(404).json({ error: "Task not found" });
     }
@@ -56,7 +57,7 @@ export const getTask = async (req, res) => {
 export const updateTask = async (request, response) => {
   try {
     const taskId = request.params.id;
-    const { assignee, checklist } = request.body;
+    const { assignee } = request.body;
     const userId = request.user._id;
     if (
       request.user.userRole === "admin" ||
@@ -65,7 +66,7 @@ export const updateTask = async (request, response) => {
     ) {
       const updatedTask = await Task.findOneAndUpdate(
         { _id: taskId },
-        { checklist },
+        { ...request.body },
         {
           new: true,
         }

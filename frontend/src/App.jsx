@@ -5,6 +5,7 @@ import Toast from "./components/Toast";
 import { useSelector } from "react-redux";
 import AddTask from "./components/AddTask";
 import Tasks from "./components/Tasks";
+import EditTask from "./components/EditTask";
 
 // Import components
 import Navbar from "./components/Navbar";
@@ -146,6 +147,7 @@ function App() {
                 }
               />
               <Route path="/tasks" element={<Tasks />} />
+              <Route path="/tasks/editTask/:id" element={<EditTask />} />
 
               <Route path="/403" element={<PermissionDenied />} />
               <Route path="/*" element={<NotFound />} />

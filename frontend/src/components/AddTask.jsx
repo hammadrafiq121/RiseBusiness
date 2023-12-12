@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Col, Form, Row, Container, Button } from "react-bootstrap";
 import DateTime from "react-datetime";
 import "react-datetime/css/react-datetime.css";
@@ -21,7 +21,7 @@ const AddTask = () => {
     estimatedTime: "",
     startDate: "",
     endDate: "",
-    comment: "",
+    comments: [{ text: "", time: new Date() }],
     taskCategory: "",
     assignee: "",
     priority: "",
@@ -38,11 +38,15 @@ const AddTask = () => {
   };
 
   const dispatch = useDispatch();
+  const newCommentInputRef = useRef(null);
+
   const [formData, setFormData] = useState(blankForm);
   const { taskCategories } = useSelector((state) => state.taskCategories);
 
   const [taskChecklist, setTaskChecklist] = useState([]);
   const [inputValue, setInputValue] = useState("");
+  const [editingIndex, setEditingIndex] = useState(null);
+  const [editedValue, setEditedValue] = useState("");
 
   const { user } = useSelector((state) => state.auth);
   const admin = user && user.userRole === "admin";
@@ -72,12 +76,27 @@ const AddTask = () => {
       setInputValue(""); // Clear the input field
     }
   }
+  function editItem(index) {
+    setEditingIndex(index);
+    setEditedValue(taskChecklist[index]);
+  }
 
-  const deleteItem = (indexToDelete) => {
+  function saveEdit() {
+    setTaskChecklist((prevChecklist) =>
+      prevChecklist.map((item, index) =>
+        index === editingIndex ? editedValue : item
+      )
+    );
+    setEditingIndex(null);
+    setEditedValue("");
+  }
+
+  function deleteItem(indexToDelete) {
     setTaskChecklist((prevChecklist) =>
       prevChecklist.filter((_, index) => index !== indexToDelete)
     );
-  };
+    setEditingIndex(null); // Cancel editing when deleting an item
+  }
 
   // const assigneesList = users
   //   .filter(
@@ -96,6 +115,30 @@ const AddTask = () => {
     (item) => item.userRole !== "admin" && item._id !== user._id
   );
 
+  const handleCommentChange = (index, value) => {
+    const newComments = [...formData.comments];
+    newComments[index] = { text: value, time: new Date() };
+    setFormData((formData) => ({
+      ...formData,
+      comments: newComments,
+    }));
+  };
+
+  const addCommentField = () => {
+    const lastComment = formData.comments[formData.comments.length - 1];
+    if (lastComment.text.trim() !== "") {
+      setFormData((formData) => ({
+        ...formData,
+        comments: [...formData.comments, { text: "", time: new Date() }],
+      }));
+    } else {
+      if (newCommentInputRef.current) {
+        // Focus on the newly added comment field
+        newCommentInputRef.current[formData.comments.length]?.focus();
+      }
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -111,6 +154,17 @@ const AddTask = () => {
     //   })),
     // }));
 
+    // Filter out comments with empty text
+    const nonEmptyComments = formData.comments.filter(
+      (comment) => comment.text.trim() !== ""
+    );
+
+    // Create a new array with comments containing only text and time properties
+    const commentsForSubmission = nonEmptyComments.map(({ text, time }) => ({
+      text,
+      time,
+    }));
+
     if (taskChecklist.length === 0) {
       alert("Add Task Check List");
     } else {
@@ -124,6 +178,7 @@ const AddTask = () => {
           ...formData,
           checklist: checklist,
           createdBy: { name: user.fullName, id: user._id },
+          comments: commentsForSubmission,
         })
       );
       setFormData(blankForm);
@@ -253,19 +308,38 @@ const AddTask = () => {
               </Form.Group>
 
               <Form.Group as={Row} className="mb-2">
-                <Form.Label className="Task-label" column sm={3}>
-                  Comment
+                <Form.Label className="label" column sm={3}>
+                  Comments
                 </Form.Label>
-                <Col sm={9}>
-                  <Form.Control
-                    className="input"
-                    type="text"
-                    placeholder=""
-                    required
-                    name="comment"
-                    value={formData.comment}
-                    onChange={handleChange}
-                  />
+                <Col
+                  sm={9}
+                  style={{
+                    maxHeight: "200px",
+                    overflow: "auto",
+                  }}
+                >
+                  {formData.comments.map((comment, index) => (
+                    <Form.Control
+                      key={index}
+                      ref={newCommentInputRef}
+                      className="input"
+                      as="textarea"
+                      placeholder=""
+                      rows={2}
+                      value={comment.text}
+                      onChange={(e) =>
+                        handleCommentChange(index, e.target.value)
+                      }
+                    />
+                  ))}
+
+                  <button
+                    type="button"
+                    onClick={addCommentField}
+                    className="plus-check"
+                  >
+                    +
+                  </button>
                 </Col>
               </Form.Group>
             </Col>
@@ -357,7 +431,6 @@ const AddTask = () => {
                   </Col>
                 </Form.Group>
               </div>
-
               <Form.Group as={Row} className="mb-2">
                 <Col sm={10}>
                   <Form.Control
@@ -382,19 +455,58 @@ const AddTask = () => {
                   <Col sm={12}>
                     <ol
                       style={{
-                        maxHeight: "100px",
+                        maxHeight: "150px",
                         overflow: "auto",
                       }}
                     >
                       {taskChecklist?.map((item, index) => (
-                        <li style={{ padding: "4px 8px" }} key={index}>
-                          {item}
-                          <button
-                            style={{ padding: "0px 5px", marginLeft: "5px" }}
-                            onClick={() => deleteItem(index)}
-                          >
-                            X
-                          </button>
+                        <li
+                          style={{ padding: "5px 10px", margin: "5px" }}
+                          key={index}
+                        >
+                          {index === editingIndex ? (
+                            <>
+                              <input
+                                type="text"
+                                value={editedValue}
+                                onChange={(e) => setEditedValue(e.target.value)}
+                              />
+                              <button
+                                type="button"
+                                style={{
+                                  padding: "0px 5px",
+                                  marginLeft: "5px",
+                                }}
+                                onClick={saveEdit}
+                              >
+                                ✔
+                              </button>
+                            </>
+                          ) : (
+                            <>
+                              {item}
+                              <button
+                                type="button"
+                                style={{
+                                  padding: "0px 4px",
+                                  marginLeft: "5px",
+                                }}
+                                onClick={() => editItem(index)}
+                              >
+                                ✎
+                              </button>
+                              <button
+                                type="button"
+                                style={{
+                                  padding: "0px 5px",
+                                  marginLeft: "5px",
+                                }}
+                                onClick={() => deleteItem(index)}
+                              >
+                                ✖
+                              </button>
+                            </>
+                          )}
                         </li>
                       ))}
                     </ol>

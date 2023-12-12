@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Table, Form, Container, Row, Col, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { PencilSquare } from "react-bootstrap-icons";
+import { PencilSquare, EyeFill } from "react-bootstrap-icons";
 import { getUsers } from "../app/reducers/userSlice.js";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -50,11 +50,12 @@ const Customers = () => {
     "651708e37c4cfe7278bf5598",
     "652fda7c79548ee488bcd540",
     "64f0d420d68b21cc284cb568",
+    "64f0d418d68b21cc284cb565",
+    "64f0d9b439a2a90d92b3fc2a",
   ];
   const filteredStatuses = statuses.filter((status) =>
     allowedStatus.includes(status._id)
   );
-
   const [selectedCustomers, setSelectedCustomers] = useState([]);
   const [modalEmails, setModalEmails] = useState([]);
 
@@ -207,7 +208,7 @@ const Customers = () => {
               pathname: `/customers/editCustomer/${customer._id}`,
             }}
           >
-            <PencilSquare />
+            <EyeFill />
           </Button>
           {admin && <DeleteCustomer className="tdd" customer={customer} />}
         </td>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Table, Form, Container, Row, Col, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { PencilSquare } from "react-bootstrap-icons";
+import { PencilSquare, EyeFill } from "react-bootstrap-icons";
 import "../style.css";
 import Spinner from "./Spinner";
 // import DeleteUser from "./DeleteUser";
@@ -72,7 +72,7 @@ const Users = () => {
             pathname: `/users/editUser/${user._id}`,
           }}
         >
-          <PencilSquare />
+          <EyeFill />
         </Button>
         {admin && (
           <AssignUsers users={users} _id={user._id} fullName={user.fullName} />

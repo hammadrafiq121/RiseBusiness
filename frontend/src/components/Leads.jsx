@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Table, Form, Container, Row, Col, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { PencilSquare } from "react-bootstrap-icons";
+import { PencilSquare, EyeFill } from "react-bootstrap-icons";
 import { getUsers } from "../app/reducers/userSlice.js";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -203,7 +203,7 @@ const Customers = () => {
               pathname: `/customers/editCustomer/${customer._id}`,
             }}
           >
-            <PencilSquare />
+            <EyeFill />
           </Button>
           {admin && <DeleteCustomer className="tdd" customer={customer} />}
         </td>
