@@ -1,5 +1,19 @@
 import mongoose from "mongoose";
 
+const commentSchema = new mongoose.Schema(
+  {
+    text: {
+      type: String,
+    },
+    time: {
+      type: Date,
+      default: new Date(),
+    },
+  },
+  {
+    _id: false, // Disable automatic creation of _id for each comment
+  }
+);
 const customerSchema = new mongoose.Schema(
   {
     companyName: {
@@ -43,8 +57,7 @@ const customerSchema = new mongoose.Schema(
       type: String,
       // required: true,
     },
-    comments: [String],
-
+    comments: [commentSchema],
     products: [
       {
         type: mongoose.Schema.Types.ObjectId,

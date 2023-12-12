@@ -27,7 +27,7 @@ import { reset as resetUsers } from "../app/reducers/userSlice.js";
 
 const EditCustomer = () => {
   const [isDisabled, setIsDisabled] = useState(true);
-  const blackForm = {
+  const blankForm = {
     companyName: "",
     companyPhone: "",
     companyFax: "",
@@ -39,12 +39,12 @@ const EditCustomer = () => {
     personName: "",
     personPhone: "",
     personEmail: "",
-    comments: [],
-    newComment: "",
+    comments: [{ text: "", time: new Date() }],
+    newComment: { text: "", time: new Date() },
     status: "",
     products: [],
   };
-  const [formData, setFormData] = useState(blackForm);
+  const [formData, setFormData] = useState(blankForm);
   const navigate = useNavigate();
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -94,29 +94,57 @@ const EditCustomer = () => {
     setIsDisabled(!isDisabled);
   };
 
+  // const handleCommentChange = (index, value) => {
+  //   const newComments = [...formData.comments, value];
+  //   newComments[index] = value;
+  //   setFormData((formData) => ({
+  //     ...formData,
+  //     comments: newComments,
+  //   }));
+  // };
   const handleCommentChange = (index, value) => {
-    const newComments = [...formData.comments, value];
-    newComments[index] = value;
+    const newComments = [...formData.comments];
+    newComments[index] = { text: value, time: new Date() };
     setFormData((formData) => ({
       ...formData,
       comments: newComments,
     }));
   };
 
+  // const handleNewCommentChange = (value) => {
+  //   setFormData((formData) => ({
+  //     ...formData,
+  //     newComment: value,
+  //   }));
+  // };
   const handleNewCommentChange = (value) => {
     setFormData((formData) => ({
       ...formData,
-      newComment: value,
+      newComment: { text: value, time: new Date() },
     }));
   };
 
+  // const addCommentField = () => {
+  //   if (formData.newComment.trim() !== "") {
+  //     const newComments = [...formData.comments, formData.newComment];
+  //     setFormData((formData) => ({
+  //       ...formData,
+  //       comments: newComments,
+  //       newComment: "",
+  //     }));
+  //   } else {
+  //     if (newCommentInputRef.current) {
+  //       newCommentInputRef.current.focus();
+  //     }
+  //   }
+  // };
   const addCommentField = () => {
-    if (formData.newComment.trim() !== "") {
-      const newComments = [...formData.comments, formData.newComment];
+    if (formData.newComment.text.trim() !== "") {
+      const newComments = [...formData.comments, { ...formData.newComment }];
       setFormData((formData) => ({
         ...formData,
         comments: newComments,
-        newComment: "",
+        newComment: { text: "", time: new Date() },
       }));
     } else {
       if (newCommentInputRef.current) {
@@ -124,6 +152,7 @@ const EditCustomer = () => {
       }
     }
   };
+
   const handleChange = (event) => {
     setFormData((formData) => ({
       ...formData,
@@ -137,24 +166,42 @@ const EditCustomer = () => {
       [name]: value,
     }));
   };
+  // const handleUpdate = async (event) => {
+  //   event.preventDefault();
+  //   // const nonEmptyComments = await formData.comments.filter(
+  //   //   (comment) => comment.trim() !== ""
+  //   // );
+  //   // if (formData.newComment.trim() !== "") {
+  //   //   nonEmptyComments.push(formData.newComment);
+  //   // }
+  //   // await dispatch(
+  //   //   updateCustomer({
+  //   //     id: formData._id,
+  //   //     customer: { ...formData, comments: nonEmptyComments },
+  //   //   })
+  //   // );
+  //   if (formData.newComment.trim() !== "") {
+  //     formData.comments.push(formData.newComment);
+  //     formData.newComment = "";
+  //   }
+  //   await dispatch(
+  //     updateCustomer({
+  //       id: formData._id,
+  //       customer: formData,
+  //     })
+  //   );
+  //   navigate("/customers/");
+  // };
+
   const handleUpdate = async (event) => {
     event.preventDefault();
-    // const nonEmptyComments = await formData.comments.filter(
-    //   (comment) => comment.trim() !== ""
-    // );
-    // if (formData.newComment.trim() !== "") {
-    //   nonEmptyComments.push(formData.newComment);
-    // }
-    // await dispatch(
-    //   updateCustomer({
-    //     id: formData._id,
-    //     customer: { ...formData, comments: nonEmptyComments },
-    //   })
-    // );
-    if (formData.newComment.trim() !== "") {
-      formData.comments.push(formData.newComment);
-      formData.newComment = "";
+
+    if (formData.newComment.text.trim() !== "") {
+      const newComments = [...formData.comments, formData.newComment];
+      formData.comments = newComments;
+      formData.newComment = { text: "", time: new Date() };
     }
+
     await dispatch(
       updateCustomer({
         id: formData._id,
@@ -368,19 +415,14 @@ const EditCustomer = () => {
                 <Form.Label column sm={3}>
                   Comments
                 </Form.Label>
-                <Col sm={9}>
-                  {/* <Form.Control
-                    disabled={isDisabled}
-                    as="textarea"
-                    placeholder=""
-                    rows={3}
-                    value={formData.comments}
-                    name="comments"
-                    onChange={handleChange}
-                    required
-                  /> */}
-
-                  {formData.comments.map((comment, index) => (
+                <Col
+                  sm={9}
+                  style={{
+                    maxHeight: "200px",
+                    overflow: "auto",
+                  }}
+                >
+                  {/* {formData.comments.map((comment, index) => (
                     <Form.Control
                       disabled={comment[index]}
                       key={index}
@@ -401,6 +443,88 @@ const EditCustomer = () => {
                     placeholder=""
                     rows={2}
                     value={formData.newComment}
+                    onChange={(e) => handleNewCommentChange(e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    onClick={addCommentField}
+                    className="plus-check"
+                  >
+                    +
+                  </button> */}
+                  {/* {formData.comments.map((comment, index) => (
+                    <Form.Control
+                      disabled={comment.text[index]}
+                      key={index}
+                      className="input"
+                      as="textarea"
+                      placeholder=""
+                      rows={1}
+                      value={comment.text}
+                      onChange={(e) =>
+                        handleCommentChange(index, e.target.value)
+                      }
+                    /> 
+                  ))} */}
+
+                  {formData.comments.map((comment, index) => (
+                    // <div key={index} className="comment-container">
+                    //   <Form.Control
+                    //     disabled={comment.text[index]}
+                    //     className="input"
+                    //     as="textarea"
+                    //     placeholder=""
+                    //     rows={2}
+                    //     value={comment.text}
+                    //     onChange={(e) =>
+                    //       handleCommentChange(index, e.target.value)
+                    //     }
+                    //   />
+                    //   <span className="comment-time">
+                    //     {new Date(comment.time).toLocaleString("en-US", {
+                    //       year: "numeric",
+                    //       month: "long",
+                    //       day: "numeric",
+                    //       hour: "numeric",
+                    //       minute: "numeric",
+                    //       hour12: true,
+                    //     })}
+                    //   </span>
+                    // </div>
+                    <div key={index} className="comment-container">
+                      <Form.Control
+                        disabled={comment.text[index]}
+                        className="input"
+                        as="textarea"
+                        placeholder=""
+                        rows={2}
+                        value={comment.text}
+                        onChange={(e) =>
+                          handleCommentChange(index, e.target.value)
+                        }
+                      />
+                      <div className="comment-details">
+                        <span className="comment-time">
+                          {new Date(comment.time).toLocaleString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                            hour: "numeric",
+                            minute: "numeric",
+                            hour12: true,
+                          })}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+
+                  <Form.Control
+                    ref={newCommentInputRef}
+                    className="input"
+                    as="textarea"
+                    placeholder=""
+                    rows={2}
+                    value={formData.newComment.text}
                     onChange={(e) => handleNewCommentChange(e.target.value)}
                   />
                   <button

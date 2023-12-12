@@ -38,7 +38,7 @@ const AddCustomer = () => {
     personName: "",
     personPhone: "",
     personEmail: "",
-    comments: [""],
+    comments: [{ text: "", time: new Date() }],
     status: "",
     products: [],
   };
@@ -77,24 +77,47 @@ const AddCustomer = () => {
     _id: product._id,
   }));
 
+  // const handleCommentChange = (index, value) => {
+  //   const newComments = [...formData.comments];
+  //   newComments[index] = value;
+  //   setFormData((formData) => ({
+  //     ...formData,
+  //     comments: newComments,
+  //   }));
+  // };
   const handleCommentChange = (index, value) => {
     const newComments = [...formData.comments];
-    newComments[index] = value;
+    newComments[index] = { text: value, time: new Date() };
     setFormData((formData) => ({
       ...formData,
       comments: newComments,
     }));
   };
 
+  // const addCommentField = () => {
+  //   if (formData.comments[formData.comments.length - 1].trim() !== "") {
+  //     setFormData((formData) => ({
+  //       ...formData,
+  //       comments: [...formData.comments, ""],
+  //     }));
+
+  //   } else {
+  //     if (newCommentInputRef.current) {
+  //       newCommentInputRef.current.focus();
+  //     }
+  //   }
+  // };
   const addCommentField = () => {
-    if (formData.comments[formData.comments.length - 1].trim() !== "") {
+    const lastComment = formData.comments[formData.comments.length - 1];
+    if (lastComment.text.trim() !== "") {
       setFormData((formData) => ({
         ...formData,
-        comments: [...formData.comments, ""],
+        comments: [...formData.comments, { text: "", time: new Date() }],
       }));
     } else {
       if (newCommentInputRef.current) {
-        newCommentInputRef.current.focus();
+        // Focus on the newly added comment field
+        newCommentInputRef.current[formData.comments.length]?.focus();
       }
     }
   };
@@ -113,12 +136,31 @@ const AddCustomer = () => {
     }));
   };
 
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
+  //   const nonEmptyComments = await formData.comments.filter(
+  //     (comment) => comment.trim() !== ""
+  //   );
+  //   await dispatch(addCustomer({ ...formData, comments: nonEmptyComments }));
+  // };
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const nonEmptyComments = await formData.comments.filter(
-      (comment) => comment.trim() !== ""
+
+    // Filter out comments with empty text
+    const nonEmptyComments = formData.comments.filter(
+      (comment) => comment.text.trim() !== ""
     );
-    await dispatch(addCustomer({ ...formData, comments: nonEmptyComments }));
+
+    // Create a new array with comments containing only text and time properties
+    const commentsForSubmission = nonEmptyComments.map(({ text, time }) => ({
+      text,
+      time,
+    }));
+
+    // Dispatch the action with the updated formData
+    await dispatch(
+      addCustomer({ ...formData, comments: commentsForSubmission })
+    );
   };
 
   return (
@@ -310,7 +352,7 @@ const AddCustomer = () => {
                     overflow: "auto",
                   }}
                 >
-                  {formData.comments.map((comment, index) => (
+                  {/* {formData.comments.map((comment, index) => (
                     <Form.Control
                       ref={newCommentInputRef}
                       className="input"
@@ -322,7 +364,22 @@ const AddCustomer = () => {
                         handleCommentChange(index, e.target.value)
                       }
                     />
+                  ))} */}
+                  {formData.comments.map((comment, index) => (
+                    <Form.Control
+                      key={index}
+                      ref={newCommentInputRef}
+                      className="input"
+                      as="textarea"
+                      placeholder=""
+                      rows={2}
+                      value={comment.text}
+                      onChange={(e) =>
+                        handleCommentChange(index, e.target.value)
+                      }
+                    />
                   ))}
+
                   <button
                     type="button"
                     onClick={addCommentField}
