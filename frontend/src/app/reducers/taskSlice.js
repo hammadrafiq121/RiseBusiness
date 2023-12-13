@@ -62,7 +62,6 @@ export const updateTask = createAsyncThunk(
   async ({ taskId, taskData }, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
-
       const response = await taskApi.updateTask(token, taskId, taskData);
       return response;
     } catch (error) {
@@ -158,11 +157,20 @@ const taskSlice = createSlice({
         state.isSuccess = false;
         state.message = "Updating Task...";
       })
-      .addCase(updateTask.fulfilled, (state) => {
+      .addCase(updateTask.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
         state.message = "Task updated successfully.";
+        const { _id } = action.payload;
+        const updatedTask = action.payload;
+        const taskIndex = state.tasks.findIndex((task) => task._id === _id);
+
+        if (taskIndex !== -1) {
+          state.tasks[taskIndex] = updatedTask; // Update the task
+        } else {
+          console.log(`Task with ID ${_id} not found.`);
+        }
       })
       .addCase(updateTask.rejected, (state, action) => {
         state.isLoading = false;

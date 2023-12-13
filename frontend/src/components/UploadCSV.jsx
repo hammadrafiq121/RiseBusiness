@@ -34,21 +34,62 @@ const UploadCSV = () => {
     fetchData();
   }, []);
 
+  // const handleFileChange = (event) => {
+  //   setSelectedFile(event.target.files[0]);
+  // };
+
   const handleFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
+    const file = event.target.files[0];
+    const allowedExtensions = ["csv"];
+    const fileExtension = file.name.split(".").pop().toLowerCase();
+
+    if (!allowedExtensions.includes(fileExtension)) {
+      alert("Only CSV files are supported. Please select a valid file.");
+      event.target.value = null; // Clear the selected file
+    } else {
+      setSelectedFile(file);
+    }
   };
+
   const handleChange = (event) => {
     setSelectedAgent(event.target.value);
   };
+
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
+  //   if (!selectedFile) {
+  //     return alert("Please select a file");
+  //   }
+  //   if (!selectedAgent) {
+  //     return alert("Please select a agent");
+  //   }
+  //   try {
+  //     const customers = new FormData();
+  //     customers.append("csvFile", selectedFile);
+  //     customers.append("user", selectedAgent);
+  //     await dispatch(uploadCustomers(customers));
+  //     navigate("/customers");
+  //   } catch (error) {
+  //     console.log("Error uploading customers from CSV:", error);
+  //   }
+  // };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!selectedFile) {
       return alert("Please select a file");
     }
     if (!selectedAgent) {
-      return alert("Please select a agent");
+      return alert("Please select an agent");
     }
     try {
+      const fileExtension = selectedFile.name.split(".").pop().toLowerCase();
+
+      if (fileExtension !== "csv") {
+        return alert(
+          "Only CSV files are supported. Please select a valid file."
+        );
+      }
       const customers = new FormData();
       customers.append("csvFile", selectedFile);
       customers.append("user", selectedAgent);

@@ -428,7 +428,6 @@ const Tasks = () => {
       isPriorityMatch
     );
   });
-
   const renderTasks = filteredTasks.map((item) => {
     const task = {
       ...item,
@@ -442,7 +441,6 @@ const Tasks = () => {
           ? user._id
           : users.find((u) => u._id === item.assignee)?.userName || "Unknown",
     };
-
     return (
       <tr key={task._id} className="atim">
         <td className="td">{task.title}</td>
@@ -470,12 +468,22 @@ const Tasks = () => {
           >
             <EyeFill />
           </Button> */}
-          <Button
+          {/* <Button
             variant="link"
             className="symbol-button tdd"
             onClick={() => openModal("edit", task)}
           >
             <PencilSquare />
+          </Button> */}
+          <Button
+            variant="link"
+            className="symbol-button tdd"
+            as={Link}
+            to={{
+              pathname: `/tasks/editTask/${task._id}`,
+            }}
+          >
+            <EyeFill />
           </Button>
           {admin && <DeleteTask className="tdd" task={task} />}
         </td>
