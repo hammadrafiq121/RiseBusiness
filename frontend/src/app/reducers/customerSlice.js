@@ -84,6 +84,28 @@ export const deleteCustomer = createAsyncThunk(
   }
 );
 
+export const deleteCustomers = createAsyncThunk(
+  "customers/deleteCustomers",
+  async (customerIds, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+
+      // Use Promise.all to make multiple delete requests concurrently
+      await Promise.all(
+        customerIds.map(async (customerId) => {
+          await customerApi.deleteCustomer(token, customerId);
+        })
+      );
+
+      return customerIds;
+    } catch (error) {
+      const message =
+        error?.response?.data?.error || error.message || error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const uploadCustomers = createAsyncThunk(
   "customers/uploadCustomers",
   async (customers, thunkAPI) => {
@@ -196,6 +218,7 @@ const customerSlice = createSlice({
         state.isSuccess = true;
         state.message = "Customer updated successfully.";
         const { id, updatedCustomer } = action.payload;
+        console.log(updatedCustomer);
         const customerIndex = state.customers.findIndex(
           (customer) => customer._id === id
         );
@@ -228,6 +251,28 @@ const customerSlice = createSlice({
         );
       })
       .addCase(deleteCustomer.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.payload;
+      })
+      .addCase(deleteCustomers.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+        state.isSuccess = false;
+        state.message = "Deleting Customers...";
+      })
+      .addCase(deleteCustomers.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.message = "Customers deleted successfully.";
+        const deletedCustomerIds = action.payload;
+        state.customers = state.customers.filter(
+          (customer) => !deletedCustomerIds.includes(customer._id)
+        );
+      })
+      .addCase(deleteCustomers.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
