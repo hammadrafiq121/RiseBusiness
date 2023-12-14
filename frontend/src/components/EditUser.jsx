@@ -29,6 +29,7 @@ const EditUser = () => {
     email: "",
     userRole: "",
     manager: [],
+    password: "",
   });
   useEffect(() => {
     const fetchData = async () => {
@@ -59,7 +60,6 @@ const EditUser = () => {
       ...formData,
       [event.target.name]: event.target.value,
     }));
-    console.log(formData);
   };
 
   const handleUpdate = async (event) => {
@@ -95,6 +95,9 @@ const EditUser = () => {
               <Form.Label column sm={12}>
                 Email
               </Form.Label>
+              <Form.Label column sm={12}>
+                Password
+              </Form.Label>
             </Col>
 
             <Col lg={6}>
@@ -129,6 +132,16 @@ const EditUser = () => {
                   value={formData.email}
                   onChange={handleChange}
                   required
+                />
+              </Form.Group>
+              <Form.Group as={Row} controlId="password" className="mb-2">
+                <Form.Control
+                  disabled={isDisabled}
+                  type="password"
+                  placeholder="if you want to change"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
                 />
               </Form.Group>
 

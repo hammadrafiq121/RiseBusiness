@@ -1,10 +1,10 @@
 import axios from "axios";
 
-const baseURL = "http://localhost:3000"; // Replace with your server URL
+const backendUrl = "http://localhost:3000"; // Replace with your server URL
 
-const api = axios.create({
-  baseURL,
-});
+// const api = axios.create({
+//   baseURL,
+// });
 
 // Create a new task
 export const createTask = async (token, taskData) => {
@@ -14,7 +14,11 @@ export const createTask = async (token, taskData) => {
         Authorization: `Bearer ${token}`,
       },
     };
-    const response = await api.post("/tasks/add", taskData, config);
+    const response = await axios.post(
+      `${backendUrl}/tasks/add`,
+      taskData,
+      config
+    );
     return response.data;
   } catch (error) {
     throw error;
@@ -29,7 +33,7 @@ export const getAllTasks = async (token) => {
         Authorization: `Bearer ${token}`,
       },
     };
-    const response = await api.get("/tasks/all", config);
+    const response = await axios.get(`${backendUrl}/tasks/all`, config);
     return response.data;
   } catch (error) {
     throw error;
@@ -44,7 +48,7 @@ export const getTask = async (token, taskId) => {
         Authorization: `Bearer ${token}`,
       },
     };
-    const response = await api.get(`tasks/${taskId}`, config);
+    const response = await axios.get(`${backendUrl}/tasks/${taskId}`, config);
     return response.data;
   } catch (error) {
     throw error;
@@ -59,7 +63,11 @@ export const updateTask = async (token, taskId, taskData) => {
         Authorization: `Bearer ${token}`,
       },
     };
-    const response = await api.put(`/tasks/${taskId}`, taskData, config);
+    const response = await axios.put(
+      `${backendUrl}/tasks/${taskId}`,
+      taskData,
+      config
+    );
     return response.data;
   } catch (error) {
     throw error;
@@ -74,7 +82,10 @@ export const deleteTask = async (token, taskId) => {
         Authorization: `Bearer ${token}`,
       },
     };
-    const response = await api.delete(`/tasks/${taskId}`, config);
+    const response = await axios.delete(
+      `${backendUrl}/tasks/${taskId}`,
+      config
+    );
     return response.data;
   } catch (error) {
     throw error;
