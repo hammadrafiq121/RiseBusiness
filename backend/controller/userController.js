@@ -162,11 +162,15 @@ export const updateUser = async (request, response) => {
     // Check if the request includes a new password and hash it
     if (password) {
       update.password = await bcrypt.hash(password, await bcrypt.genSalt(10));
+      console.log(update.password);
     }
 
     // Check if the request includes a new userRole
     if (userRole) {
       update.userRole = userRole;
+    }
+    if (fullName) {
+      update.fullName = fullName;
     }
 
     if (manager.length === 0) {
@@ -199,13 +203,9 @@ export const updateUser = async (request, response) => {
     }
 
     // Perform the update operation
-    const updatedUser = await User.findOneAndUpdate(
-      { _id: userId },
-      { ...request.body, update },
-      {
-        new: true,
-      }
-    );
+    const updatedUser = await User.findOneAndUpdate({ _id: userId }, update, {
+      new: true,
+    });
 
     if (updatedUser) {
       return response.status(200).json(updatedUser);
@@ -253,6 +253,6 @@ export const assignUsers = async (req, res) => {
 
     return res.status(200).json(result);
   } catch (error) {
-    return res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ error: error.message });
   }
 };
