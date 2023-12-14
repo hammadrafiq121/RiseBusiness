@@ -150,6 +150,32 @@ export const uploadCustomers = async (request, response) => {
       console.log(request.user._id);
       const filePath = request.file.path;
       const user = request.body.user;
+
+      const fileExtension = request.file.originalname
+        .split(".")
+        .pop()
+        .toLowerCase();
+      if (fileExtension !== "csv") {
+        await new Promise((resolve, reject) => {
+          fs.unlink(filePath, (err) => {
+            if (err) {
+              console.error(err);
+              reject(err);
+            } else {
+              console.log("Non-CSV file deleted successfully");
+              resolve();
+            }
+          });
+        });
+
+        return response
+          .status(400)
+          .json({
+            message:
+              "Only CSV files are supported. Please upload a valid file.",
+          });
+      }
+
       const results = [];
       await new Promise((resolve, reject) => {
         fs.createReadStream(filePath)
