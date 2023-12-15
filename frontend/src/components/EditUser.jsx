@@ -6,12 +6,14 @@ import Spinner from "./Spinner";
 import { reset as resetCustomer } from "../app/reducers/customerSlice.js";
 import { reset as resetStatus } from "../app/reducers/statusSlice.js";
 import { reset as resetProduct } from "../app/reducers/productSlice.js";
+import { reset as resetAuth } from "../app/reducers/authSlice.js";
 import {
   updateUser,
   getUser,
   getUsers,
   reset as resetUsers,
 } from "../app/reducers/userSlice.js";
+import Toast from "./Toast";
 
 const EditUser = () => {
   const [isDisabled, setIsDisabled] = useState(true);
@@ -21,7 +23,9 @@ const EditUser = () => {
   const { user } = useSelector((state) => state.auth);
   const admin = user && user.userRole === "admin";
   const manager = user && user.userRole === "manager";
-  const { users, isLoading } = useSelector((state) => state.users);
+  const { users, isLoading, message, isError, isSuccess } = useSelector(
+    (state) => state.users
+  );
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -38,6 +42,7 @@ const EditUser = () => {
         await dispatch(resetCustomer());
         await dispatch(resetStatus());
         await dispatch(resetProduct());
+        await dispatch(resetAuth());
 
         const { payload: users } = await dispatch(getUsers());
         const selectedUser = await users.find((user) => user._id === id);
@@ -71,7 +76,9 @@ const EditUser = () => {
           user: formData,
         })
       );
-      navigate("/agents/");
+      // if (isSuccess) {
+      //   navigate("/agents/");
+      // }
     }
     // else {
     //   await dispatch(updateUser({ id: formData._id, user: formData }));
@@ -168,6 +175,9 @@ const EditUser = () => {
           </Row>
         </Form>
         {isLoading && <Spinner />}
+
+        {isSuccess && <Toast isSuccess={isSuccess} message={message} />}
+        {isError && <Toast isError={isError} message={message} />}
       </div>
     </main>
   );
