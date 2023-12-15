@@ -37,6 +37,20 @@ import Managers from "./components/Managers";
 import EditUser from "./components/EditUser";
 
 function App() {
+  // Add this code in your main application file
+
+  // Event listener for the 'logout' event
+  window.addEventListener("storage", (event) => {
+    if (event.key === "logoutEvent") {
+      // Perform actions when logout event is detected
+      // For example, clear user data and reload the page
+      localStorage.removeItem("user");
+      window.location.reload(1);
+    }
+  });
+
+  // Other setup for your React app...
+
   const { user } = useSelector((state) => state.auth);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
@@ -148,7 +162,6 @@ function App() {
               />
               <Route path="/tasks" element={<Tasks />} />
               <Route path="/tasks/editTask/:id" element={<EditTask />} />
-
               <Route path="/403" element={<PermissionDenied />} />
               <Route path="/*" element={<NotFound />} />
             </>
