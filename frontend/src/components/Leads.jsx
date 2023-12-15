@@ -24,6 +24,7 @@ import Pagination from "./Pagination";
 import { MultiSelect } from "react-multi-select-component";
 import DeleteCustomer from "./DeleteCustomer";
 import { Modal } from "react-bootstrap";
+import DeleteCustomers from "./DeleteCustomers.jsx";
 
 const Customers = () => {
   const dispatch = useDispatch();
@@ -397,6 +398,13 @@ const Customers = () => {
                         </Button>
                       </Form.Group>
                     )}
+                    {admin &&
+                      selectedCustomers &&
+                      selectedCustomers.length > 0 && (
+                        <DeleteCustomers
+                          selectedCustomers={selectedCustomers}
+                        />
+                      )}
                   </Col>
                 </Row>
               </Col>

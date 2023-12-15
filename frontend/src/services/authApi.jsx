@@ -49,6 +49,7 @@ export const login = async (userData) => {
       setTimeout(() => {
         // Delete user item from localStorage after 1 day
         localStorage.removeItem("user");
+        localStorage.setItem("logoutEvent", Date.now().toString());
         window.location.reload(1);
       }, oneDayInMilliseconds);
     }
@@ -63,14 +64,14 @@ export const login = async (userData) => {
 export const logout = async () => {
   try {
     localStorage.removeItem("user");
-
+    // Dispatch the logout event
+    localStorage.setItem("logoutEvent", Date.now().toString());
     return { message: "User logged out successfully" };
   } catch (error) {
     console.log("Error while calling logout api ", error);
     throw error;
   }
 };
-
 const authApi = {
   signup,
   logout,
