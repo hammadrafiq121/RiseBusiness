@@ -34,7 +34,7 @@ const DeleteCustomers = ({ selectedCustomers, admin }) => {
         confirmModal={handleDelete}
         ids={selectedCustomers}
         type="customers"
-        message="Are you sure you want to delete these customers?"
+        message="Are you sure you want to delete these customers? if you selected all without filters, it might contain other customers in pagination ?"
       />
     </span>
   );

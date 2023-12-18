@@ -325,7 +325,7 @@ const EditTask = () => {
                       required
                       dateFormat="YYYY-MM-DD"
                       timeFormat="hh:mm A"
-                      inputProps={{ step: 15, disabled: { canEdit } }}
+                      inputProps={{ step: 15, disabled: canEdit }}
                     />
                   </Form.Group>
                 </Col>
@@ -343,7 +343,7 @@ const EditTask = () => {
                       dateFormat="YYYY-MM-DD"
                       timeFormat="hh:mm A"
                       required
-                      inputProps={{ step: 15, disabled: { canEdit } }}
+                      inputProps={{ step: 15, disabled: canEdit }}
                     />
                   </Form.Group>
                 </Col>
@@ -353,45 +353,50 @@ const EditTask = () => {
                 <Form.Label column sm={3}>
                   Comments
                 </Form.Label>
-                <Col
-                  sm={9}
-                  style={{
-                    maxHeight: "200px",
-                    overflow: "auto",
-                  }}
-                >
-                  {formData.comments.map((comment, index) => (
-                    <div key={index} className="comment-container">
-                      <Form.Control
-                        disabled={comment.text[index]}
-                        className="input"
-                        as="textarea"
-                        placeholder=""
-                        rows={2}
-                        value={comment.text}
-                        onChange={(e) =>
-                          handleCommentChange(index, e.target.value)
-                        }
-                      />
-                      <div className="comment-details">
-                        <span className="comment-time">
-                          {new Date(comment.time).toLocaleString("en-US", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                            hour: "numeric",
-                            minute: "numeric",
-                            hour12: true,
-                          })}
-                        </span>
+                {formData.comments.length > 0 && (
+                  <Col
+                    sm={9}
+                    style={{
+                      maxHeight: "175px",
+                      overflow: "auto",
+                    }}
+                  >
+                    {formData.comments.map((comment, index) => (
+                      <div key={index} className="comment-container">
+                        <Form.Control
+                          disabled={comment.text[index]}
+                          className="Select-status"
+                          as="textarea"
+                          placeholder=""
+                          rows={2}
+                          value={comment.text}
+                          onChange={(e) =>
+                            handleCommentChange(index, e.target.value)
+                          }
+                        />
+                        <div className="comment-details">
+                          <span className="comment-time">
+                            {new Date(comment.time).toLocaleString("en-US", {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                              hour: "numeric",
+                              minute: "numeric",
+                              hour12: true,
+                            })}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </Col>
+                )}
+                {formData.comments.length > 0 && <Col sm={3}></Col>}
 
+                <Col sm={9}>
                   <Form.Control
                     ref={newCommentInputRef}
-                    // disabled={isDisabled}
-                    className="input"
+                    disabled={isDisabled}
+                    className="Select-status mt-3"
                     as="textarea"
                     placeholder=""
                     rows={2}

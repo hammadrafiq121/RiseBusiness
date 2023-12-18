@@ -21,8 +21,8 @@ const AddTask = () => {
     title: "",
     description: "",
     estimatedTime: "",
-    startDate: "",
-    endDate: "",
+    startDate: null,
+    endDate: null,
     comments: [{ text: "", time: new Date() }],
     taskCategory: "",
     assignee: "",
@@ -144,6 +144,21 @@ const AddTask = () => {
     }
   };
 
+  const handleChange = (event) => {
+    setFormData({
+      ...formData,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  const handleSelectorChange = async (name, value) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]:
+        name === "startDate" || name === "endDate" ? value?._d : value || null,
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -188,28 +203,6 @@ const AddTask = () => {
       );
       setFormData(blankForm);
       setTaskChecklist([]);
-    }
-  };
-
-  const handleChange = (event) => {
-    setFormData({
-      ...formData,
-      [event.target.name]: event.target.value,
-    });
-  };
-
-  const handleSelectorChange = (name, value) => {
-    if (name === "startDate" || name === "endDate") {
-      const { _d } = value;
-      setFormData({
-        ...formData,
-        [name]: _d,
-      });
-    } else {
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
     }
   };
 
@@ -281,6 +274,7 @@ const AddTask = () => {
                   >
                     <Form.Label className="Task-label">Start Date</Form.Label>
                     <DateTime
+                      key={formData.startDate}
                       value={formData.startDate}
                       onChange={(date) =>
                         handleSelectorChange("startDate", date)
@@ -301,6 +295,7 @@ const AddTask = () => {
                   >
                     <Form.Label className="Task-label">End Date</Form.Label>
                     <DateTime
+                      key={formData.endDate}
                       value={formData.endDate}
                       onChange={(date) => handleSelectorChange("endDate", date)}
                       dateFormat="YYYY-MM-DD"
@@ -327,7 +322,7 @@ const AddTask = () => {
                     <Form.Control
                       key={index}
                       ref={newCommentInputRef}
-                      className="input"
+                      className="Select-status"
                       as="textarea"
                       placeholder=""
                       rows={2}

@@ -143,6 +143,7 @@ const AddCustomer = () => {
   //   );
   //   await dispatch(addCustomer({ ...formData, comments: nonEmptyComments }));
   // };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -366,10 +367,11 @@ const AddCustomer = () => {
                     />
                   ))} */}
                   {formData.comments.map((comment, index) => (
+                    // <div key={index} className="comment-container">
                     <Form.Control
                       key={index}
                       ref={newCommentInputRef}
-                      className="input"
+                      className="Select-status mb-1"
                       as="textarea"
                       placeholder=""
                       rows={2}
@@ -378,8 +380,22 @@ const AddCustomer = () => {
                         handleCommentChange(index, e.target.value)
                       }
                     />
+                    //   <div className="comment-details">
+                    //     <span className="comment-time">
+                    //       {new Date(comment.time).toLocaleString("en-US", {
+                    //         year: "numeric",
+                    //         month: "long",
+                    //         day: "numeric",
+                    //         hour: "numeric",
+                    //         minute: "numeric",
+                    //         hour12: true,
+                    //       })}
+                    //     </span>
+                    //   </div>
+                    // </div>
                   ))}
-
+                </Col>
+                <Col>
                   <button
                     type="button"
                     onClick={addCommentField}
@@ -405,6 +421,8 @@ const AddCustomer = () => {
                   <Col sm={12}>
                     <Form.Select
                       className="input"
+                      // className="Select-status mb-1"
+
                       value={formData.status}
                       name="status"
                       onChange={handleChange}

@@ -12,7 +12,7 @@ import { reset as resetStatus } from "../app/reducers/statusSlice.js";
 import { reset as resetProduct } from "../app/reducers/productSlice.js";
 import AssignUsers from "./AssignUsers";
 
-const Users = () => {
+const Managers = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { users, isLoading, isError, message, isSuccess } = useSelector(
@@ -133,4 +133,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default Managers;

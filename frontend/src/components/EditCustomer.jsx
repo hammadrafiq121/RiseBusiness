@@ -424,14 +424,15 @@ const EditCustomer = () => {
                 <Form.Label column sm={3}>
                   Comments
                 </Form.Label>
-                <Col
-                  sm={9}
-                  style={{
-                    maxHeight: "200px",
-                    overflow: "auto",
-                  }}
-                >
-                  {/* {formData.comments.map((comment, index) => (
+                {formData.comments.length > 0 && (
+                  <Col
+                    sm={9}
+                    style={{
+                      maxHeight: "175px",
+                      overflow: "auto",
+                    }}
+                  >
+                    {/* {formData.comments.map((comment, index) => (
                     <Form.Control
                       disabled={comment[index]}
                       key={index}
@@ -461,7 +462,7 @@ const EditCustomer = () => {
                   >
                     +
                   </button> */}
-                  {/* {formData.comments.map((comment, index) => (
+                    {/* {formData.comments.map((comment, index) => (
                     <Form.Control
                       disabled={comment.text[index]}
                       key={index}
@@ -475,62 +476,64 @@ const EditCustomer = () => {
                       }
                     /> 
                   ))} */}
-
-                  {formData.comments.map((comment, index) => (
-                    // <div key={index} className="comment-container">
-                    //   <Form.Control
-                    //     disabled={comment.text[index]}
-                    //     className="input"
-                    //     as="textarea"
-                    //     placeholder=""
-                    //     rows={2}
-                    //     value={comment.text}
-                    //     onChange={(e) =>
-                    //       handleCommentChange(index, e.target.value)
-                    //     }
-                    //   />
-                    //   <span className="comment-time">
-                    //     {new Date(comment.time).toLocaleString("en-US", {
-                    //       year: "numeric",
-                    //       month: "long",
-                    //       day: "numeric",
-                    //       hour: "numeric",
-                    //       minute: "numeric",
-                    //       hour12: true,
-                    //     })}
-                    //   </span>
-                    // </div>
-                    <div key={index} className="comment-container">
-                      <Form.Control
-                        disabled={comment.text[index]}
-                        className="input"
-                        as="textarea"
-                        placeholder=""
-                        rows={2}
-                        value={comment.text}
-                        onChange={(e) =>
-                          handleCommentChange(index, e.target.value)
-                        }
-                      />
-                      <div className="comment-details">
-                        <span className="comment-time">
-                          {new Date(comment.time).toLocaleString("en-US", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                            hour: "numeric",
-                            minute: "numeric",
-                            hour12: true,
-                          })}
-                        </span>
+                    {formData.comments?.map((comment, index) => (
+                      // <div key={index} className="comment-container">
+                      //   <Form.Control
+                      //     disabled={comment.text[index]}
+                      //     className="input"
+                      //     as="textarea"
+                      //     placeholder=""
+                      //     rows={2}
+                      //     value={comment.text}
+                      //     onChange={(e) =>
+                      //       handleCommentChange(index, e.target.value)
+                      //     }
+                      //   />
+                      //   <span className="comment-time">
+                      //     {new Date(comment.time).toLocaleString("en-US", {
+                      //       year: "numeric",
+                      //       month: "long",
+                      //       day: "numeric",
+                      //       hour: "numeric",
+                      //       minute: "numeric",
+                      //       hour12: true,
+                      //     })}
+                      //   </span>
+                      // </div>
+                      <div key={index} className="comment-container">
+                        <Form.Control
+                          disabled={comment.text[index]}
+                          className="Select-status mb-1"
+                          as="textarea"
+                          placeholder=""
+                          rows={2}
+                          value={comment.text}
+                          onChange={(e) =>
+                            handleCommentChange(index, e.target.value)
+                          }
+                        />
+                        <div className="comment-details">
+                          <span className="comment-time">
+                            {new Date(comment.time).toLocaleString("en-US", {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                              hour: "numeric",
+                              minute: "numeric",
+                              hour12: true,
+                            })}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-
+                    ))}
+                  </Col>
+                )}
+                {formData.comments.length > 0 && <Col sm={3}></Col>}
+                <Col sm={9}>
                   <Form.Control
                     ref={newCommentInputRef}
                     disabled={isDisabled}
-                    className="input"
+                    className="Select-status mt-3"
                     as="textarea"
                     placeholder=""
                     rows={2}

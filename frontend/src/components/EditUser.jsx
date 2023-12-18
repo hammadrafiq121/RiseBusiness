@@ -145,7 +145,7 @@ const EditUser = () => {
                 <Form.Control
                   disabled={isDisabled}
                   type="password"
-                  placeholder="if you want to change"
+                  placeholder="enter if you want to change"
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
