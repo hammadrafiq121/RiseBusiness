@@ -13,6 +13,8 @@ import {
   getTaskCategories,
   reset as resetTaskCategory,
 } from "../app/reducers/taskCategorySlice.js";
+import Toast from "./Toast";
+import Spinner from "./Spinner";
 
 const AddTask = () => {
   const blankForm = {
@@ -52,6 +54,9 @@ const AddTask = () => {
   const admin = user && user.userRole === "admin";
   const manager = user && user.userRole === "manager";
   const { users } = useSelector((state) => state.users);
+  const { isError, isLoading, isSuccess, message } = useSelector(
+    (state) => state.tasks
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -516,6 +521,9 @@ const AddTask = () => {
             </Col>
           </Row>
         </Form>
+        {isLoading && <Spinner />}
+        {isSuccess && <Toast isSuccess={isSuccess} message={message} />}
+        {isError && <Toast isError={isError} message={message} />}
       </Container>
     </main>
   );

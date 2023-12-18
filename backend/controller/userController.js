@@ -231,6 +231,31 @@ export const deleteUser = async (request, response) => {
     return response.status(500).json({ error: error.message });
   }
 };
+// export const assignUsers = async (req, res) => {
+//   try {
+//     const { _id, users } = req.body;
+
+//     const promises = users.map(async (userID) => {
+//       const user = await User.findById(userID);
+//       if (user) {
+//        // user.manager = [];
+//         if (!user.manager.includes(_id)) {
+//           user.manager.push(_id);
+//         }
+//         return user.save();
+//       } else {
+//         console.log(`User with ID ${userID} not found.`);
+//       }
+//     });
+
+//     // Wait for all update operations to complete
+//     const result = await Promise.all(promises);
+
+//     return res.status(200).json(result);
+//   } catch (error) {
+//     return res.status(500).json({ error: error.message });
+//   }
+// };
 export const assignUsers = async (req, res) => {
   try {
     const { _id, users } = req.body;
@@ -238,11 +263,14 @@ export const assignUsers = async (req, res) => {
     const promises = users.map(async (userID) => {
       const user = await User.findById(userID);
       if (user) {
-        // user.manager = [];
+        // Add the new manager to the existing managers (if not already present)
         if (!user.manager.includes(_id)) {
           user.manager.push(_id);
+          return user.save();
+        } else {
+          // If the manager is already in the list, return the user without saving
+          return user;
         }
-        return user.save();
       } else {
         console.log(`User with ID ${userID} not found.`);
       }
