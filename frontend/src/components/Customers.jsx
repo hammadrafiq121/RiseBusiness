@@ -309,16 +309,17 @@ const Customers = () => {
                   <Col lg={4}>
                     <Form.Group controlId="companyName" className="mb-2">
                       <Form.Control
-                        type="text"
+                        type="input"
                         value={searchKeyword}
                         onChange={handleSearchChange}
                         placeholder="Search Business ..."
                       />
                     </Form.Group>
                   </Col>
-                  <Col lg={2}>
-                    <Form.Group controlId="statusFilter" className="mb-2">
+                  <Col lg={2} className="status-col">
+                    <Form.Group controlId="statusFilter">
                       <MultiSelect
+                        className="status-sec"
                         name="statusFilter" // Use a unique identifier for name
                         options={listOfStatus}
                         value={selectedStatus}
@@ -331,7 +332,7 @@ const Customers = () => {
                     <Col lg={2}>
                       <Form.Group controlId="userFilter" className="mb-2">
                         <Form.Control
-                          className="col_7 Select-status"
+                          className="Select-status"
                           as="select"
                           value={selectedUser}
                           onChange={handleUserChange}

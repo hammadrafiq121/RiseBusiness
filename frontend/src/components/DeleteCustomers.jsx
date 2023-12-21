@@ -5,7 +5,7 @@ import DeleteConfirmation from "./DeleteConfirmation";
 import { useDispatch } from "react-redux";
 import { deleteCustomers } from "../app/reducers/customerSlice.js";
 
-const DeleteCustomers = ({ selectedCustomers, admin }) => {
+const DeleteCustomers = ({ selectedCustomers }) => {
   const dispatch = useDispatch();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
