@@ -17,6 +17,7 @@ const Users = () => {
   const dispatch = useDispatch();
 
   const { user } = useSelector((state) => state.auth);
+  const admin = user && user.userRole === "admin";
 
   const { users, isLoading, isError, message, isSuccess } = useSelector(
     (state) => state.users
@@ -96,7 +97,7 @@ const Users = () => {
         >
           <EyeFill />
         </Button>
-        <DeleteUser user={user} />
+        {admin && <DeleteUser user={user} />}
       </td>
     </tr>
   ));

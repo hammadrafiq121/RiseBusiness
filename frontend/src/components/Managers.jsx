@@ -12,6 +12,7 @@ import { reset as resetStatus } from "../app/reducers/statusSlice.js";
 import { reset as resetProduct } from "../app/reducers/productSlice.js";
 import AssignUsers from "./AssignUsers";
 import Pagination from "./Pagination.jsx";
+import DeleteUsers from "./DeleteUsers.jsx";
 
 const Managers = () => {
   const dispatch = useDispatch();
@@ -21,6 +22,7 @@ const Managers = () => {
   );
   const admin = user && user.userRole === "admin";
   const managers = users.filter((user) => user.userRole === "manager");
+  const [selectedUsers, setSelectedUsers] = useState([]);
 
   const [searchKeyword, setSearchKeyword] = useState("");
   useEffect(() => {
@@ -60,6 +62,13 @@ const Managers = () => {
 
   const renderUsers = filteredUsers.map((user) => (
     <tr key={user._id} className="atim">
+      <td className="td">
+        <input
+          type="checkbox"
+          onChange={() => handleUserCheckboxChange(user._id)}
+          checked={selectedUsers.includes(user._id)}
+        />
+      </td>
       <td>{user.fullName}</td>
       <td>{user.userName}</td>
       <td>{user.email}</td>
@@ -75,7 +84,7 @@ const Managers = () => {
         >
           <EyeFill />
         </Button>
-        <DeleteUser user={user} />
+        {admin && <DeleteUser user={user} />}
         {admin && (
           <AssignUsers users={users} _id={user._id} fullName={user.fullName} />
         )}
@@ -98,6 +107,28 @@ const Managers = () => {
   const indexOfLastUser = currentPage * itemsPerPage;
   const indexOfFirstUser = indexOfLastUser - itemsPerPage;
   const currentUsers = renderUsers.slice(indexOfFirstUser, indexOfLastUser);
+
+  const handleUserCheckboxChange = (userId) => {
+    const isSelected = selectedUsers.includes(userId);
+    if (isSelected) {
+      setSelectedUsers((prevSelected) =>
+        prevSelected.filter((id) => id !== userId)
+      );
+    } else {
+      setSelectedUsers((prevSelected) => [...prevSelected, userId]);
+    }
+  };
+
+  const handleCheckAllChange = () => {
+    // If all customers are already selected, unselect all. Otherwise, select all.
+    const allUserIds = filteredUsers.map((user) => user._id);
+    const allSelected = allUserIds.every((id) => selectedUsers.includes(id));
+    if (allSelected) {
+      setSelectedUsers([]);
+    } else {
+      setSelectedUsers(allUserIds);
+    }
+  };
 
   return (
     <div>
@@ -124,6 +155,9 @@ const Managers = () => {
                     </Button>
                   </Link>
                 </Form.Group>
+                {admin && selectedUsers && selectedUsers.length > 1 && (
+                  <DeleteUsers selectedUsers={selectedUsers} />
+                )}
               </Col>
             </Row>
           </Form>
@@ -134,6 +168,16 @@ const Managers = () => {
             <Table className="user_list">
               <thead>
                 <tr className="user_col_name">
+                  <th className="custoner-col-name">
+                    <input
+                      type="checkbox"
+                      onChange={handleCheckAllChange}
+                      checked={
+                        filteredUsers.length > 0 &&
+                        selectedUsers.length === filteredUsers.length
+                      }
+                    />
+                  </th>
                   <th>Full Name</th>
                   <th>Username</th>
                   <th>email</th>

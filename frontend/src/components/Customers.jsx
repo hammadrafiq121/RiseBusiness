@@ -393,7 +393,7 @@ const Customers = () => {
                         </Link>
                       </Form.Group>
                     )}
-                    {selectedCustomers && selectedCustomers.length > 0 && (
+                    {selectedCustomers && selectedCustomers.length > 1 && (
                       <Form.Group className="mb-1">
                         <Button
                           variant="secondary"
@@ -407,7 +407,7 @@ const Customers = () => {
                     )}
                     {admin &&
                       selectedCustomers &&
-                      selectedCustomers.length > 0 && (
+                      selectedCustomers.length > 1 && (
                         <DeleteCustomers
                           selectedCustomers={selectedCustomers}
                         />
