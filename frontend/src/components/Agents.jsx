@@ -6,11 +6,12 @@ import { PencilSquare, EyeFill } from "react-bootstrap-icons";
 import "../style.css";
 import Spinner from "./Spinner";
 import { toast } from "react-toastify";
-// import DeleteUser from "./DeleteUser";
+import DeleteUser from "./DeleteUser";
 import { reset as resetCustomer } from "../app/reducers/customerSlice.js";
 import { getUsers, reset as resetUsers } from "../app/reducers/userSlice.js";
 import { reset as resetStatus } from "../app/reducers/statusSlice.js";
 import { reset as resetProduct } from "../app/reducers/productSlice.js";
+import Pagination from "./Pagination.jsx";
 
 const Users = () => {
   const dispatch = useDispatch();
@@ -24,8 +25,7 @@ const Users = () => {
 
   const [searchKeyword, setSearchKeyword] = useState("");
   const [selectedRole, setSelectedRole] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+
   useEffect(() => {
     const fetchData = async () => {
       await dispatch(resetCustomer());
@@ -65,12 +65,6 @@ const Users = () => {
 
   const handleSearchChange = (event) => {
     setSearchKeyword(event.target.value);
-    setCurrentPage(1);
-  };
-
-  const handleRoleFilterChange = (event) => {
-    setSelectedRole(event.target.value);
-    setCurrentPage(1);
   };
 
   const filteredUsers = agents.filter((user) => {
@@ -85,12 +79,7 @@ const Users = () => {
     );
   });
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentUsers = filteredUsers.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
-
-  const renderUsers = currentUsers.map((user) => (
+  const renderUsers = filteredUsers.map((user) => (
     <tr key={user._id} className="atim">
       <td>{user.fullName}</td>
       <td>{user.userName}</td>
@@ -107,10 +96,26 @@ const Users = () => {
         >
           <EyeFill />
         </Button>
-        {/* <DeleteUser user={user} /> */}
+        <DeleteUser user={user} />
       </td>
     </tr>
   ));
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handleItemsPerPageChange = (event) => {
+    setItemsPerPage(parseInt(event.target.value, 10));
+    setCurrentPage(1);
+  };
+
+  const indexOfLastUser = currentPage * itemsPerPage;
+  const indexOfFirstUser = indexOfLastUser - itemsPerPage;
+  const currentUsers = renderUsers.slice(indexOfFirstUser, indexOfLastUser);
 
   return (
     <div>
@@ -168,56 +173,18 @@ const Users = () => {
                   <th>Actions</th>
                 </tr>
               </thead>
-              <tbody className="tbody">{renderUsers}</tbody>
+              <tbody className="tbody">
+                {currentUsers.length === 0 ? "No Users" : currentUsers}
+              </tbody>
             </Table>
           )}
-
-          <div className="pagination-controls">
-            <Button
-              className="pagination-btn previous_btn"
-              variant="secondary"
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage(currentPage - 1)}
-              style={{
-                marginRight: "10px",
-                padding: "5px 10px",
-                border: "1px solid #ccc",
-                borderRadius: "5px",
-              }}
-            >
-              Previous
-            </Button>
-            <ul className="page-numbers-list">
-              {Array.from({ length: totalPages }, (_, index) => (
-                <li
-                  key={index}
-                  className={`pagination-number ${
-                    index + 1 === currentPage ? "active" : ""
-                  }`}
-                  onClick={() => setCurrentPage(index + 1)}
-                  style={{
-                    border:
-                      index + 1 === currentPage
-                        ? "1px solid #007bff"
-                        : "1px solid #ccc",
-                    backgroundColor:
-                      index + 1 === currentPage ? "#007bff" : "white",
-                    color: index + 1 === currentPage ? "white" : "black",
-                  }}
-                >
-                  {index + 1}
-                </li>
-              ))}
-            </ul>
-            <Button
-              className="pagination-btn next_btn"
-              variant="secondary"
-              disabled={indexOfLastItem >= filteredUsers.length}
-              onClick={() => setCurrentPage(currentPage + 1)}
-            >
-              Next
-            </Button>
-          </div>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={Math.ceil(filteredUsers.length / itemsPerPage)}
+            onPageChange={handlePageChange}
+            itemsPerPage={itemsPerPage}
+            onItemsPerPageChange={handleItemsPerPageChange}
+          />
         </Container>
       </section>
     </div>

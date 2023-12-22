@@ -5,12 +5,13 @@ import { Link } from "react-router-dom";
 import { PencilSquare, EyeFill } from "react-bootstrap-icons";
 import "../style.css";
 import Spinner from "./Spinner";
-// import DeleteUser from "./DeleteUser";
+import DeleteUser from "./DeleteUser";
 import { reset as resetCustomer } from "../app/reducers/customerSlice.js";
 import { getUsers, reset as resetUsers } from "../app/reducers/userSlice.js";
 import { reset as resetStatus } from "../app/reducers/statusSlice.js";
 import { reset as resetProduct } from "../app/reducers/productSlice.js";
 import AssignUsers from "./AssignUsers";
+import Pagination from "./Pagination.jsx";
 
 const Managers = () => {
   const dispatch = useDispatch();
@@ -74,13 +75,29 @@ const Managers = () => {
         >
           <EyeFill />
         </Button>
+        <DeleteUser user={user} />
         {admin && (
           <AssignUsers users={users} _id={user._id} fullName={user.fullName} />
         )}
-        {/* <DeleteUser user={user} /> */}
       </td>
     </tr>
   ));
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handleItemsPerPageChange = (event) => {
+    setItemsPerPage(parseInt(event.target.value, 10));
+    setCurrentPage(1);
+  };
+
+  const indexOfLastUser = currentPage * itemsPerPage;
+  const indexOfFirstUser = indexOfLastUser - itemsPerPage;
+  const currentUsers = renderUsers.slice(indexOfFirstUser, indexOfLastUser);
 
   return (
     <div>
@@ -124,9 +141,18 @@ const Managers = () => {
                   <th>Actions</th>
                 </tr>
               </thead>
-              <tbody className="tbody">{renderUsers}</tbody>
+              <tbody className="tbody">
+                {currentUsers.length === 0 ? "No Users" : currentUsers}
+              </tbody>
             </Table>
           )}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={Math.ceil(filteredUsers.length / itemsPerPage)}
+            onPageChange={handlePageChange}
+            itemsPerPage={itemsPerPage}
+            onItemsPerPageChange={handleItemsPerPageChange}
+          />
         </Container>
       </section>
     </div>
