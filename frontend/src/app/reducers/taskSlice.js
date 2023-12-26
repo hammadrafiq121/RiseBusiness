@@ -87,6 +87,26 @@ export const deleteTask = createAsyncThunk(
   }
 );
 
+export const deleteTasks = createAsyncThunk(
+  "tasks/deleteTasks",
+  async (taskIds, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      // Use Promise.all to make multiple delete requests concurrently
+      await Promise.all(
+        taskIds.map(async (taskId) => {
+          await taskApi.deleteTask(token, taskId);
+        })
+      );
+      return taskIds;
+    } catch (error) {
+      const message =
+        error?.response?.data?.error || error.message || error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 const taskSlice = createSlice({
   name: "tasks",
   initialState,
@@ -192,6 +212,28 @@ const taskSlice = createSlice({
         state.tasks = state.tasks.filter((task) => task._id !== action.payload);
       })
       .addCase(deleteTask.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.payload;
+      })
+      .addCase(deleteTasks.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+        state.isSuccess = false;
+        state.message = "Deleting Tasks...";
+      })
+      .addCase(deleteTasks.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.message = "Tasks deleted successfully.";
+        const deletedTasksIds = action.payload;
+        state.tasks = state.tasks.filter(
+          (task) => !deletedTasksIds.includes(task._id)
+        );
+      })
+      .addCase(deleteTasks.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;

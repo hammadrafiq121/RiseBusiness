@@ -59,7 +59,6 @@ export const assignUsers = createAsyncThunk(
   "users/assignUsers",
   async ({ _id, users }, thunkAPI) => {
     try {
-      console.log(_id, users);
       const token = thunkAPI.getState().auth.user.token;
       const response = await userApi.assignUsers(token, _id, users);
       return response.data;
@@ -78,6 +77,27 @@ export const deleteUser = createAsyncThunk(
 
       await userApi.deleteUser(token, userId);
       return userId;
+    } catch (error) {
+      const message =
+        error?.response?.data?.error || error.message || error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const deleteUsers = createAsyncThunk(
+  "users/deleteUsers",
+  async (userIds, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      // Use Promise.all to make multiple delete requests concurrently
+      await Promise.all(
+        userIds.map(async (userId) => {
+          await userApi.deleteUser(token, userId);
+        })
+      );
+
+      return userIds;
     } catch (error) {
       const message =
         error?.response?.data?.error || error.message || error.toString();
@@ -195,6 +215,28 @@ const userSlice = createSlice({
         state.isError = true;
         state.isSuccess = false;
         state.message = action.payload || "Error Assigning Users";
+      })
+      .addCase(deleteUsers.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+        state.isSuccess = false;
+        state.message = "Deleting Users...";
+      })
+      .addCase(deleteUsers.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.message = "Users deleted successfully.";
+        const deletedUsersIds = action.payload;
+        state.users = state.users.filter(
+          (user) => !deletedUsersIds.includes(user._id)
+        );
+      })
+      .addCase(deleteUsers.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.payload;
       });
   },
 });

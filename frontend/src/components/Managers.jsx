@@ -146,15 +146,17 @@ const Managers = () => {
                   />
                 </Form.Group>
               </Col>
-
-              <Col lg={6}>
-                <Form.Group className="mb-2 user_btn">
+              <Col lg={4}></Col>
+              <Col lg={2}>
+                <Form.Group className="user_btn">
                   <Link to="/signup">
                     <Button className="mr-5" variant="secondary" type="submit">
                       Create User
                     </Button>
                   </Link>
                 </Form.Group>
+              </Col>
+              <Col lg={2}>
                 {admin && selectedUsers && selectedUsers.length > 1 && (
                   <DeleteUsers selectedUsers={selectedUsers} />
                 )}

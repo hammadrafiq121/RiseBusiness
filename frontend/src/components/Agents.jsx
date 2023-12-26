@@ -12,6 +12,7 @@ import { getUsers, reset as resetUsers } from "../app/reducers/userSlice.js";
 import { reset as resetStatus } from "../app/reducers/statusSlice.js";
 import { reset as resetProduct } from "../app/reducers/productSlice.js";
 import Pagination from "./Pagination.jsx";
+import DeleteUsers from "./DeleteUsers.jsx";
 
 const Users = () => {
   const dispatch = useDispatch();
@@ -26,6 +27,7 @@ const Users = () => {
 
   const [searchKeyword, setSearchKeyword] = useState("");
   const [selectedRole, setSelectedRole] = useState("");
+  const [selectedUsers, setSelectedUsers] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -82,6 +84,13 @@ const Users = () => {
 
   const renderUsers = filteredUsers.map((user) => (
     <tr key={user._id} className="atim">
+      <td className="td">
+        <input
+          type="checkbox"
+          onChange={() => handleUserCheckboxChange(user._id)}
+          checked={selectedUsers.includes(user._id)}
+        />
+      </td>
       <td>{user.fullName}</td>
       <td>{user.userName}</td>
       <td>{user.email}</td>
@@ -117,7 +126,27 @@ const Users = () => {
   const indexOfLastUser = currentPage * itemsPerPage;
   const indexOfFirstUser = indexOfLastUser - itemsPerPage;
   const currentUsers = renderUsers.slice(indexOfFirstUser, indexOfLastUser);
+  const handleUserCheckboxChange = (userId) => {
+    const isSelected = selectedUsers.includes(userId);
+    if (isSelected) {
+      setSelectedUsers((prevSelected) =>
+        prevSelected.filter((id) => id !== userId)
+      );
+    } else {
+      setSelectedUsers((prevSelected) => [...prevSelected, userId]);
+    }
+  };
 
+  const handleCheckAllChange = () => {
+    // If all customers are already selected, unselect all. Otherwise, select all.
+    const allUserIds = filteredUsers.map((user) => user._id);
+    const allSelected = allUserIds.every((id) => selectedUsers.includes(id));
+    if (allSelected) {
+      setSelectedUsers([]);
+    } else {
+      setSelectedUsers(allUserIds);
+    }
+  };
   return (
     <div>
       <section className="tab">
@@ -149,14 +178,20 @@ const Users = () => {
                   </Form.Control>
                 </Form.Group>
               </Col> */}
-              <Col lg={6}>
-                <Form.Group className="mb-2 user_btn">
+              <Col lg={4}></Col>
+              <Col lg={2}>
+                <Form.Group className="user_btn">
                   <Link to="/signup">
                     <Button className="mr-5" variant="secondary" type="submit">
                       Create User
                     </Button>
                   </Link>
                 </Form.Group>
+              </Col>
+              <Col lg={2}>
+                {admin && selectedUsers && selectedUsers.length > 1 && (
+                  <DeleteUsers selectedUsers={selectedUsers} />
+                )}
               </Col>
             </Row>
           </Form>
@@ -167,6 +202,16 @@ const Users = () => {
             <Table className="user_list">
               <thead>
                 <tr className="user_col_name">
+                  <th className="custoner-col-name">
+                    <input
+                      type="checkbox"
+                      onChange={handleCheckAllChange}
+                      checked={
+                        filteredUsers.length > 0 &&
+                        selectedUsers.length === filteredUsers.length
+                      }
+                    />
+                  </th>
                   <th>Full Name</th>
                   <th>Username</th>
                   <th>email</th>

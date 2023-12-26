@@ -358,6 +358,7 @@ import {
 import { EyeFill, PencilSquare } from "react-bootstrap-icons";
 import DeleteTask from "./DeleteTask";
 import EditTaskModal from "./EditTaskModal";
+import DeleteTasks from "./DeleteTasks.jsx";
 
 const Tasks = () => {
   const dispatch = useDispatch();
@@ -372,20 +373,21 @@ const Tasks = () => {
   const [selecteCategory, setSelectedCategory] = useState("");
 
   const [showModal, setShowModal] = useState(false);
-  const [selectedTask, setSelectedTask] = useState(null);
   const [modalType, setModalType] = useState("");
 
-  const openModal = (type, task) => {
-    setModalType(type);
-    setSelectedTask(task);
-    setShowModal(true);
-  };
+  const [selectedTasks, setSelectedTasks] = useState([]);
 
-  const closeModal = () => {
-    setModalType("");
-    setSelectedTask(null);
-    setShowModal(false);
-  };
+  // const openModal = (type, task) => {
+  //   setModalType(type);
+  //   setSelectedTask(task);
+  //   setShowModal(true);
+  // };
+
+  // const closeModal = () => {
+  //   setModalType("");
+  //   setSelectedTask(null);
+  //   setShowModal(false);
+  // };
 
   const admin = user && user.userRole === "admin";
   const manager = user && user.userRole === "manager";
@@ -443,6 +445,13 @@ const Tasks = () => {
     };
     return (
       <tr key={task._id} className="atim">
+        <td className="td">
+          <input
+            type="checkbox"
+            onChange={() => handleTaskCheckboxChange(task._id)}
+            checked={selectedTasks.includes(task._id)}
+          />
+        </td>
         <td className="td">{task.title}</td>
         <td className="td">{task.taskCategory}</td>
         {(admin || manager) && <td className="td">{task.assignee}</td>}
@@ -506,6 +515,28 @@ const Tasks = () => {
   const indexOfLastTask = currentPage * itemsPerPage;
   const indexOfFirstTask = indexOfLastTask - itemsPerPage;
   const currentTasks = renderTasks.slice(indexOfFirstTask, indexOfLastTask);
+
+  const handleTaskCheckboxChange = (taskId) => {
+    const isSelected = selectedTasks.includes(taskId);
+    if (isSelected) {
+      setSelectedTasks((prevSelected) =>
+        prevSelected.filter((id) => id !== taskId)
+      );
+    } else {
+      setSelectedTasks((prevSelected) => [...prevSelected, taskId]);
+    }
+  };
+
+  const handleCheckAllChange = () => {
+    // If all customers are already selected, unselect all. Otherwise, select all.
+    const allTaskIds = filteredTasks.map((task) => task._id);
+    const allSelected = allTaskIds.every((id) => selectedTasks.includes(id));
+    if (allSelected) {
+      setSelectedTasks([]);
+    } else {
+      setSelectedTasks(allTaskIds);
+    }
+  };
 
   return (
     <div className="customer_div">
@@ -596,6 +627,9 @@ const Tasks = () => {
                       </Button>
                     </Link>
                   </Form.Group>
+                  {admin && selectedTasks && selectedTasks.length > 1 && (
+                    <DeleteTasks selectedTasks={selectedTasks} />
+                  )}
                 </Col>
               )}
             </Row>
@@ -603,6 +637,16 @@ const Tasks = () => {
           <Table className="customers_table">
             <thead>
               <tr>
+                <th className="custoner-col-name">
+                  <input
+                    type="checkbox"
+                    onChange={handleCheckAllChange}
+                    checked={
+                      filteredTasks.length > 0 &&
+                      selectedTasks.length === filteredTasks.length
+                    }
+                  />
+                </th>
                 <th className="custoner-col-name">Title </th>
                 <th className="custoner-col-name">Category</th>
                 {(admin || manager) && (
@@ -629,13 +673,13 @@ const Tasks = () => {
             />
           )} */}
 
-          {selectedTask && modalType === "edit" && (
+          {/* {selectedTask && modalType === "edit" && (
             <EditTaskModal
               show={showModal}
               onHide={closeModal}
               selectedTask={selectedTask}
             />
-          )}
+          )} */}
 
           <Pagination
             currentPage={currentPage}
