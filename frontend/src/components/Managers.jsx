@@ -11,6 +11,7 @@ import { getUsers, reset as resetUsers } from "../app/reducers/userSlice.js";
 import { reset as resetStatus } from "../app/reducers/statusSlice.js";
 import { reset as resetProduct } from "../app/reducers/productSlice.js";
 import AssignUsers from "./AssignUsers";
+import RemoveUsers from "./RemoveUsers.jsx";
 import Pagination from "./Pagination.jsx";
 import DeleteUsers from "./DeleteUsers.jsx";
 
@@ -31,7 +32,6 @@ const Managers = () => {
       await dispatch(resetUsers());
       await dispatch(resetProduct());
       await dispatch(resetStatus());
-
       await dispatch(getUsers());
     };
     fetchData();
@@ -87,6 +87,9 @@ const Managers = () => {
         {admin && <DeleteUser user={user} />}
         {admin && (
           <AssignUsers users={users} _id={user._id} fullName={user.fullName} />
+        )}
+        {admin && (
+          <RemoveUsers users={users} _id={user._id} fullName={user.fullName} />
         )}
       </td>
     </tr>
