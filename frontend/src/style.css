@@ -270,10 +270,10 @@ flex-wrap: wrap !important;
     margin-left: -20px !important;
     margin-right: 1px !important;
 }
-.user_btn{
+/* .user_btn{
     float: right !important;
     margin-right: 7rem !important;
-}
+} */
 
 
 
@@ -531,8 +531,8 @@ color: white;
 
   .drop-container{
     padding-left: 30px;
-    border-radius: 5px;
-    margin-right: -7px;
+    /* border-radius: 5px;
+    margin-right: -7px; */
   }
   /* .search_col{
     margin-left: 9px;
@@ -545,6 +545,11 @@ color: white;
 }
 .fade, .modal, .show{
     width: 100% !important;
+}
+.edit-btns button{
+width: 82px !important;
+margin-left: 10px;
+margin-bottom: 10px !important;
 }
 .row >* {
     flex-shrink: 0;

@@ -26,9 +26,11 @@ import { MultiSelect } from "react-multi-select-component";
 import DeleteCustomer from "./DeleteCustomer";
 import { Modal } from "react-bootstrap";
 import DeleteCustomers from "./DeleteCustomers.jsx";
+import { useNavigate } from "react-router-dom";
 
 const Customers = () => {
   const dispatch = useDispatch();
+
   const { user } = useSelector((state) => state.auth);
   const { customers, isLoading } = useSelector((state) => state.customers);
   const { statuses } = useSelector((state) => state.statuses);
@@ -54,6 +56,7 @@ const Customers = () => {
     "64f0d420d68b21cc284cb568",
     "64f0d418d68b21cc284cb565",
     "64f0d9b439a2a90d92b3fc2a",
+    "654ec3da71efa61752d3399e", //customer routed
   ];
   const filteredStatuses = statuses.filter((status) =>
     allowedStatus.includes(status._id)
@@ -173,7 +176,7 @@ const Customers = () => {
     );
   });
 
-  const renderCustomers = filteredCustomers.map((item) => {
+  const renderCustomers = filteredCustomers.map((item, index) => {
     const customer = {
       ...item,
       status:
@@ -185,7 +188,7 @@ const Customers = () => {
       ),
     };
     return (
-      <tr key={customer._id} className="atim">
+      <tr key={index} className="atim">
         <td className="td">
           <input
             type="checkbox"
@@ -203,15 +206,24 @@ const Customers = () => {
         </td>
         <td className="td">
           <Button
+            variant="contained"
+            as={Link}
+            to={`/customers/edit/${index}`}
+            state={filteredCustomers}
+          >
+            <EyeFill />
+          </Button>
+
+          {/* <Button
             variant="link"
             className="symbol-button tdd"
-            as={Link}
+            component={Link}
             to={{
               pathname: `/customers/editCustomer/${customer._id}`,
             }}
           >
             <EyeFill />
-          </Button>
+          </Button> */}
           {admin && <DeleteCustomer className="tdd" customer={customer} />}
         </td>
       </tr>

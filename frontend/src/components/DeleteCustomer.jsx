@@ -18,11 +18,7 @@ const DeleteCustomer = ({ customer }) => {
 
   return (
     <span>
-      <Button
-        variant="link"
-        className="symbol-button"
-        onClick={() => setShowDeleteModal(true)}
-      >
+      <Button variant="contained" onClick={() => setShowDeleteModal(true)}>
         <Trash />
       </Button>
 

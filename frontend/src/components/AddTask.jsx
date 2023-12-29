@@ -139,7 +139,7 @@ const AddTask = () => {
     } else {
       if (newCommentInputRef.current) {
         // Focus on the newly added comment field
-        newCommentInputRef.current[formData.comments.length]?.focus();
+        newCommentInputRef.current.focus();
       }
     }
   };

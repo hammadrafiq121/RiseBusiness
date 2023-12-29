@@ -1,0 +1,24 @@
+
+div,ol {
+    --sb-track-color: #9ba2a3;
+    --sb-thumb-color: #e9ecef ;
+    --sb-size: 8px;
+  
+    scrollbar-color: var(--sb-thumb-color) 
+                     var(--sb-track-color);
+  }
+  
+  div::-webkit-scrollbar,  ol::-webkit-scrollbar {
+    width: var(--sb-size) 
+  }
+  
+  div::-webkit-scrollbar-track, ol::-webkit-scrollbar-track {
+    background: var(--sb-track-color);
+    border-radius: 4px;
+  }
+  
+  div::-webkit-scrollbar-thumb , ol::-webkit-scrollbar-thumb{
+    background: var(--sb-thumb-color);
+    border-radius: 4px;
+    border: 1px solid #b5bfc3;    
+    }

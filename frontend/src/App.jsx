@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import "./style.css";
-import Toast from "./components/Toast";
+import "./scrollbar.css";
 import { useSelector } from "react-redux";
 import AddTask from "./components/AddTask";
 import Tasks from "./components/Tasks";
@@ -30,13 +30,14 @@ import AddCustomer from "./components/AddCustomer";
 import EditCustomer from "./components/EditCustomer";
 import UploadCSV from "./components/UploadCSV";
 import Viewprofile from "./components/Viewprofile";
+import Edit from "./components/Edit";
 
 // User routes
 import Agents from "./components/Agents";
 import Managers from "./components/Managers";
 import EditUser from "./components/EditUser";
 
-function App() {
+export const App = () => {
   // Add this code in your main application file
 
   // Event listener for the 'logout' event
@@ -164,6 +165,7 @@ function App() {
               <Route path="/tasks/editTask/:id" element={<EditTask />} />
               <Route path="/403" element={<PermissionDenied />} />
               <Route path="/*" element={<NotFound />} />
+              <Route path="/customers/edit/:id" element={<Edit />} />
             </>
           ) : (
             <>
@@ -178,6 +180,6 @@ function App() {
       </BrowserRouter>
     </div>
   );
-}
+};
 
 export default App;

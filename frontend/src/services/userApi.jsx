@@ -75,11 +75,32 @@ export const assignUsers = async (token, _id, users) => {
   }
 };
 
+export const removeUsers = async (token, _id, users) => {
+  try {
+    return await axios.put(
+      `${backendUrl}/api/users/removeUsers`,
+      {
+        _id,
+        users,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  } catch (error) {
+    console.log(`Error while calling removeUsers api ${error}`);
+    throw error;
+  }
+};
+
 const userApi = {
   getUsers,
   getUser,
   updateUser,
   deleteUser,
   assignUsers,
+  removeUsers,
 };
 export default userApi;

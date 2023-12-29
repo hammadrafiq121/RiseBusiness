@@ -9,7 +9,6 @@ const EditProductModal = ({ product }) => {
   const [showModal, setShowModal] = useState(false);
   const handleCloseModal = () => setShowModal(false);
   const handleShowModal = () => setShowModal(true);
-
   const [formData, setFormData] = useState(product);
   const dispatch = useDispatch();
 
@@ -31,7 +30,7 @@ const EditProductModal = ({ product }) => {
   const handleUpdate = async (event) => {
     event.preventDefault();
     await dispatch(
-      updateProduct({ id: formData._id, updatedProduct: formData.product })
+      updateProduct({ id: formData._id, updatedProduct: formData })
     );
     handleCloseModal();
   };

@@ -44,6 +44,7 @@ const Customers = () => {
   const allowedStatus = [
     "64f0d410d68b21cc284cb560",
     "654d018c7d63551734840912",
+    "654ec3a871efa61752d3399d", //no answer
   ];
   const filteredStatuses = statuses.filter((status) =>
     allowedStatus.includes(status._id)
@@ -102,19 +103,34 @@ const Customers = () => {
     setSortOrders(newSortOrders);
   };
 
-  const leads = customers.filter(
-    (customer) =>
-      allowedStatus.includes(customer.status) ||
-      !customer.status ||
-      customer.status === ""
-  );
+  // const leads = customers.filter(
+  //   (customer) =>
+  //     allowedStatus.includes(customer.status) ||
+  //     !customer.status ||
+  //     customer.status === ""
+  // );
+
+  const leads = customers
+    .slice()
+    .filter(
+      (customer) =>
+        allowedStatus.includes(customer.status) ||
+        !customer.status ||
+        customer.status === ""
+    )
+    .sort((a, b) =>
+      a.status === "64f0d410d68b21cc284cb560"
+        ? 1
+        : b.status === "64f0d410d68b21cc284cb560"
+        ? -1
+        : 0
+    );
 
   const sortedCustomers = leads.slice().sort((a, b) => {
-    if (Object.values(sortOrders).every((value) => value === "none")) {
-      // Sort by date in descending order by default
-      return parseISO(b.createdAt) - parseISO(a.createdAt);
-    }
-
+    // if (Object.values(sortOrders).every((value) => value === "none")) {
+    //   // Sort by date in descending order by default
+    //   return parseISO(b.createdAt) - parseISO(a.createdAt);
+    // }
     for (const field in sortOrders) {
       if (sortOrders[field] !== "none") {
         if (field === "date") {
@@ -167,7 +183,7 @@ const Customers = () => {
     );
   });
 
-  const renderCustomers = filteredCustomers.map((item) => {
+  const renderCustomers = filteredCustomers.map((item, index) => {
     const customer = {
       ...item,
       status:
@@ -179,7 +195,7 @@ const Customers = () => {
       ),
     };
     return (
-      <tr key={customer._id} className="atim">
+      <tr key={index} className="atim">
         <td className="td">
           <input
             type="checkbox"
@@ -197,6 +213,14 @@ const Customers = () => {
         </td>
         <td className="td">
           <Button
+            variant="contained"
+            as={Link}
+            to={`/customers/edit/${index}`}
+            state={filteredCustomers}
+          >
+            <EyeFill />
+          </Button>
+          {/* <Button
             variant="link"
             className="symbol-button tdd"
             as={Link}
@@ -205,7 +229,7 @@ const Customers = () => {
             }}
           >
             <EyeFill />
-          </Button>
+          </Button> */}
           {admin && <DeleteCustomer className="tdd" customer={customer} />}
         </td>
       </tr>
