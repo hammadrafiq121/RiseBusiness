@@ -2,6 +2,7 @@ import Customer from "../model/customerSchema.js";
 import User from "../model/userSchema.js";
 import csv from "csv-parser";
 import fs from "fs";
+import multer from "multer";
 
 export const addCustomer = async (request, response) => {
   try {
@@ -19,10 +20,9 @@ export const addCustomer = async (request, response) => {
 export const getAllCustomers = async (request, response) => {
   try {
     if (request.user.userRole === "admin") {
-      const customers = await Customer.find();
-      // .sort({
-      //   createdAt: -1,
-      // });
+      const customers = await Customer.find().sort({
+        createdAt: -1,
+      });
       return response.status(200).json(customers);
     } else if (request.user.userRole === "manager") {
       const usersOfManager = await User.find({
@@ -147,7 +147,6 @@ export const uploadCustomers = async (request, response) => {
       request.user.userRole === "admin" ||
       request.user.userRole === "manager"
     ) {
-      console.log(request.user._id);
       const filePath = request.file.path;
       const user = request.body.user;
 
@@ -155,6 +154,7 @@ export const uploadCustomers = async (request, response) => {
         .split(".")
         .pop()
         .toLowerCase();
+      console.log(request.file.originalname);
       if (fileExtension !== "csv") {
         await new Promise((resolve, reject) => {
           fs.unlink(filePath, (err) => {
@@ -168,12 +168,9 @@ export const uploadCustomers = async (request, response) => {
           });
         });
 
-        return response
-          .status(400)
-          .json({
-            message:
-              "Only CSV files are supported. Please upload a valid file.",
-          });
+        return response.status(400).json({
+          message: "Only CSV files are supported. Please upload a valid file.",
+        });
       }
 
       const results = [];
@@ -203,17 +200,17 @@ export const uploadCustomers = async (request, response) => {
       });
 
       const docs = await Customer.insertMany(results);
-      await new Promise((resolve, reject) => {
-        fs.unlink(filePath, (err) => {
-          if (err) {
-            console.error(err);
-            reject(err);
-          } else {
-            console.log("File deleted successfully");
-            resolve();
-          }
-        });
-      });
+      // await new Promise((resolve, reject) => {
+      //   fs.unlink(filePath, (err) => {
+      //     if (err) {
+      //       console.error(err);
+      //       reject(err);
+      //     } else {
+      //       console.log("File deleted successfully");
+      //       resolve();
+      //     }
+      //   });
+      // });
       return response.status(200).json(docs);
     }
   } catch (error) {

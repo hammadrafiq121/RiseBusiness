@@ -6,17 +6,35 @@ import {
   updateCustomer,
   deleteCustomer,
   uploadCustomers,
-  // addCustomersFromCSV,
 } from "../controller/customerController.js";
 import { protect } from "../middleware/authMiddleware.js";
 import { roleMiddleware } from "../middleware/roleMiddleware.js";
-
 import multer from "multer";
-const upload = multer({ dest: "uploads/" });
+
+const storage = multer.diskStorage({
+  destination: "uploads/",
+  filename: function (req, file, callback) {
+    const date = new Date()
+      .toLocaleString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
+      })
+      .replace(/:/g, "-");
+    // const originalname = file.originalname.replace(/\s+/g, "_"); // Replace spaces with underscores
+    const filename = `${date} ${file.originalname}`;
+    callback(null, filename);
+  },
+});
+
+const upload = multer({ storage });
+
 const customerRoutes = express.Router();
 
 customerRoutes.post("/api/customers", protect, addCustomer);
-
 customerRoutes.get("/api/customers", protect, getAllCustomers);
 customerRoutes.get("/api/customers/:id", protect, getSingleCustomer);
 customerRoutes.put("/api/customers/:id", protect, updateCustomer);
@@ -28,7 +46,5 @@ customerRoutes.post(
   upload.single("csvFile"),
   uploadCustomers
 );
-
-// customerRoutes.post("/api/customers/upload", addCustomersFromCSV);
 
 export default customerRoutes;
