@@ -5,6 +5,9 @@ const commentSchema = new mongoose.Schema(
     text: {
       type: String,
     },
+    name: {
+      type: String,
+    },
     time: {
       type: Date,
       default: new Date(),

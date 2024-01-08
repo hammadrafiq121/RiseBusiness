@@ -263,6 +263,9 @@ export const assignUsers = async (req, res) => {
       const user = await User.findById(userID);
       if (user) {
         // Add the new manager to the existing managers (if not already present)
+        if (user.manager === null) {
+          user.manager = [];
+        }
         if (!user.manager.includes(_id)) {
           user.manager.push(_id);
           return user.save();

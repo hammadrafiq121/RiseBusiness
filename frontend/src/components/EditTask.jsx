@@ -29,8 +29,8 @@ const EditTask = () => {
     estimatedTime: "",
     startDate: "",
     endDate: "",
-    comments: [{ text: "", time: new Date() }],
-    newComment: { text: "", time: new Date() },
+    comments: [{ text: "", name: "", time: new Date() }],
+    newComment: { text: "", name: "", time: new Date() },
     taskCategory: "",
     assignee: "",
     priority: "",
@@ -90,7 +90,7 @@ const EditTask = () => {
 
         setFormData({
           ...payload,
-          newComment: { text: "", time: new Date() },
+          newComment: { text: "", name: "", time: new Date() },
           startDate: { _d: "2023-11-09T19:00:00.000Z" },
           endDate: { _d: "2023-11-16T19:00:00.000Z" },
         });
@@ -142,7 +142,7 @@ const EditTask = () => {
 
   const handleCommentChange = (index, value) => {
     const newComments = [...formData.comments];
-    newComments[index] = { text: value, time: new Date() };
+    newComments[index] = { text: value, name: user.fullName, time: new Date() };
     setFormData((formData) => ({
       ...formData,
       comments: newComments,
@@ -152,7 +152,7 @@ const EditTask = () => {
   const handleNewCommentChange = (value) => {
     setFormData((formData) => ({
       ...formData,
-      newComment: { text: value, time: new Date() },
+      newComment: { text: value, name: user.fullName, time: new Date() },
     }));
   };
 
@@ -162,7 +162,7 @@ const EditTask = () => {
       setFormData((formData) => ({
         ...formData,
         comments: newComments,
-        newComment: { text: "", time: new Date() },
+        newComment: { text: "", name: "", time: new Date() },
       }));
     } else {
       if (newCommentInputRef.current) {
@@ -178,13 +178,13 @@ const EditTask = () => {
     if (newCommentText !== "") {
       const newComments = [
         ...formData.comments,
-        { text: newCommentText, time: new Date() },
+        { text: newCommentText, name: user.fullName, time: new Date() },
       ];
 
       setFormData((prevFormData) => ({
         ...prevFormData,
         comments: newComments,
-        newComment: { text: "", time: new Date() },
+        newComment: { text: "", name: "", time: new Date() },
       }));
     }
     // console.log("Updated Task Form Data:", {
@@ -375,6 +375,12 @@ const EditTask = () => {
                           }
                         />
                         <div className="comment-details">
+                          {comment.name && (
+                            <span className="comment-time">
+                              {comment.name}
+                              {" •"}
+                            </span>
+                          )}
                           <span className="comment-time">
                             {new Date(comment.time).toLocaleString("en-US", {
                               year: "numeric",

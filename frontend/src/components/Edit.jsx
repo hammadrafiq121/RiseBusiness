@@ -42,8 +42,8 @@ const Edit = () => {
     personName: "",
     personPhone: "",
     personEmail: "",
-    comments: [{ text: "", time: new Date() }],
-    newComment: { text: "", time: new Date() },
+    comments: [{ text: "", name: "", time: new Date() }],
+    newComment: { text: "", name: "", time: new Date() },
     status: "",
     products: [],
   };
@@ -89,7 +89,7 @@ const Edit = () => {
         setFormData({
           ...customer,
           products: mappedProducts,
-          newComment: { text: "", time: new Date() },
+          newComment: { text: "", name: "", time: new Date() },
         });
       }
     };
@@ -108,7 +108,7 @@ const Edit = () => {
 
   const handleCommentChange = (index, value) => {
     const newComments = [...formData.comments];
-    newComments[index] = { text: value, time: new Date() };
+    newComments[index] = { text: value, name: user.fullName, time: new Date() };
     setFormData((formData) => ({
       ...formData,
       comments: newComments,
@@ -118,7 +118,7 @@ const Edit = () => {
   const handleNewCommentChange = (value) => {
     setFormData((formData) => ({
       ...formData,
-      newComment: { text: value, time: new Date() },
+      newComment: { text: value, name: user.fullName, time: new Date() },
     }));
   };
 
@@ -128,7 +128,7 @@ const Edit = () => {
       setFormData((formData) => ({
         ...formData,
         comments: newComments,
-        newComment: { text: "", time: new Date() },
+        newComment: { text: "", name: "", time: new Date() },
       }));
     } else {
       if (newCommentInputRef.current) {
@@ -159,13 +159,13 @@ const Edit = () => {
     if (newCommentText !== "") {
       const newComments = [
         ...formData.comments,
-        { text: newCommentText, time: new Date() },
+        { text: newCommentText, name: user.fullName, time: new Date() },
       ];
 
       setFormData((formData) => ({
         ...formData,
         comments: newComments,
-        newComment: { text: "", time: new Date() },
+        newComment: { text: "", name: "", time: new Date() },
       }));
     }
 
@@ -426,6 +426,12 @@ const Edit = () => {
                           }
                         />
                         <div className="comment-details">
+                          {comment.name && (
+                            <span className="comment-time">
+                              {comment.name}
+                              {" •"}
+                            </span>
+                          )}
                           <span className="comment-time">
                             {new Date(comment.time).toLocaleString("en-US", {
                               year: "numeric",

@@ -38,7 +38,7 @@ const AddCustomer = () => {
     personName: "",
     personPhone: "",
     personEmail: "",
-    comments: [{ text: "", time: new Date() }],
+    comments: [{ text: "", name: "", time: new Date() }],
     status: "",
     products: [],
   };
@@ -87,7 +87,7 @@ const AddCustomer = () => {
   // };
   const handleCommentChange = (index, value) => {
     const newComments = [...formData.comments];
-    newComments[index] = { text: value, time: new Date() };
+    newComments[index] = { text: value, name: user.fullName, time: new Date() };
     setFormData((formData) => ({
       ...formData,
       comments: newComments,
@@ -112,7 +112,10 @@ const AddCustomer = () => {
     if (lastComment.text.trim() !== "") {
       setFormData((formData) => ({
         ...formData,
-        comments: [...formData.comments, { text: "", time: new Date() }],
+        comments: [
+          ...formData.comments,
+          { text: "", name: user.fullName, time: new Date() },
+        ],
       }));
     } else {
       if (newCommentInputRef.current) {
@@ -153,10 +156,13 @@ const AddCustomer = () => {
     );
 
     // Create a new array with comments containing only text and time properties
-    const commentsForSubmission = nonEmptyComments.map(({ text, time }) => ({
-      text,
-      time,
-    }));
+    const commentsForSubmission = nonEmptyComments.map(
+      ({ text, name, time }) => ({
+        text,
+        name,
+        time,
+      })
+    );
 
     // Dispatch the action with the updated formData
     await dispatch(
