@@ -10,7 +10,11 @@ const EditStatusModal = ({ status }) => {
   const handleCloseModal = () => setShowModal(false);
   const handleShowModal = () => setShowModal(true);
 
-  const [formData, setFormData] = useState(status);
+  const [formData, setFormData] = useState({
+    _id: status._id || "",
+    status: status.status || "",
+    belongsTo: status.belongsTo || "",
+  });
   const dispatch = useDispatch();
 
   const handleChange = async (event) => {
@@ -22,12 +26,9 @@ const EditStatusModal = ({ status }) => {
 
   const handleUpdate = async (event) => {
     event.preventDefault();
-    await dispatch(
-      updateStatus({ id: formData._id, updatedStatus: formData.status })
-    );
+    await dispatch(updateStatus({ id: formData._id, updatedStatus: formData }));
     handleCloseModal();
   };
-
   return (
     <>
       <Button
@@ -63,6 +64,23 @@ const EditStatusModal = ({ status }) => {
                       required
                     />
                   </Col>
+                </Form.Group>
+              </Col>
+              <Col>
+                <Form.Group controlId="userFilter" className="mb-2">
+                  <Form.Control
+                    as="select"
+                    name="belongsTo"
+                    value={formData.belongsTo}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="" disabled>
+                      belongs to
+                    </option>
+                    <option value="customers">Customers</option>
+                    <option value="leads">Leads</option>
+                  </Form.Control>
                 </Form.Group>
               </Col>
               <Col>

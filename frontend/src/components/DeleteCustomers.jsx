@@ -20,6 +20,7 @@ const DeleteCustomers = ({ selectedCustomers }) => {
   return (
     <span>
       <Button
+        className="mb-1"
         variant="secondary"
         type="button"
         onClick={() => setShowDeleteModal(true)} // Open the modal on button click

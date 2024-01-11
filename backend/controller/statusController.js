@@ -10,17 +10,16 @@ export const getStatuses = async (req, res) => {
 };
 
 export const addStatus = async (req, res) => {
-  const { status } = req.body;
-  console.log(status);
+  const { status, belongsTo } = req.body;
 
   try {
     const existingStatus = await Status.findOne({ status: status });
-    console.log(existingStatus);
     if (existingStatus) {
       return res.status(400).json({ error: "Status already exists" });
     }
     const newStatus = await Status.create({
       status,
+      belongsTo,
     });
     await newStatus.save();
     return res.status(200).json(newStatus);

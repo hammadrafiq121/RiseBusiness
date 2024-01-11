@@ -25,8 +25,9 @@ import { MultiSelect } from "react-multi-select-component";
 import DeleteCustomer from "./DeleteCustomer";
 import { Modal } from "react-bootstrap";
 import DeleteCustomers from "./DeleteCustomers.jsx";
+import DownloadCutomers from "./DownloadCutomers.jsx";
 
-const Customers = () => {
+const Leads = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { customers, isLoading } = useSelector((state) => state.customers);
@@ -41,15 +42,10 @@ const Customers = () => {
 
   const admin = user && user.userRole === "admin";
   const manager = user && user.userRole === "manager";
-  const allowedStatus = [
-    "64f0d410d68b21cc284cb560",
-    "654d018c7d63551734840912",
-    "654ec3a871efa61752d3399d", //no answer
-  ];
-  const filteredStatuses = statuses.filter((status) =>
-    allowedStatus.includes(status._id)
+  const filteredStatuses = statuses.filter(
+    (status) => status.belongsTo === "leads"
   );
-
+  const filteredStatusesIds = filteredStatuses.map((status) => status._id);
   const [selectedCustomers, setSelectedCustomers] = useState([]);
   const [modalEmails, setModalEmails] = useState([]);
 
@@ -103,18 +99,11 @@ const Customers = () => {
     setSortOrders(newSortOrders);
   };
 
-  // const leads = customers.filter(
-  //   (customer) =>
-  //     allowedStatus.includes(customer.status) ||
-  //     !customer.status ||
-  //     customer.status === ""
-  // );
-
   const leads = customers
     .slice()
     .filter(
       (customer) =>
-        allowedStatus.includes(customer.status) ||
+        filteredStatusesIds.includes(customer.status) ||
         !customer.status ||
         customer.status === ""
     )
@@ -290,11 +279,6 @@ const Customers = () => {
   };
   // Function to handle "get emails" button click
   const handleGetEmailsClick = () => {
-    // Get the selected customers' emails and set them in the state
-    // const emails = selectedCustomers.map((customerId) => {
-    //   const customer = customers.find((c) => c._id === customerId);
-    //   return customer ? customer.personEmail : "";
-    // });
     const emails = selectedCustomers
       .map((customerId) => {
         const customer = customers.find((c) => c._id === customerId);
@@ -303,7 +287,6 @@ const Customers = () => {
       .filter((email) => email !== "");
 
     setModalEmails(emails);
-    // console.log("Selected Customers Emails:", emails.join("; "));
     handleOpenModal();
   };
 
@@ -315,6 +298,11 @@ const Customers = () => {
     label: status.status,
     value: status._id,
   }));
+
+  const data =
+    selectedCustomers && selectedCustomers.length
+      ? customers.filter((customer) => selectedCustomers.includes(customer._id))
+      : filteredCustomers;
 
   return (
     <div className="customer_div">
@@ -430,6 +418,7 @@ const Customers = () => {
                           selectedCustomers={selectedCustomers}
                         />
                       )}
+                    {admin && <DownloadCutomers data={data} />}
                   </Col>
                 </Row>
               </Col>
@@ -560,4 +549,4 @@ const Customers = () => {
   );
 };
 
-export default Customers;
+export default Leads;

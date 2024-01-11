@@ -4,7 +4,6 @@ export const addProduct = async (req, res) => {
   const { product, slug } = req.body;
   try {
     const existingProduct = await Product.findOne({ product: product });
-    console.log(existingProduct);
     if (existingProduct) {
       return res.status(400).json({ error: "Product already exists" });
     }
@@ -35,7 +34,6 @@ export const getSelectedProducts = async (req, res) => {
     const products = await Product.find({ _id: { $in: productIds } });
     return res.json(products);
   } catch (error) {
-    console.error(error);
     return res.status(500).json({ error: "Server error" });
   }
 };

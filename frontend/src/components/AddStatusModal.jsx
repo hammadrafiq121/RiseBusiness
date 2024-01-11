@@ -9,7 +9,7 @@ const AddStatusModal = () => {
   const handleCloseModal = () => setShowModal(false);
   const handleShowModal = () => setShowModal(true);
 
-  const [formData, setFormData] = useState({ status: "" });
+  const [formData, setFormData] = useState({ status: "", belongsTo: "" });
   const dispatch = useDispatch();
 
   const handleChange = async (event) => {
@@ -22,7 +22,7 @@ const AddStatusModal = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     await dispatch(addStatus(formData));
-    setFormData({ status: "" });
+    setFormData({ status: "", belongsTo: "" });
     handleCloseModal();
   };
 
@@ -61,6 +61,23 @@ const AddStatusModal = () => {
                       required
                     />
                   </Col>
+                </Form.Group>
+              </Col>
+              <Col>
+                <Form.Group controlId="userFilter" className="mb-2">
+                  <Form.Control
+                    as="select"
+                    name="belongsTo"
+                    value={formData.belongsTo}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="" disabled>
+                      belongs to
+                    </option>
+                    <option value="customers">Customers</option>
+                    <option value="leads">Leads</option>
+                  </Form.Control>
                 </Form.Group>
               </Col>
               <Col>

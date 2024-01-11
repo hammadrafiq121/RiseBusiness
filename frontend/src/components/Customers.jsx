@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-
+import React, { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Table, Form, Container, Row, Col, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
@@ -27,6 +26,7 @@ import DeleteCustomer from "./DeleteCustomer";
 import { Modal } from "react-bootstrap";
 import DeleteCustomers from "./DeleteCustomers.jsx";
 import { useNavigate } from "react-router-dom";
+import DownloadCutomers from "./DownloadCutomers.jsx";
 
 const Customers = () => {
   const dispatch = useDispatch();
@@ -44,23 +44,10 @@ const Customers = () => {
 
   const admin = user && user.userRole === "admin";
   const manager = user && user.userRole === "manager";
-  const allowedStatus = [
-    "64f0d9ae39a2a90d92b3fc27",
-    "654d01a67d63551734840919",
-    "654d01ca7d6355173484091e",
-    "654d01d77d63551734840923",
-    "654d01e37d63551734840928",
-    "65006c1260470819587c9f76",
-    "651708e37c4cfe7278bf5598",
-    "652fda7c79548ee488bcd540",
-    "64f0d420d68b21cc284cb568",
-    "64f0d418d68b21cc284cb565",
-    "64f0d9b439a2a90d92b3fc2a",
-    "654ec3da71efa61752d3399e", //customer routed
-  ];
-  const filteredStatuses = statuses.filter((status) =>
-    allowedStatus.includes(status._id)
+  const filteredStatuses = statuses.filter(
+    (status) => status.belongsTo === "customers"
   );
+  const filteredStatusesIds = filteredStatuses.map((status) => status._id);
   const [selectedCustomers, setSelectedCustomers] = useState([]);
   const [modalEmails, setModalEmails] = useState([]);
 
@@ -115,7 +102,7 @@ const Customers = () => {
   };
 
   const onGoingCustomers = customers.filter((customer) =>
-    allowedStatus.includes(customer.status)
+    filteredStatusesIds.includes(customer.status)
   );
 
   const sortedCustomers = onGoingCustomers.slice().sort((a, b) => {
@@ -275,7 +262,6 @@ const Customers = () => {
     const allSelected = allCustomerIds.every((id) =>
       selectedCustomers.includes(id)
     );
-
     if (allSelected) {
       setSelectedCustomers([]);
     } else {
@@ -284,11 +270,6 @@ const Customers = () => {
   };
   // Function to handle "get emails" button click
   const handleGetEmailsClick = () => {
-    // Get the selected customers' emails and set them in the state
-    // const emails = selectedCustomers.map((customerId) => {
-    //   const customer = customers.find((c) => c._id === customerId);
-    //   return customer ? customer.personEmail : "";
-    // });
     const emails = selectedCustomers
       .map((customerId) => {
         const customer = customers.find((c) => c._id === customerId);
@@ -297,7 +278,6 @@ const Customers = () => {
       .filter((email) => email !== "");
 
     setModalEmails(emails);
-    // console.log("Selected Customers Emails:", emails.join("; "));
     handleOpenModal();
   };
 
@@ -309,6 +289,11 @@ const Customers = () => {
     label: status.status,
     value: status._id,
   }));
+
+  const data =
+    selectedCustomers && selectedCustomers.length
+      ? customers.filter((customer) => selectedCustomers.includes(customer._id))
+      : filteredCustomers;
 
   return (
     <div className="customer_div">
@@ -424,6 +409,8 @@ const Customers = () => {
                           selectedCustomers={selectedCustomers}
                         />
                       )}
+
+                    {admin && <DownloadCutomers data={data} />}
                   </Col>
                 </Row>
               </Col>
